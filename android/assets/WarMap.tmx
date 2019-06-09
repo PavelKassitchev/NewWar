@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.4" orientation="hexagonal" renderorder="right-down" width="64" height="64" tilewidth="16" tileheight="16" infinite="0" hexsidelength="8" staggeraxis="y" staggerindex="even" nextlayerid="3" nextobjectid="1">
+ <tileset firstgid="1" name="WarTiles" tilewidth="16" tileheight="16" tilecount="20" columns="4">
+  <image source="drjamgo_hex_16x16.png" width="64" height="80"/>
+  <tile id="0" type="Grass">
+   <properties>
+    <property name="cost" type="float" value="2"/>
+    <property name="type" value="grass"/>
+   </properties>
+  </tile>
+  <tile id="1" type="Forest">
+   <properties>
+    <property name="cost" type="float" value="3"/>
+    <property name="type" value="forest"/>
+   </properties>
+  </tile>
+  <tile id="2" type="Mud">
+   <properties>
+    <property name="cost" type="float" value="4"/>
+    <property name="type" value="dirty"/>
+   </properties>
+  </tile>
+  <tile id="3" type="Water">
+   <properties>
+    <property name="cost" type="float" value="5"/>
+    <property name="type" value="water"/>
+   </properties>
+  </tile>
+  <tile id="4" type="Bush">
+   <properties>
+    <property name="cost" type="float" value="2"/>
+   </properties>
+  </tile>
+  <tile id="5" type="Sand">
+   <properties>
+    <property name="cost" type="float" value="1"/>
+    <property name="type" value="road"/>
+   </properties>
+  </tile>
+  <tile id="8" type="Field">
+   <properties>
+    <property name="cost" type="float" value="3"/>
+   </properties>
+  </tile>
+  <tile id="9" type="Farm">
+   <properties>
+    <property name="cost" type="float" value="1.1"/>
+   </properties>
+  </tile>
+  <tile id="16" type="Town">
+   <properties>
+    <property name="cost" type="float" value="1.1"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer id="1" name="TileLayer" width="64" height="64" offsetx="1" offsety="0">
+  <data encoding="base64" compression="zlib">
+   eJzt28sOwiAQBVD6TOrO//9ZNYE4QSwUOjxm7uLuGuFcJhYXLsaY5Z1JUFab1vto6W+9B/hhhx9++GGHH3b4YUcHfHaJ/plE2/nPBv4r/l472E+SYo89W+o/299dKV17Svis2jOQeia115Ts76mDzz4Om9r+I7J2Lf+j0w4470NbY7vzPyN+rrU3u3ar+fc7oOHuoBe78//rgGv+N/Od/5rWs/uf3wH3+de0p9x/6RzQ57i+A1r5Y78Bdu85Dn+LudfsD/UQ2x/9PljN73thNHvOPndiv+sdNYo/NAul7+rR7JM9f9eBRr/rgM5CjmN0O3Xk9DCqP9RBqA+p9phf+tmXdqDZLsWf24EUO/zXO5Bmd/7UDiT6U3uQbI91kHs/HjW0B01u7eeOIAiCIAiCIIjeSPvvc45fcwfa/S/w0RUR
+  </data>
+ </layer>
+ <objectgroup id="2" name="ObjectLayer"/>
+</map>

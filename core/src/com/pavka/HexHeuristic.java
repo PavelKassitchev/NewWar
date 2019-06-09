@@ -1,0 +1,13 @@
+package com.pavka;
+
+import com.badlogic.gdx.ai.pfa.Heuristic;
+import com.badlogic.gdx.math.Vector2;
+
+public class HexHeuristic implements Heuristic<Hex> {
+    @Override
+    public float estimate(Hex node, Hex endNode) {
+
+        //return Math.max(Math.abs(node.col - endNode.col), Math.abs(node.row - endNode.row));
+        return Vector2.dst(node.col, node.row, endNode.col, endNode.row);
+    }
+}
