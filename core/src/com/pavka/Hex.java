@@ -4,7 +4,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.utils.Array;
 
 public class Hex {
-    static TiledMapTileLayer layer = (TiledMapTileLayer)(Play.map).getLayers().get("TileLayer");
+    static TiledMapTileLayer layer = (TiledMapTileLayer) (Play.map).getLayers().get("TileLayer");
     int col;
     int row;
     String name;
@@ -21,20 +21,26 @@ public class Hex {
 
     public Array<Hex> getNeighbours() {
         Array<Hex> neighbours = new Array<Hex>();
+        if (col > 0) neighbours.add(new Hex(col - 1, row));
+        if (col < 63) neighbours.add(new Hex(col + 1, row));
         int offset = 0;
         if (row % 2 == 0) {
             offset = -1;
         }
-        if (col + offset > 0) neighbours.add(new Hex(col + offset - 1, row));
-        if (col + offset < 63) neighbours.add(new Hex(col + offset + 1, row));
+
 
         if (row > 0) {
             neighbours.add(new Hex(col + offset, row - 1));
-            if (col + 1 + offset < 64) neighbours.add (new Hex(col + 1 + offset, row - 1));
+        }
+        if (col + 1 + offset < 64) {
+            neighbours.add(new Hex(col + 1 + offset, row - 1));
         }
         if (row < 63) {
             neighbours.add(new Hex(col + offset, row + 1));
-            if (col + 1 + offset < 64) neighbours.add(new Hex (col + 1 + offset, row + 1));
+        }
+
+        if (col + 1 + offset < 64) {
+            neighbours.add(new Hex(col + 1 + offset, row + 1));
         }
 
         return neighbours;
