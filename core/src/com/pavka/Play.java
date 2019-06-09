@@ -161,7 +161,8 @@ public class Play implements Screen, InputProcessor {
         if (button == Input.Buttons.LEFT) {
             Hex hex = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
 
-            System.out.println("X = " + getMousePosOnMap().x + " Y = " + getMousePosOnMap().y + " NEIGHBOURS: " + hex.getNeighbours().size);
+            System.out.println("X = " + getMousePosOnMap().x + " Y = " + getMousePosOnMap().y);
+            if (hex != null) System.out.println(" NEIGHBOURS: " + hex.getNeighbours().size);
 
             TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get("TileLayer");
             TiledMapTileLayer.Cell cell = null;

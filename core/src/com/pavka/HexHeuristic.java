@@ -7,6 +7,8 @@ public class HexHeuristic implements Heuristic<Hex> {
     @Override
     public float estimate(Hex node, Hex endNode) {
 
+        if (node == null || endNode == null) return 0f;
+
         //return Math.max(Math.abs(node.col - endNode.col), Math.abs(node.row - endNode.row));
         return Vector2.dst(node.col, node.row, endNode.col, endNode.row);
     }
