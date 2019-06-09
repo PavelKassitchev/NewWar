@@ -14,6 +14,7 @@ public class Path implements Connection<Hex> {
         this.toHex = toHex;
         //cost = Math.max(Math.abs(fromHex.col - toHex.col), Math.abs(fromHex.row - toHex.row));
         cost = Vector2.dst(fromHex.col, fromHex.row, toHex.col, toHex.row);
+        System.out.println(cost);
     }
 
     @Override

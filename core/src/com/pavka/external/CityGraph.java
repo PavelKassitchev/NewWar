@@ -7,6 +7,7 @@ import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.pavka.Hex;
 
 public class CityGraph implements IndexedGraph<City> {
 
@@ -61,4 +62,6 @@ public class CityGraph implements IndexedGraph<City> {
 
         return new Array<Connection<City>>(0);
     }
+
+
 }

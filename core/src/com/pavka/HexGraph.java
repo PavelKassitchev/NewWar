@@ -21,7 +21,7 @@ public class HexGraph implements IndexedGraph<Hex> {
 
     public void addHex(Hex hex){
         hex.index = lastNodeIndex;
-        lastNodeIndex++;
+        System.out.println("Last index: " + lastNodeIndex++);
 
         hexes.add(hex);
     }
@@ -61,5 +61,12 @@ public class HexGraph implements IndexedGraph<Hex> {
         }
 
         return new Array<Connection<Hex>>(0);
+    }
+
+    public Hex getHex(int x, int y) {
+        for (Hex hex: hexes) {
+            if (hex.col == x && hex.row == y) return hex;
+        }
+        return null;
     }
 }

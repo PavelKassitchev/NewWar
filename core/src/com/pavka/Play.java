@@ -27,12 +27,15 @@ public class Play implements Screen, InputProcessor {
 
     public static HexGraph hexGraph;
 
-    static {
+
+    {
+        Hex hex;
         hexGraph = new HexGraph();
         for (int i = 0; i < 64; i++) {
             for (int j = 0; j < 64; j++) {
-                Hex hex = new Hex(i, j);
+                hex = new Hex(i, j);
                 hexGraph.addHex(hex);
+                System.out.println(hex.index);
                 for (Hex neighbour: hex.getNeighbours()) {
                     hexGraph.connectHexes(hex, neighbour);
                 }
@@ -176,7 +179,8 @@ public class Play implements Screen, InputProcessor {
                 if (endHex == null) {
                     endHex = hex;
                     GraphPath<Hex> graphPath = hexGraph.findPath(startHex, endHex);
-                    System.out.println("Counts = " + graphPath.getCount());
+                    System.out.println("Start = " + startHex.index + " end = " + endHex.index +
+                            " Counts = " + graphPath.getCount());
                 }
                 else {
                     endHex = null;
@@ -231,6 +235,6 @@ public class Play implements Screen, InputProcessor {
         }
         System.out.println("Col = " + col);
 
-        return new Hex(col, row);
+        return hexGraph.getHex(col, row);
     }
 }
