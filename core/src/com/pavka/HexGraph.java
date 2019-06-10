@@ -69,4 +69,14 @@ public class HexGraph implements IndexedGraph<Hex> {
         }
         return null;
     }
+
+    public Path getPath(Hex start, Hex end) {
+        Array<Connection<Hex>> pathsFrom = pathsMap.get(start);
+        for (Connection path: pathsFrom) {
+            if (path.getToNode() == end) {
+                return (Path)path;
+            }
+        }
+        return null;
+    }
 }

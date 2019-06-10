@@ -46,4 +46,13 @@ public class Hex {
 
         return neighbours;
     }
+
+    public float getX() {
+        if (row % 2 == 0) return (16 + col * 16);
+        return (8 + col * 16);
+    }
+
+    public float getY() {
+        return (8 + row * 12);
+    }
 }

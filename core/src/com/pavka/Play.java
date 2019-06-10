@@ -11,14 +11,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
-
 import com.badlogic.gdx.maps.objects.TextureMapObject;
-import com.badlogic.gdx.maps.tiled.*;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.HexagonalTiledMapRenderer;
-
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+
+import java.util.Iterator;
 
 public class Play implements Screen, InputProcessor {
 
@@ -28,6 +32,18 @@ public class Play implements Screen, InputProcessor {
 
     public static HexGraph hexGraph;
 
+    public static GraphPath<Hex> graphPath;
+    MapLayer objectLayer;
+    TiledMapTileLayer tileLayer;
+    Hex startHex;
+    Hex endHex;
+    ShapeRenderer shapeRenderer;
+    Array<Path> paths;
+    private HexagonalTiledMapRenderer renderer;
+    private OrthographicCamera camera;
+    private Texture texture;
+    private Sprite sprite;
+    private SpriteBatch sb;
 
     {
         Hex hex;
@@ -46,7 +62,7 @@ public class Play implements Screen, InputProcessor {
             for (int j = 0; j < 64; j++) {
                 hex = hexGraph.getHex(i, j);
                 Array<Hex> hexes = hex.getNeighbours();
-                for (Hex h: hexes) {
+                for (Hex h : hexes) {
                     hexGraph.connectHexes(hex, hexGraph.getHex(h.col, h.row));
                 }
             }
@@ -62,22 +78,12 @@ public class Play implements Screen, InputProcessor {
         //        graphPath.getCount());
     }
 
-    private HexagonalTiledMapRenderer renderer;
-    private OrthographicCamera camera;
-    private Texture texture;
-    private Sprite sprite;
-    private SpriteBatch sb;
-    MapLayer objectLayer;
-    TiledMapTileLayer tileLayer;
-    Hex startHex;
-    Hex endHex;
-
-
     @Override
     public void show() {
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
         //map = new TmxMapLoader().load(MAP);
+        shapeRenderer = new ShapeRenderer();
         renderer = new MyRenderer(map);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, w, h);
@@ -94,7 +100,7 @@ public class Play implements Screen, InputProcessor {
 
         objectLayer.getObjects().add(tmo);
 
-        tileLayer = (TiledMapTileLayer)map.getLayers().get("TileLayer");
+        tileLayer = (TiledMapTileLayer) map.getLayers().get("TileLayer");
         TiledMapTileLayer.Cell cell = tileLayer.getCell(0, 0);
         TiledMapTileSet tileSet = map.getTileSets().getTileSet("WarTiles");
         float type = (Float) cell.getTile().getProperties().get("cost");
@@ -108,9 +114,18 @@ public class Play implements Screen, InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
-
         renderer.setView(camera);
         renderer.render();
+
+        shapeRenderer.setProjectionMatrix(camera.combined);
+
+        if (paths != null) {
+            for (Path path : paths) {
+                path.render(shapeRenderer);
+
+
+            }
+        }
         /*sb.setProjectionMatrix(camera.combined);
         sprite.setSize(32f, 32f);
         sb.begin();
@@ -152,14 +167,14 @@ public class Play implements Screen, InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        if(keycode == Input.Keys.LEFT)
-            camera.translate(-32,0);
-        if(keycode == Input.Keys.RIGHT)
-            camera.translate(32,0);
-        if(keycode == Input.Keys.UP)
-            camera.translate(0,32);
-        if(keycode == Input.Keys.DOWN) {
-            camera.translate(0,-32);
+        if (keycode == Input.Keys.LEFT)
+            camera.translate(-32, 0);
+        if (keycode == Input.Keys.RIGHT)
+            camera.translate(32, 0);
+        if (keycode == Input.Keys.UP)
+            camera.translate(0, 32);
+        if (keycode == Input.Keys.DOWN) {
+            camera.translate(0, -32);
         }
 
         return false;
@@ -182,6 +197,7 @@ public class Play implements Screen, InputProcessor {
             Hex hex = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
 
             System.out.println("X = " + getMousePosOnMap().x + " Y = " + getMousePosOnMap().y);
+            System.out.println("IN COORDINATES - X: " + hex.getX() + " Y: " + hex.getY());
             if (hex != null) System.out.println(" NEIGHBOURS: " + hex.getNeighbours().size);
 
             TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get("TileLayer");
@@ -195,11 +211,23 @@ public class Play implements Screen, InputProcessor {
             else {
                 if (endHex == null) {
                     endHex = hex;
-                    GraphPath<Hex> graphPath = hexGraph.findPath(startHex, endHex);
+                    graphPath = hexGraph.findPath(startHex, endHex);
                     System.out.println("Start = " + startHex.index + " end = " + endHex.index +
                             " Counts = " + graphPath.getCount());
-                }
-                else {
+                    paths = new Array<Path>();
+                    Iterator<Hex> iterator;
+                    if (Play.graphPath != null) {
+                        iterator = Play.graphPath.iterator();
+                        Hex sHex = iterator.next();
+                        Hex eHex;
+                        while (iterator.hasNext()) {
+                            eHex = iterator.next();
+                            paths.add(Play.hexGraph.getPath(sHex, eHex));
+                            sHex = eHex;
+                        }
+                        System.out.println("Inside paths: " + paths.size);
+                    }
+                } else {
                     endHex = null;
                     startHex = hex;
                 }
@@ -227,7 +255,7 @@ public class Play implements Screen, InputProcessor {
 
     @Override
     public boolean scrolled(int amount) {
-        if (amount == 1)camera.zoom += 0.2;
+        if (amount == 1) camera.zoom += 0.2;
         else camera.zoom -= 0.2;
         return true;
     }
@@ -239,16 +267,15 @@ public class Play implements Screen, InputProcessor {
     //TODO make it correct, this is the simplest version
     Hex getHex(float x, float y) {
         if (y < 2 || y > 774) return null;
-        int row = (int)((y - 2) / 12);
+        int row = (int) ((y - 2) / 12);
         System.out.println("Row = " + row);
         int col;
         if (row % 2 == 0) {
             if (x < 8 || x > 1032) return null;
-            col = (int)((x - 8) / 16);
-        }
-        else {
+            col = (int) ((x - 8) / 16);
+        } else {
             if (x < 0 || x > 1024) return null;
-            col = (int)(x / 16);
+            col = (int) (x / 16);
         }
         System.out.println("Col = " + col);
 
