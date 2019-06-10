@@ -18,6 +18,7 @@ import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.HexagonalTiledMapRenderer;
 
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 
 public class Play implements Screen, InputProcessor {
 
@@ -35,14 +36,30 @@ public class Play implements Screen, InputProcessor {
             for (int j = 0; j < 64; j++) {
                 hex = new Hex(i, j);
                 hexGraph.addHex(hex);
-                System.out.println(hex.index);
-                for (Hex neighbour: hex.getNeighbours()) {
-                    hexGraph.connectHexes(hex, neighbour);
-                }
-
+                //System.out.println(hex.index);
+                //for (Hex neighbour: hex.getNeighbours()) {
+                //   hexGraph.connectHexes(hex, neighbour);
+                //}
             }
         }
-        System.out.println("SIZE = " +  hexGraph.hexes.size + " PATHS = " + hexGraph.paths.size);
+        for (int i = 0; i < 64; i++) {
+            for (int j = 0; j < 64; j++) {
+                hex = hexGraph.getHex(i, j);
+                Array<Hex> hexes = hex.getNeighbours();
+                for (Hex h: hexes) {
+                    hexGraph.connectHexes(hex, hexGraph.getHex(h.col, h.row));
+                }
+            }
+        }
+        /*Hex hex1 = new Hex(0, 0);
+        Hex hex2 = new Hex(1,1);
+        hexGraph = new HexGraph();
+        hexGraph.addHex(hex1);
+        hexGraph.addHex(hex2);
+        hexGraph.connectHexes(hex1, hex2);*/
+        //GraphPath<Hex> graphPath = hexGraph.findPath(hexGraph.getHex(0, 0), hexGraph.getHex(1, 1));
+        //System.out.println("SIZE = " +  hexGraph.hexes.size + " PATHS = " + hexGraph.paths.size + " Nodes: " +
+        //        graphPath.getCount());
     }
 
     private HexagonalTiledMapRenderer renderer;
