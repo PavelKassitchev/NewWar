@@ -21,7 +21,7 @@ public class HexGraph implements IndexedGraph<Hex> {
 
     public void addHex(Hex hex){
         hex.index = lastNodeIndex;
-        System.out.println("Last index: " + lastNodeIndex++);
+        lastNodeIndex++;
 
         hexes.add(hex);
     }
@@ -38,9 +38,9 @@ public class HexGraph implements IndexedGraph<Hex> {
 
     public GraphPath<Hex> findPath(Hex startHex, Hex goalHex){
         GraphPath<Hex> hexPath = new DefaultGraphPath<Hex>();
-        System.out.println("Default path length = " + hexPath.getCount());
+
         new IndexedAStarPathFinder<Hex>(this).searchNodePath(startHex, goalHex, hexHeuristic, hexPath);
-        System.out.println("Path length = " + hexPath.getCount());
+
         return hexPath;
     }
 

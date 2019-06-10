@@ -52,10 +52,7 @@ public class Play implements Screen, InputProcessor {
             for (int j = 0; j < 64; j++) {
                 hex = new Hex(i, j);
                 hexGraph.addHex(hex);
-                //System.out.println(hex.index);
-                //for (Hex neighbour: hex.getNeighbours()) {
-                //   hexGraph.connectHexes(hex, neighbour);
-                //}
+
             }
         }
         for (int i = 0; i < 64; i++) {
@@ -67,15 +64,7 @@ public class Play implements Screen, InputProcessor {
                 }
             }
         }
-        /*Hex hex1 = new Hex(0, 0);
-        Hex hex2 = new Hex(1,1);
-        hexGraph = new HexGraph();
-        hexGraph.addHex(hex1);
-        hexGraph.addHex(hex2);
-        hexGraph.connectHexes(hex1, hex2);*/
-        //GraphPath<Hex> graphPath = hexGraph.findPath(hexGraph.getHex(0, 0), hexGraph.getHex(1, 1));
-        //System.out.println("SIZE = " +  hexGraph.hexes.size + " PATHS = " + hexGraph.paths.size + " Nodes: " +
-        //        graphPath.getCount());
+
     }
 
     @Override
@@ -89,8 +78,7 @@ public class Play implements Screen, InputProcessor {
         camera.setToOrtho(false, w, h);
         Gdx.input.setInputProcessor(this);
         texture = new Texture("badlogic.jpg");
-        //sprite = new Sprite(texture);
-        //sprite.setSize(32f, 32f);
+
         TextureRegion tr = new TextureRegion(texture);
         sb = new SpriteBatch();
         objectLayer = map.getLayers().get("ObjectLayer");
@@ -126,11 +114,7 @@ public class Play implements Screen, InputProcessor {
 
             }
         }
-        /*sb.setProjectionMatrix(camera.combined);
-        sprite.setSize(32f, 32f);
-        sb.begin();
-        sprite.draw(sb);
-        sb.end();*/
+
         camera.update();
 
     }
@@ -196,9 +180,6 @@ public class Play implements Screen, InputProcessor {
         if (button == Input.Buttons.LEFT) {
             Hex hex = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
 
-            System.out.println("X = " + getMousePosOnMap().x + " Y = " + getMousePosOnMap().y);
-            System.out.println("IN COORDINATES - X: " + hex.getX() + " Y: " + hex.getY());
-            if (hex != null) System.out.println(" NEIGHBOURS: " + hex.getNeighbours().size);
 
             TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get("TileLayer");
             TiledMapTileLayer.Cell cell = null;
@@ -225,15 +206,16 @@ public class Play implements Screen, InputProcessor {
                             paths.add(Play.hexGraph.getPath(sHex, eHex));
                             sHex = eHex;
                         }
-                        System.out.println("Inside paths: " + paths.size);
+
                     }
                 } else {
                     endHex = null;
                     startHex = hex;
+                    paths = null;
+                    graphPath = null;
                 }
             }
-            if (startHex != null) System.out.println("Star Hex = (" + startHex.row + ", " + startHex.col + ")");
-            if (endHex != null) System.out.println("End Hex = (" + endHex.row + ", " + endHex.col + ")");
+
         }
         return true;
     }
@@ -268,7 +250,7 @@ public class Play implements Screen, InputProcessor {
     Hex getHex(float x, float y) {
         if (y < 2 || y > 774) return null;
         int row = (int) ((y - 2) / 12);
-        System.out.println("Row = " + row);
+
         int col;
         if (row % 2 == 0) {
             if (x < 8 || x > 1032) return null;
@@ -277,7 +259,7 @@ public class Play implements Screen, InputProcessor {
             if (x < 0 || x > 1024) return null;
             col = (int) (x / 16);
         }
-        System.out.println("Col = " + col);
+
 
         return hexGraph.getHex(col, row);
     }

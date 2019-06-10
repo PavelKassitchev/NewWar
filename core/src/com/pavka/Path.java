@@ -15,8 +15,8 @@ public class Path implements Connection<Hex> {
         this.toHex = toHex;
         //cost = Math.max(Math.abs(fromHex.col - toHex.col), Math.abs(fromHex.row - toHex.row));
         //cost = Vector2.dst(fromHex.col, fromHex.row, toHex.col, toHex.row);
-        cost = ((Float)(fromHex.cell.getTile().getProperties().get("cost")) + ((Float)(fromHex.cell.getTile().getProperties().get("cost"))) / 2);
-        System.out.println(cost);
+        cost = ((Float)(fromHex.cell.getTile().getProperties().get("cost")) + (Float)(fromHex.cell.getTile().getProperties().get("cost"))) / 2;
+
     }
 
     @Override
@@ -37,7 +37,7 @@ public class Path implements Connection<Hex> {
     public void render(ShapeRenderer shapeRenderer){
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(1, 0, 0, 0.5f);
-        shapeRenderer.rectLine(fromHex.getX(), fromHex.getY(), toHex.getX(), toHex.getY(), 4);
+        shapeRenderer.rectLine(fromHex.getX(), fromHex.getY(), toHex.getX(), toHex.getY(), 1);
         shapeRenderer.end();
     }
 }

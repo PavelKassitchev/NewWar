@@ -11,6 +11,6 @@ public class HexHeuristic implements Heuristic<Hex> {
 
         //return Math.max(Math.abs(node.col - endNode.col), Math.abs(node.row - endNode.row));
         //return Vector2.dst(node.col, node.row, endNode.col, endNode.row);
-        return ((Float)(node.cell.getTile().getProperties().get("cost")) + ((Float)(endNode.cell.getTile().getProperties().get("cost"))) / 2);
+        return ((Float)(node.cell.getTile().getProperties().get("cost")) + (Float)(endNode.cell.getTile().getProperties().get("cost"))) / 2;
     }
 }
