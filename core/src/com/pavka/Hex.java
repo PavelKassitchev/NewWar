@@ -4,15 +4,16 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.utils.Array;
 
 public class Hex {
-    static TiledMapTileLayer layer = (TiledMapTileLayer) (Play.map).getLayers().get("TileLayer");
-    int col;
-    int row;
-    String name;
+    public static TiledMapTileLayer layer = (TiledMapTileLayer) (Play.map).getLayers().get("TileLayer");
+    public int col;
+    public int row;
+    public String name;
     int index;
-    TiledMapTileLayer.Cell cell;
+    public TiledMapTileLayer.Cell cell;
 
+    public Hex() {}
 
-    Hex(int q, int r) {
+    public Hex(int q, int r) {
 
         col = q;
         row = r;

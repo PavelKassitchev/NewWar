@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -26,7 +27,7 @@ import java.util.Iterator;
 
 public class Play implements Screen, InputProcessor {
 
-    public static final String MAP = "WarMap.tmx";
+    public static final String MAP = "maps/WarMap.tmx";
 
     public static TiledMap map = new TmxMapLoader().load(MAP);
 
@@ -87,6 +88,8 @@ public class Play implements Screen, InputProcessor {
         tmo.setY(0);
 
         objectLayer.getObjects().add(tmo);
+
+
 
         tileLayer = (TiledMapTileLayer) map.getLayers().get("TileLayer");
         TiledMapTileLayer.Cell cell = tileLayer.getCell(0, 0);
