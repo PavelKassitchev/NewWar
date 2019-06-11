@@ -549,15 +549,16 @@ public class Force {
     }
 
     public boolean move() {
-        double movePoints = speed * 2;
+        double movePoints = speed;
         if (order.pathsOrder != null)  {
             System.out.println(order.pathsOrder);
             while (order.pathsOrder != null && order.pathsOrder.size > 0 && movePoints > 0) {
                 if (order.pathsOrder.size > movePoints / FieldHex.size / (Float)hex.hex.cell.getTile().getProperties().get("cost")) {
                     int step = (int)(movePoints / FieldHex.size / (Float)hex.hex.cell.getTile().getProperties().get("cost"));
-                    order.pathsOrder.removeRange(0, 1);
+                    //order.pathsOrder.removeRange(0, 0);
                     hex.hex.forces.remove(this);
-                    Hex newHex = order.pathsOrder.get(0).fromHex;
+                    Hex newHex = order.pathsOrder.get(0).toHex;
+                    order.pathsOrder.removeRange(0, 0);
                     textureMapObject.setX(newHex.getX() - 8);
                     textureMapObject.setY(newHex.getY() - 8);
                     hex.hex = newHex;
