@@ -34,12 +34,17 @@ public class Play implements Screen, InputProcessor {
     public static HexGraph hexGraph;
 
     public static GraphPath<Hex> graphPath;
+
     MapLayer objectLayer;
     TiledMapTileLayer tileLayer;
     Hex startHex;
     Hex endHex;
     ShapeRenderer shapeRenderer;
     Array<Path> paths;
+
+    Array<Force> blackTroops = new Array<Force>();
+    Array<Force> whiteTroops = new Array<Force>();
+
     private HexagonalTiledMapRenderer renderer;
     private OrthographicCamera camera;
     private Texture texture;
@@ -81,7 +86,7 @@ public class Play implements Screen, InputProcessor {
         texture = new Texture("badlogic.jpg");
 
         TextureRegion tr = new TextureRegion(texture);
-        sb = new SpriteBatch();
+        //sb = new SpriteBatch();
         objectLayer = map.getLayers().get("ObjectLayer");
         TextureMapObject tmo = new TextureMapObject(tr);
         tmo.setX(8);
@@ -167,9 +172,27 @@ public class Play implements Screen, InputProcessor {
         return false;
     }
 
+    //TODO just for testing
     @Override
     public boolean keyUp(int keycode) {
-        return false;
+        if (keycode == Input.Keys.C) {
+            Force force = new Battalion(Nation.FRANCE, new FieldHex());
+            force.hex.hex = hexGraph.getHex(0, 32);
+
+            texture = new Texture("badlogic.jpg");
+
+            TextureRegion tr = new TextureRegion(texture);
+
+            objectLayer = map.getLayers().get("ObjectLayer");
+            TextureMapObject tmo = new TextureMapObject(tr);
+            tmo.setX(force.hex.hex.getX() - 8);
+            tmo.setY(force.hex.hex.getY() - 8);
+
+            objectLayer.getObjects().add(tmo);
+            whiteTroops.add(force);
+
+        }
+        return true;
     }
 
     @Override
