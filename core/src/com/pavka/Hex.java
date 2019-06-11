@@ -3,21 +3,25 @@ package com.pavka;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.ArrayList;
+
 public class Hex {
     public static TiledMapTileLayer layer = (TiledMapTileLayer) (Play.map).getLayers().get("TileLayer");
     public int col;
     public int row;
     public String name;
-    int index;
+    public int index;
     public TiledMapTileLayer.Cell cell;
+    public ArrayList<Force> forces;
 
-    public Hex() {}
 
     public Hex(int q, int r) {
 
         col = q;
         row = r;
         cell = layer.getCell(col, row);
+        forces = new ArrayList<Force>();
+
     }
 
     public Array<Hex> getNeighbours() {
