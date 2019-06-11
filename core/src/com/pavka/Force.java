@@ -548,5 +548,40 @@ public class Force {
         return food;
     }
 
+    public boolean move() {
+        double movePoints = speed * 2;
+        if (order.pathsOrder != null)  {
+            System.out.println(order.pathsOrder);
+            while (order.pathsOrder != null && order.pathsOrder.size > 0 && movePoints > 0) {
+                if (order.pathsOrder.size > movePoints / FieldHex.size / (Float)hex.hex.cell.getTile().getProperties().get("cost")) {
+                    int step = (int)(movePoints / FieldHex.size / (Float)hex.hex.cell.getTile().getProperties().get("cost"));
+                    order.pathsOrder.removeRange(0, 1);
+                    hex.hex.forces.remove(this);
+                    Hex newHex = order.pathsOrder.get(0).fromHex;
+                    textureMapObject.setX(newHex.getX() - 8);
+                    textureMapObject.setY(newHex.getY() - 8);
+                    hex.hex = newHex;
+                    hex.hex.forces.add(this);
+                    movePoints -= FieldHex.size * (Float)hex.hex.cell.getTile().getProperties().get("cost");
+                    //startHex.forces.remove(chosenForce);
+                    //chosenForce.textureMapObject.setX(hex.getX() - 8);
+                    //chosenForce.textureMapObject.setY(hex.getY() - 8);
+                    //chosenForce.hex.hex = hex;
+                    //hex.forces.add(chosenForce);
+                }
+                else {
+                    Path path = order.pathsOrder.peek();
+                    Hex newHex = path.toHex;
+                    textureMapObject.setX(newHex.getX() - 8);
+                    textureMapObject.setY(newHex.getY() - 8);
+                    hex.hex = newHex;
+                    hex.hex.forces.add(this);
+                    order.pathsOrder = null;
+                }
+            }
+        }
+        return true;
+    }
+
 
 }

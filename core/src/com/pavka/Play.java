@@ -192,6 +192,10 @@ public class Play implements Screen, InputProcessor {
             force.textureMapObject = tmo;
 
         }
+        if (keycode == Input.Keys.Q) {
+            for (Force w: whiteTroops) w.move();
+            for (Force b: blackTroops) b.move();
+        }
         return true;
     }
 
@@ -275,6 +279,7 @@ public class Play implements Screen, InputProcessor {
                     tmo.setX(hex.getX() - 8);
                     tmo.setY(hex.getY() - 8);
                     objectLayer.getObjects().add(tmo);
+                    chosenForce.order.pathsOrder = paths;
                     chosenForce = null;
                 }
 

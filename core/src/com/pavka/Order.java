@@ -1,8 +1,11 @@
 package com.pavka;
 
+import com.badlogic.gdx.utils.Array;
+
 public class Order {
     public boolean seekBattle;
     public double retreatLevel;
+    public Array<Path> pathsOrder = new Array<Path>();
 
 
     public Order() {
