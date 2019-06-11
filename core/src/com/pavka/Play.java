@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -75,7 +76,7 @@ public class Play implements Screen, InputProcessor {
         float h = Gdx.graphics.getHeight();
         //map = new TmxMapLoader().load(MAP);
         shapeRenderer = new ShapeRenderer();
-        renderer = new MyRenderer(map);
+        renderer = new MyInnerRenderer(map);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, w, h);
         Gdx.input.setInputProcessor(this);
@@ -172,9 +173,9 @@ public class Play implements Screen, InputProcessor {
     public boolean keyUp(int keycode) {
         if (keycode == Input.Keys.C) {
             Force force = new Battalion(Nation.FRANCE, new FieldHex());
-            force.hex.hex = hexGraph.getHex(0, 32);
+            force.hex.hex = hexGraph.getHex(0, 4);
 
-            texture = new Texture("badlogic.jpg");
+            texture = new Texture("symbols/InfRedCorps.png");
 
             TextureRegion tr = new TextureRegion(texture);
 
@@ -329,5 +330,33 @@ public class Play implements Screen, InputProcessor {
 
 
         return hexGraph.getHex(col, row);
+    }
+
+    class MyInnerRenderer extends HexagonalTiledMapRenderer {
+        public MyInnerRenderer(TiledMap map) {
+            super(map);
+        }
+
+        @Override
+        public void render() {
+            super.render();
+
+        }
+
+        @Override
+        public void renderObject(MapObject object) {
+            float width = 14;
+            float height = 14;
+            if (object instanceof TextureMapObject) {
+                TextureMapObject textureObj = (TextureMapObject) object;
+                if (chosenForce != null && textureObj == chosenForce.textureMapObject) {
+                    width = 16;
+                    height = 16;
+                }
+                this.getBatch().draw(textureObj.getTextureRegion(), textureObj.getX(), textureObj.getY(),
+                        width, height);
+            }
+        }
+
     }
 }

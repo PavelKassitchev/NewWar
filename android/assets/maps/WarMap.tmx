@@ -4,13 +4,13 @@
   <image source="drjamgo_hex_16x16.png" width="64" height="80"/>
   <tile id="0" type="Grass">
    <properties>
-    <property name="cost" type="float" value="2"/>
+    <property name="cost" type="float" value="1"/>
     <property name="type" value="grass"/>
    </properties>
   </tile>
   <tile id="1" type="Forest">
    <properties>
-    <property name="cost" type="float" value="3"/>
+    <property name="cost" type="float" value="1.8"/>
     <property name="type" value="forest"/>
    </properties>
   </tile>
@@ -28,18 +28,18 @@
   </tile>
   <tile id="4" type="Bush">
    <properties>
-    <property name="cost" type="float" value="2"/>
+    <property name="cost" type="float" value="1.6"/>
    </properties>
   </tile>
   <tile id="5" type="Sand">
    <properties>
-    <property name="cost" type="float" value="1"/>
+    <property name="cost" type="float" value="0.75"/>
     <property name="type" value="road"/>
    </properties>
   </tile>
   <tile id="8" type="Field">
    <properties>
-    <property name="cost" type="float" value="3"/>
+    <property name="cost" type="float" value="1.6"/>
    </properties>
   </tile>
   <tile id="9" type="Farm">
@@ -55,7 +55,7 @@
  </tileset>
  <layer id="1" name="TileLayer" width="64" height="64" offsetx="1" offsety="0">
   <data encoding="base64" compression="zlib">
-   eJzt28sOwiAQBVD6TOrO//9ZNYE4QSwUOjxm7uLuGuFcJhYXLsaY5Z1JUFab1vto6W+9B/hhhx9++GGHH3b4YUcHfHaJ/plE2/nPBv4r/l472E+SYo89W+o/299dKV17Svis2jOQeia115Ts76mDzz4Om9r+I7J2Lf+j0w4470NbY7vzPyN+rrU3u3ar+fc7oOHuoBe78//rgGv+N/Od/5rWs/uf3wH3+de0p9x/6RzQ57i+A1r5Y78Bdu85Dn+LudfsD/UQ2x/9PljN73thNHvOPndiv+sdNYo/NAul7+rR7JM9f9eBRr/rgM5CjmN0O3Xk9DCqP9RBqA+p9phf+tmXdqDZLsWf24EUO/zXO5Bmd/7UDiT6U3uQbI91kHs/HjW0B01u7eeOIAiCIAiCIIjeSPvvc45fcwfa/S/w0RUR
+   eJztm8tuwyAQRXGxLSW7/P/PtpWMOqJjM7zmASzuJnIM58zEYCfxzjn/k01B9obnaXUubv4Wc7fI3rJ2lvlrHVhnjx3k8ozCX9oLo/JTPYzGH+IJDjjYPQjl2F79IFn7lIMcRzUO9ug1DnYKY29+rBckPvc+EY45SO91JdljD1IOMCfc7Jr4W+ULxFL9W7Mvftp7NDo4H0JhTx1by/80v1apHXsjnIu7B6g14R5zZH5NDn7n8brCzf9KjM3F/1bqoOd+6BBmD/yfBH+vsY9rbKn+jx3A9HaghT3w3zno1f+H++t/Ttan/V/soHf9Odkp+1/YB/C4XtcAKf7UPcAZHdeDX6LvZ+bHPKTmB68Hu/u/LlhjL5nnCdhbrVFW+LFeqF2rrbFvV/2Dgxn5gwPYCyUc1tkhR4kHq/yYA8xHDnvOs0gNqd0DQP6S57EaUurgrvaW+Gvqj302YgcWPJQ+E8dex/gxD61+x2eJP773tOqA+r0Mlphbi4OcOaTWRIv8VA+UvY7VHkg5yNkXWubHPOTucSnXQc3spXUvcSDN1yvUtXDkLP552e8cSM9nZWVlZWVlZSUVLf99luSf2cHs/N8S9BZ/
   </data>
  </layer>
  <objectgroup id="2" name="ObjectLayer"/>
