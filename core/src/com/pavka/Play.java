@@ -17,6 +17,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.renderers.HexagonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -244,14 +245,13 @@ public class Play implements Screen, InputProcessor {
                             graphPath = null;
                         }
                     }
-                }
-                else {
+                } else {
                     System.out.println("Chosen Force: " + chosenForce);
-                    startHex.forces.remove(chosenForce);
-                    chosenForce.textureMapObject.setX(hex.getX() - 8);
-                    chosenForce.textureMapObject.setY(hex.getY() - 8);
-                    chosenForce.hex.hex = hex;
-                    hex.forces.add(chosenForce);
+                    //startHex.forces.remove(chosenForce);
+                    //chosenForce.textureMapObject.setX(hex.getX() - 8);
+                    //chosenForce.textureMapObject.setY(hex.getY() - 8);
+                    //chosenForce.hex.hex = hex;
+                    //hex.forces.add(chosenForce);
                     endHex = hex;
                     graphPath = hexGraph.findPath(startHex, endHex);
                     System.out.println("Start = " + startHex.index + " end = " + endHex.index +
@@ -269,11 +269,17 @@ public class Play implements Screen, InputProcessor {
                         }
 
                     }
+                    Texture t = new Texture("symbols/RedSuspected.png");
+                    TextureRegion tr = new TextureRegion(t);
+                    TextureMapObject tmo = new TextureMapObject(tr);
+                    tmo.setX(hex.getX() - 8);
+                    tmo.setY(hex.getY() - 8);
+                    objectLayer.getObjects().add(tmo);
                     chosenForce = null;
                 }
 
 
-            } else  if (chosenForce == null  && hex != null){
+            } else if (chosenForce == null && hex != null) {
                 Force force = hex.forces.get(0);
                 if (force != null) System.out.println("FORCE CHOSEN! Forces size = " + hex.forces.size());
                 chosenForce = force;
