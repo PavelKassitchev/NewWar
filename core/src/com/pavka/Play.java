@@ -207,7 +207,7 @@ public class Play implements Screen, InputProcessor {
 
             Hex hex = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
 
-            if (hex.forces.size() == 0) {
+            if (hex != null && hex.forces.size() == 0) {
                 if (chosenForce == null) {
 
                     TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get("TileLayer");
@@ -273,7 +273,7 @@ public class Play implements Screen, InputProcessor {
                 }
 
 
-            } else  if (chosenForce == null){
+            } else  if (chosenForce == null  && hex != null){
                 Force force = hex.forces.get(0);
                 if (force != null) System.out.println("FORCE CHOSEN! Forces size = " + hex.forces.size());
                 chosenForce = force;
