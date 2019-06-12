@@ -577,6 +577,7 @@ public class Force {
                     textureMapObject.setY(newHex.getY() - 8);
                     hex.hex = newHex;
                     hex.hex.forces.add(this);
+                    order.pathsOrder.clear();
                     order.pathsOrder = null;
                 }
             }

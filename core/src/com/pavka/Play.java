@@ -219,7 +219,8 @@ public class Play implements Screen, InputProcessor {
                     TiledMapTileLayer.Cell cell = null;
                     if (hex != null) {
                         cell = layer.getCell(hex.col, hex.row);
-                        System.out.println(cell.getTile().getProperties().get("cost"));
+                        System.out.println("Cost: " + cell.getTile().getProperties().get("cost")+ "Path: " +
+                                graphPath);
                     }
 
                     if (startHex == null) startHex = hex;
@@ -242,14 +243,16 @@ public class Play implements Screen, InputProcessor {
                                 }
 
                             }
-                        } else {
+                        }
+                        else {
                             endHex = null;
                             startHex = hex;
                             paths = null;
                             graphPath = null;
                         }
                     }
-                } else {
+                }
+                else {
                     System.out.println("Chosen Force: " + chosenForce);
                     //startHex.forces.remove(chosenForce);
                     //chosenForce.textureMapObject.setX(hex.getX() - 8);
@@ -288,9 +291,11 @@ public class Play implements Screen, InputProcessor {
                 Force force = hex.forces.get(0);
                 if (force != null) System.out.println("FORCE CHOSEN! Forces size = " + hex.forces.size());
                 chosenForce = force;
+                //TODO check carefully!
+                paths = chosenForce.order.pathsOrder;
                 startHex = hex;
                 endHex = null;
-                paths = null;
+                //paths = null;
                 graphPath = null;
                 System.out.println("Chosen Force: " + chosenForce + "Map Object: " + chosenForce.textureMapObject);
             }
