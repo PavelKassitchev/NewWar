@@ -9,10 +9,11 @@ public class Order {
 
 
     public Order() {
-
+        pathsOrder = new Array<Path>();
     }
 
     public Order(boolean seekBattle, double retreatLevel) {
+        pathsOrder = new Array<Path>();
         this.seekBattle = seekBattle;
         this.retreatLevel = retreatLevel;
     }

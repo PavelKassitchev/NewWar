@@ -1,7 +1,6 @@
 package com.pavka;
 
 
-
 import com.badlogic.gdx.maps.objects.TextureMapObject;
 
 import java.util.ArrayList;
@@ -76,7 +75,7 @@ public class Force {
 
     public Force attach(Force force) {
 
-        if (isUnit){
+        if (isUnit) {
             //TODO
         }
         force.isSub = true;
@@ -269,6 +268,7 @@ public class Force {
             if (random.nextDouble() > caught) wagon = null;
         }
     }
+
     public void throwWagons() {
         throwWagons(0);
     }
@@ -342,10 +342,9 @@ public class Force {
                     ammoStock += n;
                     need += n;
                     if (ratio < 1) {
-                        force.fire = ((Unit)force).maxFire * ratio * force.strength / ((Unit) force).maxStrength;
-                    }
-                    else {
-                        force.fire = ((Unit)force).maxFire * force.strength / ((Unit) force).maxStrength;
+                        force.fire = ((Unit) force).maxFire * ratio * force.strength / ((Unit) force).maxStrength;
+                    } else {
+                        force.fire = ((Unit) force).maxFire * force.strength / ((Unit) force).maxStrength;
                     }
                     fire += force.fire;
                 }
@@ -388,7 +387,7 @@ public class Force {
                     force.ammoStock = force.ammoLimit;
                     ammoStock += force.ammoLimit;
                     need += force.ammoLimit;
-                    force.fire = ((Unit)force).maxFire * force.strength / ((Unit) force).maxStrength;
+                    force.fire = ((Unit) force).maxFire * force.strength / ((Unit) force).maxStrength;
                     fire += force.fire;
                 }
             } else {
@@ -550,38 +549,39 @@ public class Force {
 
     public boolean move() {
         double movePoints = speed;
-        if (order.pathsOrder != null)  {
-            System.out.println(order.pathsOrder);
-            while (order.pathsOrder != null && order.pathsOrder.size > 0 && movePoints > 0) {
-                if (order.pathsOrder.size > movePoints / FieldHex.size / (Float)hex.hex.cell.getTile().getProperties().get("cost")) {
-                    int step = (int)(movePoints / FieldHex.size / (Float)hex.hex.cell.getTile().getProperties().get("cost"));
-                    //order.pathsOrder.removeRange(0, 0);
-                    hex.hex.forces.remove(this);
-                    Hex newHex = order.pathsOrder.get(0).toHex;
-                    order.pathsOrder.removeRange(0, 0);
-                    textureMapObject.setX(newHex.getX() - 8);
-                    textureMapObject.setY(newHex.getY() - 8);
-                    hex.hex = newHex;
-                    hex.hex.forces.add(this);
-                    movePoints -= FieldHex.size * (Float)hex.hex.cell.getTile().getProperties().get("cost");
-                    //startHex.forces.remove(chosenForce);
-                    //chosenForce.textureMapObject.setX(hex.getX() - 8);
-                    //chosenForce.textureMapObject.setY(hex.getY() - 8);
-                    //chosenForce.hex.hex = hex;
-                    //hex.forces.add(chosenForce);
-                }
-                else {
-                    Path path = order.pathsOrder.peek();
-                    Hex newHex = path.toHex;
-                    textureMapObject.setX(newHex.getX() - 8);
-                    textureMapObject.setY(newHex.getY() - 8);
-                    hex.hex = newHex;
-                    hex.hex.forces.add(this);
-                    order.pathsOrder.clear();
-                    order.pathsOrder = null;
-                }
+        float movementCost;
+
+        while (order.pathsOrder.size > 0 && movePoints > 0) {
+            movementCost = FieldHex.size * (Float) hex.hex.cell.getTile().getProperties().get("cost");
+            if (movePoints / movementCost < 1) {
+                Random random = new Random();
+                if (random.nextDouble() < movePoints / movementCost) movePoints = movementCost;
+                else movePoints = 0;
             }
+            if (movePoints / movementCost >=1) {
+
+                hex.hex.forces.remove(this);
+                Hex newHex = order.pathsOrder.get(0).toHex;
+                order.pathsOrder.removeRange(0, 0);
+                textureMapObject.setX(newHex.getX() - 8);
+                textureMapObject.setY(newHex.getY() - 8);
+                hex.hex = newHex;
+                hex.hex.forces.add(this);
+                movePoints -= movementCost;
+
+            }
+            /*else {
+                Path path = order.pathsOrder.peek();
+                Hex newHex = path.toHex;
+                textureMapObject.setX(newHex.getX() - 8);
+                textureMapObject.setY(newHex.getY() - 8);
+                hex.hex = newHex;
+                hex.hex.forces.add(this);
+                order.pathsOrder.clear();
+                //order.pathsOrder = null;
+            }*/
         }
+
         return true;
     }
 

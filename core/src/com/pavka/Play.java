@@ -30,12 +30,14 @@ public class Play implements Screen, InputProcessor {
 
     public static TiledMap map = new TmxMapLoader().load(MAP);
 
+
+
     public static HexGraph hexGraph;
 
     public static GraphPath<Hex> graphPath;
 
-    MapLayer objectLayer;
-    TiledMapTileLayer tileLayer;
+    public static MapLayer objectLayer = map.getLayers().get("ObjectLayer");;
+    public static TiledMapTileLayer tileLayer = (TiledMapTileLayer) map.getLayers().get("TileLayer");
     Hex startHex;
     Hex endHex;
     ShapeRenderer shapeRenderer;
@@ -46,7 +48,6 @@ public class Play implements Screen, InputProcessor {
 
     private HexagonalTiledMapRenderer renderer;
     private OrthographicCamera camera;
-    private Texture texture;
     private Force chosenForce;
 
     {
@@ -75,37 +76,19 @@ public class Play implements Screen, InputProcessor {
     public void show() {
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
-        //map = new TmxMapLoader().load(MAP);
+
         shapeRenderer = new ShapeRenderer();
         renderer = new MyInnerRenderer(map);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, w, h);
         Gdx.input.setInputProcessor(this);
-        texture = new Texture("badlogic.jpg");
 
-        TextureRegion tr = new TextureRegion(texture);
-        //sb = new SpriteBatch();
-        objectLayer = map.getLayers().get("ObjectLayer");
-        TextureMapObject tmo = new TextureMapObject(tr);
-        tmo.setX(8);
-        tmo.setY(0);
-
-        objectLayer.getObjects().add(tmo);
-
-
-        tileLayer = (TiledMapTileLayer) map.getLayers().get("TileLayer");
-        TiledMapTileLayer.Cell cell = tileLayer.getCell(0, 0);
-        TiledMapTileSet tileSet = map.getTileSets().getTileSet("WarTiles");
-        float type = (Float) cell.getTile().getProperties().get("cost");
-
-        System.out.println(type);
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
 
         renderer.setView(camera);
         renderer.render();
@@ -115,13 +98,9 @@ public class Play implements Screen, InputProcessor {
         if (paths != null) {
             for (Path path : paths) {
                 path.render(shapeRenderer);
-
-
             }
         }
-
         camera.update();
-
     }
 
     @Override
@@ -152,6 +131,7 @@ public class Play implements Screen, InputProcessor {
     public void dispose() {
         map.dispose();
         renderer.dispose();
+        shapeRenderer.dispose();
     }
 
     @Override
@@ -176,11 +156,8 @@ public class Play implements Screen, InputProcessor {
             Force force = new Battalion(Nation.FRANCE, new FieldHex());
             force.hex.hex = hexGraph.getHex(0, 4);
 
-            texture = new Texture("symbols/InfRedCorps.png");
-
+            Texture texture = new Texture("symbols/InfRedCorps.png");
             TextureRegion tr = new TextureRegion(texture);
-
-            objectLayer = map.getLayers().get("ObjectLayer");
             TextureMapObject tmo = new TextureMapObject(tr);
             tmo.setX(force.hex.hex.getX() - 8);
             tmo.setY(force.hex.hex.getY() - 8);
