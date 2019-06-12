@@ -291,7 +291,7 @@ public class Play implements Screen, InputProcessor {
                 Force force = hex.forces.get(0);
                 if (force != null) System.out.println("FORCE CHOSEN! Forces size = " + hex.forces.size());
                 chosenForce = force;
-                //TODO check carefully!
+                //TODO check carefully! The fragment does not work properly
                 paths = chosenForce.order.pathsOrder;
                 startHex = hex;
                 endHex = null;
