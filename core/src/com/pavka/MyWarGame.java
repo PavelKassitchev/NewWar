@@ -13,6 +13,7 @@ public class MyWarGame extends Game {
 	@Override
 	public void create () {
 		setScreen(new Play());
+		//setScreen(new StagePlay());
 
 	}
 

@@ -2,7 +2,6 @@ package com.pavka;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.graphics.GL20;
@@ -23,8 +22,7 @@ import com.badlogic.gdx.utils.Array;
 
 import java.util.Iterator;
 
-public class Play implements Screen, InputProcessor {
-
+public class StagePlay extends Stage implements Screen {
     public static final String MAP = "maps/WarMap.tmx";
 
     public static TiledMap map = new TmxMapLoader().load(MAP);
@@ -76,7 +74,7 @@ public class Play implements Screen, InputProcessor {
         float h = Gdx.graphics.getHeight();
 
         shapeRenderer = new ShapeRenderer();
-        renderer = new MyInnerRenderer(map);
+        renderer = new StagePlay.MyInnerRenderer(map);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, w, h);
         Gdx.input.setInputProcessor(this);

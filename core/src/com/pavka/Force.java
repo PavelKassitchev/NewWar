@@ -2,6 +2,7 @@ package com.pavka;
 
 
 import com.badlogic.gdx.maps.objects.TextureMapObject;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +10,9 @@ import java.util.Random;
 
 import static com.pavka.Unit.*;
 
-public class Force {
+public class Force extends Actor {
 
-    public TextureMapObject textureMapObject;
+    public TextureMapObject symbol;
 
     List<Force> forces;
     List<Battalion> battalions;
@@ -563,8 +564,8 @@ public class Force {
                 hex.forces.remove(this);
                 Hex newHex = order.pathsOrder.get(0).toHex;
                 order.pathsOrder.removeRange(0, 0);
-                textureMapObject.setX(newHex.getX() - 8);
-                textureMapObject.setY(newHex.getY() - 8);
+                symbol.setX(newHex.getX() - 8);
+                symbol.setY(newHex.getY() - 8);
                 hex = newHex;
                 hex.forces.add(this);
                 movePoints -= movementCost;
