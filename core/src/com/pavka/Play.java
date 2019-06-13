@@ -15,9 +15,7 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.renderers.HexagonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -31,21 +29,20 @@ public class Play implements Screen, InputProcessor {
     public static TiledMap map = new TmxMapLoader().load(MAP);
 
 
-
     public static HexGraph hexGraph;
 
     public static GraphPath<Hex> graphPath;
 
-    public static MapLayer objectLayer = map.getLayers().get("ObjectLayer");;
+    public static MapLayer objectLayer = map.getLayers().get("ObjectLayer");
+    ;
     public static TiledMapTileLayer tileLayer = (TiledMapTileLayer) map.getLayers().get("TileLayer");
+    public boolean newMode;
     Hex startHex;
     Hex endHex;
     ShapeRenderer shapeRenderer;
     Array<Path> paths;
-
     Array<Force> blackTroops = new Array<Force>();
     Array<Force> whiteTroops = new Array<Force>();
-
     private HexagonalTiledMapRenderer renderer;
     private OrthographicCamera camera;
     private Force chosenForce;
@@ -170,11 +167,15 @@ public class Play implements Screen, InputProcessor {
 
         }
         if (keycode == Input.Keys.Q) {
-            for (Force w: whiteTroops) w.move();
-            for (Force b: blackTroops) b.move();
+            for (Force w : whiteTroops) w.move();
+            for (Force b : blackTroops) b.move();
         }
         if (keycode == Input.Keys.S) {
             Test.main(null);
+        }
+
+        if (keycode == Input.Keys.M) {
+            newMode = !newMode;
         }
         return true;
     }
@@ -189,99 +190,98 @@ public class Play implements Screen, InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
         //TODO Общий обзор работы с экраном
+        if (!newMode) {
+            if (button == Input.Buttons.LEFT) {
 
-        if (button == Input.Buttons.LEFT) {
+                Hex hex = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
 
-            Hex hex = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
+                if (hex != null && hex.forces.size() == 0) {
+                    if (chosenForce == null) {
 
-            if (hex != null && hex.forces.size() == 0) {
-                if (chosenForce == null) {
+                        TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get("TileLayer");
+                        TiledMapTileLayer.Cell cell = null;
+                        if (hex != null) {
+                            cell = layer.getCell(hex.col, hex.row);
+                            System.out.println("Cost: " + cell.getTile().getProperties().get("cost") + " Path: " +
+                                    graphPath);
+                        }
 
-                    TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get("TileLayer");
-                    TiledMapTileLayer.Cell cell = null;
-                    if (hex != null) {
-                        cell = layer.getCell(hex.col, hex.row);
-                        System.out.println("Cost: " + cell.getTile().getProperties().get("cost")+ " Path: " +
-                                graphPath);
-                    }
+                        if (startHex == null) startHex = hex;
+                        else {
+                            if (endHex == null) {
+                                endHex = hex;
+                                graphPath = hexGraph.findPath(startHex, endHex);
+                                System.out.println("Start = " + startHex.index + " end = " + endHex.index +
+                                        " Counts = " + graphPath.getCount());
+                                paths = new Array<Path>();
+                                Iterator<Hex> iterator;
+                                if (Play.graphPath != null) {
+                                    iterator = Play.graphPath.iterator();
+                                    Hex sHex = iterator.next();
+                                    Hex eHex;
+                                    while (iterator.hasNext()) {
+                                        eHex = iterator.next();
+                                        paths.add(Play.hexGraph.getPath(sHex, eHex));
+                                        sHex = eHex;
+                                    }
 
-                    if (startHex == null) startHex = hex;
-                    else {
-                        if (endHex == null) {
-                            endHex = hex;
-                            graphPath = hexGraph.findPath(startHex, endHex);
-                            System.out.println("Start = " + startHex.index + " end = " + endHex.index +
-                                    " Counts = " + graphPath.getCount());
-                            paths = new Array<Path>();
-                            Iterator<Hex> iterator;
-                            if (Play.graphPath != null) {
-                                iterator = Play.graphPath.iterator();
-                                Hex sHex = iterator.next();
-                                Hex eHex;
-                                while (iterator.hasNext()) {
-                                    eHex = iterator.next();
-                                    paths.add(Play.hexGraph.getPath(sHex, eHex));
-                                    sHex = eHex;
                                 }
-
+                            } else {
+                                endHex = null;
+                                startHex = hex;
+                                paths = null;
+                                graphPath = null;
                             }
                         }
-                        else {
-                            endHex = null;
-                            startHex = hex;
-                            paths = null;
-                            graphPath = null;
+                    } else {
+                        System.out.println("Chosen Force: " + chosenForce);
+                        //startHex.forces.remove(chosenForce);
+                        //chosenForce.textureMapObject.setX(hex.getX() - 8);
+                        //chosenForce.textureMapObject.setY(hex.getY() - 8);
+                        //chosenForce.hex.hex = hex;
+                        //hex.forces.add(chosenForce);
+                        endHex = hex;
+                        graphPath = hexGraph.findPath(startHex, endHex);
+                        System.out.println("Start = " + startHex.index + " end = " + endHex.index +
+                                " Counts = " + graphPath.getCount());
+                        paths = new Array<Path>();
+                        Iterator<Hex> iterator;
+                        if (Play.graphPath != null) {
+                            iterator = Play.graphPath.iterator();
+                            Hex sHex = iterator.next();
+                            Hex eHex;
+                            while (iterator.hasNext()) {
+                                eHex = iterator.next();
+                                paths.add(Play.hexGraph.getPath(sHex, eHex));
+                                sHex = eHex;
+                            }
+
                         }
+                        Texture t = new Texture("symbols/RedSuspected.png");
+                        TextureRegion tr = new TextureRegion(t);
+                        TextureMapObject tmo = new TextureMapObject(tr);
+                        tmo.setX(hex.getX() - 8);
+                        tmo.setY(hex.getY() - 8);
+                        objectLayer.getObjects().add(tmo);
+                        chosenForce.order.pathsOrder = paths;
+                        chosenForce = null;
                     }
-                }
-                else {
-                    System.out.println("Chosen Force: " + chosenForce);
-                    //startHex.forces.remove(chosenForce);
-                    //chosenForce.textureMapObject.setX(hex.getX() - 8);
-                    //chosenForce.textureMapObject.setY(hex.getY() - 8);
-                    //chosenForce.hex.hex = hex;
-                    //hex.forces.add(chosenForce);
-                    endHex = hex;
-                    graphPath = hexGraph.findPath(startHex, endHex);
-                    System.out.println("Start = " + startHex.index + " end = " + endHex.index +
-                            " Counts = " + graphPath.getCount());
-                    paths = new Array<Path>();
-                    Iterator<Hex> iterator;
-                    if (Play.graphPath != null) {
-                        iterator = Play.graphPath.iterator();
-                        Hex sHex = iterator.next();
-                        Hex eHex;
-                        while (iterator.hasNext()) {
-                            eHex = iterator.next();
-                            paths.add(Play.hexGraph.getPath(sHex, eHex));
-                            sHex = eHex;
-                        }
 
-                    }
-                    Texture t = new Texture("symbols/RedSuspected.png");
-                    TextureRegion tr = new TextureRegion(t);
-                    TextureMapObject tmo = new TextureMapObject(tr);
-                    tmo.setX(hex.getX() - 8);
-                    tmo.setY(hex.getY() - 8);
-                    objectLayer.getObjects().add(tmo);
-                    chosenForce.order.pathsOrder = paths;
-                    chosenForce = null;
+
+                } else if (chosenForce == null && hex != null) {
+                    Force force = hex.forces.get(0);
+                    if (force != null) System.out.println("FORCE CHOSEN! Forces size = " + hex.forces.size());
+                    chosenForce = force;
+                    //TODO check carefully! The fragment does not work properly
+                    paths = chosenForce.order.pathsOrder;
+                    startHex = hex;
+                    endHex = null;
+                    //paths = null;
+                    graphPath = null;
+                    System.out.println("Chosen Force: " + chosenForce + "Map Object: " + chosenForce.textureMapObject);
                 }
 
-
-            } else if (chosenForce == null && hex != null) {
-                Force force = hex.forces.get(0);
-                if (force != null) System.out.println("FORCE CHOSEN! Forces size = " + hex.forces.size());
-                chosenForce = force;
-                //TODO check carefully! The fragment does not work properly
-                paths = chosenForce.order.pathsOrder;
-                startHex = hex;
-                endHex = null;
-                //paths = null;
-                graphPath = null;
-                System.out.println("Chosen Force: " + chosenForce + "Map Object: " + chosenForce.textureMapObject);
             }
-
         }
         return true;
     }
