@@ -23,7 +23,7 @@ public class Force {
 
     Nation nation;
     String name;
-    FieldHex hex;
+    Hex hex;
     //TODO create orders;
     Order order;
 
@@ -52,7 +52,7 @@ public class Force {
 
     //TODO exclude SUPPLY xp
 
-    public Force(Nation nation, FieldHex hex) {
+    public Force(Nation nation, Hex hex) {
         this.nation = nation;
         this.hex = hex;
         forces = new ArrayList<Force>();
@@ -552,7 +552,7 @@ public class Force {
         float movementCost;
 
         while (order.pathsOrder.size > 0 && movePoints > 0) {
-            movementCost = FieldHex.size * (Float) hex.hex.cell.getTile().getProperties().get("cost");
+            movementCost = Hex.size * (Float) hex.cell.getTile().getProperties().get("cost");
             if (movePoints / movementCost < 1) {
                 Random random = new Random();
                 if (random.nextDouble() < movePoints / movementCost) movePoints = movementCost;
@@ -560,26 +560,17 @@ public class Force {
             }
             if (movePoints / movementCost >=1) {
 
-                hex.hex.forces.remove(this);
+                hex.forces.remove(this);
                 Hex newHex = order.pathsOrder.get(0).toHex;
                 order.pathsOrder.removeRange(0, 0);
                 textureMapObject.setX(newHex.getX() - 8);
                 textureMapObject.setY(newHex.getY() - 8);
-                hex.hex = newHex;
-                hex.hex.forces.add(this);
+                hex = newHex;
+                hex.forces.add(this);
                 movePoints -= movementCost;
 
             }
-            /*else {
-                Path path = order.pathsOrder.peek();
-                Hex newHex = path.toHex;
-                textureMapObject.setX(newHex.getX() - 8);
-                textureMapObject.setY(newHex.getY() - 8);
-                hex.hex = newHex;
-                hex.hex.forces.add(this);
-                order.pathsOrder.clear();
-                //order.pathsOrder = null;
-            }*/
+
         }
 
         return true;

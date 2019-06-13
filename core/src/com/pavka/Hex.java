@@ -13,8 +13,10 @@ public class Hex {
     public int index;
     public TiledMapTileLayer.Cell cell;
     public ArrayList<Force> forces;
+    public final static int size = 10;
 
 
+    public Hex() {}
     public Hex(int q, int r) {
 
         col = q;

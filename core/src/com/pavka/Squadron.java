@@ -12,11 +12,11 @@ public class Squadron extends Unit {
     public final static double FIRE = 0.1;
     public final static double CHARGE = 2.4;
 
-    public Squadron(Nation nation, FieldHex hex) {
+    public Squadron(Nation nation, Hex hex) {
         this(nation, hex, MAX_STRENGTH);
     }
 
-    public Squadron(Nation nation, FieldHex hex, int strength) {
+    public Squadron(Nation nation, Hex hex, int strength) {
         super(nation, hex);
         isUnit = true;
         type = CAVALRY;

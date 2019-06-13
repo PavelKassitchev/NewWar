@@ -20,7 +20,7 @@ public abstract class Unit extends Force {
     double maxFire;
     double maxCharge;
 
-    public Unit(Nation nation, FieldHex hex) {
+    public Unit(Nation nation, Hex hex) {
         super(nation, hex);
     }
 

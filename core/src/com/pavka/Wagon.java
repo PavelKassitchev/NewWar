@@ -10,7 +10,7 @@ public class Wagon extends Unit {
     public final static double FOOD_LIMIT = 50;
     public final static double AMMO_LIMIT = 30;
 
-    public Wagon(Nation nation, FieldHex hex) {
+    public Wagon(Nation nation, Hex hex) {
         super(nation, hex);
         isUnit = true;
         type = SUPPLY;

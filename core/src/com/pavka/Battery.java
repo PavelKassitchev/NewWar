@@ -12,10 +12,10 @@ public class Battery extends Unit {
     public final  static double FIRE = 4;
     public final static double CHARGE = 0.0;
 
-    public Battery(Nation nation, FieldHex hex) {
+    public Battery(Nation nation, Hex hex) {
         this(nation, hex, MAX_STRENGTH);
     }
-    public Battery(Nation nation, FieldHex hex, int strength) {
+    public Battery(Nation nation, Hex hex, int strength) {
         super(nation, hex);
         isUnit = true;
         type = ARTILLERY;

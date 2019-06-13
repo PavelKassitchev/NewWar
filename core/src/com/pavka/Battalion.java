@@ -11,11 +11,11 @@ public class Battalion extends Unit {
     public final static double FIRE = 1;
     public final static double CHARGE = 1;
 
-    public Battalion (Nation nation, FieldHex hex) {
+    public Battalion (Nation nation, Hex hex) {
         this(nation, hex, MAX_STRENGTH);
     }
 
-    public Battalion (Nation nation, FieldHex hex, int strength) {
+    public Battalion (Nation nation, Hex hex, int strength) {
         super(nation, hex);
         isUnit = true;
         type = INFANTRY;

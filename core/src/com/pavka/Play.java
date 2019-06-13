@@ -153,25 +153,28 @@ public class Play implements Screen, InputProcessor {
     @Override
     public boolean keyUp(int keycode) {
         if (keycode == Input.Keys.C) {
-            Force force = new Battalion(Nation.FRANCE, new FieldHex());
-            force.hex.hex = hexGraph.getHex(0, 4);
+            Force force = new Battalion(Nation.FRANCE, new Hex());
+            force.hex = hexGraph.getHex(0, 4);
 
             Texture texture = new Texture("symbols/InfRedCorps.png");
             TextureRegion tr = new TextureRegion(texture);
             TextureMapObject tmo = new TextureMapObject(tr);
-            tmo.setX(force.hex.hex.getX() - 8);
-            tmo.setY(force.hex.hex.getY() - 8);
+            tmo.setX(force.hex.getX() - 8);
+            tmo.setY(force.hex.getY() - 8);
 
 
             objectLayer.getObjects().add(tmo);
             whiteTroops.add(force);
-            force.hex.hex.forces.add(force);
+            force.hex.forces.add(force);
             force.textureMapObject = tmo;
 
         }
         if (keycode == Input.Keys.Q) {
             for (Force w: whiteTroops) w.move();
             for (Force b: blackTroops) b.move();
+        }
+        if (keycode == Input.Keys.S) {
+            Test.main(null);
         }
         return true;
     }
@@ -185,6 +188,8 @@ public class Play implements Screen, InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
+        //TODO Общий обзор работы с экраном
+
         if (button == Input.Buttons.LEFT) {
 
             Hex hex = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
@@ -196,7 +201,7 @@ public class Play implements Screen, InputProcessor {
                     TiledMapTileLayer.Cell cell = null;
                     if (hex != null) {
                         cell = layer.getCell(hex.col, hex.row);
-                        System.out.println("Cost: " + cell.getTile().getProperties().get("cost")+ "Path: " +
+                        System.out.println("Cost: " + cell.getTile().getProperties().get("cost")+ " Path: " +
                                 graphPath);
                     }
 

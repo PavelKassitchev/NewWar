@@ -7,7 +7,7 @@ import static com.pavka.Nation.*;
 
 public class Test {
 
-    static FieldHex hex = new FieldHex();
+    static Hex hex = new Hex();
     public static void main(String[] args) {
 
         Force france = createForce(FRANCE,0, 1, 0);
