@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.Array;
 
 import java.util.Iterator;
 
-public class Play implements Screen, InputProcessor {
+public class Play extends Stage implements Screen, InputProcessor {
 
     public static final String MAP = "maps/WarMap.tmx";
 
@@ -99,6 +99,8 @@ public class Play implements Screen, InputProcessor {
             }
         }
         camera.update();
+        //act(Gdx.graphics.getDeltaTime());
+        //draw();
     }
 
     @Override
