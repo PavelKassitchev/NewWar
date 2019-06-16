@@ -1,8 +1,12 @@
 package com.pavka;
 
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.objects.TextureMapObject;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +14,11 @@ import java.util.Random;
 
 import static com.pavka.Unit.*;
 
-public class Force extends Actor {
+public class Force extends Image {
 
     public TextureMapObject symbol;
+
+    public Texture texture = new Texture("symbols/CavBlueDivision.png");
 
     List<Force> forces;
     List<Battalion> battalions;
@@ -49,6 +55,17 @@ public class Force extends Actor {
 
     double speed;
 
+    public void draw(Batch batch, float alpha){
+
+        batch.draw(texture,hex.getRelX() - 8,hex.getRelY() - 8, 12, 12);
+
+    }
+
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        move();
+    }
     //STATIC SECTION
 
     //TODO exclude SUPPLY xp
@@ -63,6 +80,13 @@ public class Force extends Actor {
         wagons = new ArrayList<Wagon>();
         order = new Order(false, 0);
         speed = 100;
+
+        setTouchable(Touchable.enabled);
+        setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
+
+        hex.forces.add(this);
+
+
     }
 
     public Force(Force... subForces) {
@@ -564,9 +588,10 @@ public class Force extends Actor {
                 hex.forces.remove(this);
                 Hex newHex = order.pathsOrder.get(0).toHex;
                 order.pathsOrder.removeRange(0, 0);
-                symbol.setX(newHex.getX() - 8);
-                symbol.setY(newHex.getY() - 8);
+                //symbol.setX(newHex.getRelX() - 8);
+                //symbol.setY(newHex.getRelY() - 8);
                 hex = newHex;
+                setBounds(newHex.getRelX() - 8, newHex.getRelY() - 8, 12, 12);
                 hex.forces.add(this);
                 movePoints -= movementCost;
 

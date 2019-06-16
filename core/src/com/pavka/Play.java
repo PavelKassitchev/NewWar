@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ai.pfa.GraphPath;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,12 +19,13 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.HexagonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.Iterator;
 
-public class Play extends Stage implements Screen, InputProcessor {
+public class Play extends Stage implements Screen {
+
 
     public static final String MAP = "maps/WarMap.tmx";
 
@@ -55,7 +57,7 @@ public class Play extends Stage implements Screen, InputProcessor {
             for (int j = 0; j < 64; j++) {
                 hex = new Hex(i, j);
                 hexGraph.addHex(hex);
-
+                addActor(hex);
             }
         }
         for (int i = 0; i < 64; i++) {
@@ -67,6 +69,7 @@ public class Play extends Stage implements Screen, InputProcessor {
                 }
             }
         }
+        for (Path p : hexGraph.paths) addActor(p);
 
     }
 
@@ -77,11 +80,12 @@ public class Play extends Stage implements Screen, InputProcessor {
 
         shapeRenderer = new ShapeRenderer();
         renderer = new MyInnerRenderer(map);
-        camera = new OrthographicCamera();
+        camera = (OrthographicCamera) getCamera();
         camera.setToOrtho(false, w, h);
         Gdx.input.setInputProcessor(this);
 
     }
+
 
     @Override
     public void render(float delta) {
@@ -90,7 +94,7 @@ public class Play extends Stage implements Screen, InputProcessor {
 
         renderer.setView(camera);
         renderer.render();
-
+        draw();
         shapeRenderer.setProjectionMatrix(camera.combined);
 
         if (paths != null) {
@@ -153,25 +157,36 @@ public class Play extends Stage implements Screen, InputProcessor {
     @Override
     public boolean keyUp(int keycode) {
         if (keycode == Input.Keys.C) {
-            Force force = new Battalion(Nation.FRANCE, new Hex());
-            force.hex = hexGraph.getHex(0, 4);
+            Force force = new Battalion(Nation.FRANCE, hexGraph.getHex(8, 4));
 
-            Texture texture = new Texture("symbols/InfRedCorps.png");
-            TextureRegion tr = new TextureRegion(texture);
-            TextureMapObject tmo = new TextureMapObject(tr);
-            tmo.setX(force.hex.getX() - 8);
-            tmo.setY(force.hex.getY() - 8);
+            System.out.println(force.getX() + " " + force.getY());
+            //force.hex = hexGraph.getHex(8, 4);
+
+            //Texture texture = new Texture("symbols/InfRedCorps.png");
+            //TextureRegion tr = new TextureRegion(texture);
+            //TextureMapObject tmo = new TextureMapObject(tr);
+            //tmo.setX(force.hex.getRelX() - 8);
+            //tmo.setY(force.hex.getRelY() - 8);
 
 
-            objectLayer.getObjects().add(tmo);
+            //objectLayer.getObjects().add(tmo);
             whiteTroops.add(force);
-            force.hex.forces.add(force);
-            force.symbol = tmo;
+            //force.hex.forces.add(force);
+            /*force.addListener(new InputListener() {
+                public boolean touchDown (InputEvent event, float x, float y, int pointer, int button){
+                    System.out.println(event.getTarget() +"hhh"+  x);
+                    return true;
+                }
+            });*/
+            //force.symbol = tmo;*/
+
+            addActor(force);
 
         }
         if (keycode == Input.Keys.Q) {
-            for (Force w : whiteTroops) w.move();
-            for (Force b : blackTroops) b.move();
+            act();
+            //for (Force w : whiteTroops) w.move();
+            //for (Force b : blackTroops) b.move();
         }
         if (keycode == Input.Keys.S) {
             Test.main(null);
@@ -195,8 +210,53 @@ public class Play extends Stage implements Screen, InputProcessor {
         //TODO Общий обзор работы с экраном
         if (!newMode) {
             if (button == Input.Buttons.LEFT) {
+                Actor actor = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
+                //TiledMapTileLayer.Cell cell = null;
+                if (actor instanceof Hex) {
+                    //cell = tileLayer.getCell(((Hex) actor).col, ((Hex) actor).row);
+                    if (startHex == null) startHex = (Hex) actor;
+                    else {
+                        if (endHex == null) {
+                            endHex = (Hex) actor;
+                            graphPath = hexGraph.findPath(startHex, endHex);
+                            paths = new Array<Path>();
+                            Iterator<Hex> iterator;
+                            if (Play.graphPath != null) {
+                                iterator = Play.graphPath.iterator();
+                                Hex sHex = iterator.next();
+                                Hex eHex;
+                                while (iterator.hasNext()) {
+                                    eHex = iterator.next();
+                                    paths.add(Play.hexGraph.getPath(sHex, eHex));
+                                    sHex = eHex;
+                                }
+                            }
+                            if (chosenForce != null) {
+                                chosenForce.order.pathsOrder = paths;
+                                chosenForce = null;
+                            }
+                        }
+                        else {
+                            endHex = null;
+                            startHex = (Hex) actor;
+                            paths = null;
+                            graphPath = null;
+                        }
 
-                Hex hex = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
+
+                    }
+                }
+
+                if (actor instanceof Force) {
+
+                    chosenForce = (Force)actor;
+                    paths = chosenForce.order.pathsOrder;
+                    startHex = chosenForce.hex;
+                    endHex = null;
+                    graphPath = null;
+                }
+
+                /*Hex hex = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
 
                 if (hex != null && hex.forces.size() == 0) {
                     if (chosenForce == null) {
@@ -239,8 +299,8 @@ public class Play extends Stage implements Screen, InputProcessor {
                     } else {
                         System.out.println("Chosen Force: " + chosenForce);
                         //startHex.forces.remove(chosenForce);
-                        //chosenForce.symbol.setX(hex.getX() - 8);
-                        //chosenForce.symbol.setY(hex.getY() - 8);
+                        //chosenForce.symbol.setX(hex.getRelX() - 8);
+                        //chosenForce.symbol.setY(hex.getRelY() - 8);
                         //chosenForce.hex.hex = hex;
                         //hex.forces.add(chosenForce);
                         endHex = hex;
@@ -263,8 +323,8 @@ public class Play extends Stage implements Screen, InputProcessor {
                         Texture t = new Texture("symbols/RedSuspected.png");
                         TextureRegion tr = new TextureRegion(t);
                         TextureMapObject tmo = new TextureMapObject(tr);
-                        tmo.setX(hex.getX() - 8);
-                        tmo.setY(hex.getY() - 8);
+                        tmo.setX(hex.getRelX() - 8);
+                        tmo.setY(hex.getRelY() - 8);
                         objectLayer.getObjects().add(tmo);
                         chosenForce.order.pathsOrder = paths;
                         chosenForce = null;
@@ -282,8 +342,8 @@ public class Play extends Stage implements Screen, InputProcessor {
                     //paths = null;
                     graphPath = null;
                     System.out.println("Chosen Force: " + chosenForce + "Map Object: " + chosenForce.symbol);
-                }
-
+                }*/
+                System.out.println(hit(getMousePosOnMap().x, getMousePosOnMap().y, true) + " " + screenX + " " + screenY);
             }
         }
         return true;

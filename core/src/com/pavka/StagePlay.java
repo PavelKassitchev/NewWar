@@ -155,8 +155,8 @@ public class StagePlay extends Stage implements Screen {
             Texture texture = new Texture("symbols/InfRedCorps.png");
             TextureRegion tr = new TextureRegion(texture);
             TextureMapObject tmo = new TextureMapObject(tr);
-            tmo.setX(force.hex.getX() - 8);
-            tmo.setY(force.hex.getY() - 8);
+            tmo.setX(force.hex.getRelX() - 8);
+            tmo.setY(force.hex.getRelY() - 8);
 
 
             objectLayer.getObjects().add(tmo);
@@ -235,8 +235,8 @@ public class StagePlay extends Stage implements Screen {
                     } else {
                         System.out.println("Chosen Force: " + chosenForce);
                         //startHex.forces.remove(chosenForce);
-                        //chosenForce.symbol.setX(hex.getX() - 8);
-                        //chosenForce.symbol.setY(hex.getY() - 8);
+                        //chosenForce.symbol.setX(hex.getRelX() - 8);
+                        //chosenForce.symbol.setY(hex.getRelY() - 8);
                         //chosenForce.hex.hex = hex;
                         //hex.forces.add(chosenForce);
                         endHex = hex;
@@ -259,8 +259,8 @@ public class StagePlay extends Stage implements Screen {
                         Texture t = new Texture("symbols/RedSuspected.png");
                         TextureRegion tr = new TextureRegion(t);
                         TextureMapObject tmo = new TextureMapObject(tr);
-                        tmo.setX(hex.getX() - 8);
-                        tmo.setY(hex.getY() - 8);
+                        tmo.setX(hex.getRelX() - 8);
+                        tmo.setY(hex.getRelY() - 8);
                         objectLayer.getObjects().add(tmo);
                         chosenForce.order.pathsOrder = paths;
                         chosenForce = null;

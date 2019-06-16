@@ -1,11 +1,13 @@
 package com.pavka;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
 
-public class Hex {
+public class Hex extends Image {
     public static TiledMapTileLayer layer = (TiledMapTileLayer) (Play.map).getLayers().get("TileLayer");
     public int col;
     public int row;
@@ -23,6 +25,7 @@ public class Hex {
         row = r;
         cell = layer.getCell(col, row);
         forces = new ArrayList<Force>();
+        setBounds(getRelX() - 8, getRelY() - 8, 16, 16);
 
     }
 
@@ -54,12 +57,12 @@ public class Hex {
         return neighbours;
     }
 
-    public float getX() {
+    public float getRelX() {
         if (row % 2 == 0) return (16 + col * 16);
         return (8 + col * 16);
     }
 
-    public float getY() {
+    public float getRelY() {
         return (8 + row * 12);
     }
 }
