@@ -2,14 +2,10 @@ package com.pavka;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ai.pfa.GraphPath;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
@@ -48,7 +44,7 @@ public class Play extends Stage implements Screen {
     Array<Force> whiteTroops = new Array<Force>();
     private HexagonalTiledMapRenderer renderer;
     private OrthographicCamera camera;
-    private Force chosenForce;
+    private Force selectedForce;
 
     {
         Hex hex;
@@ -187,9 +183,16 @@ public class Play extends Stage implements Screen {
             act();
             //for (Force w : whiteTroops) w.move();
             //for (Force b : blackTroops) b.move();
+            if (selectedForce != null) selectedForce.isSelected = false;
+            selectedForce = null;
+            startHex = null;
+            endHex = null;
         }
         if (keycode == Input.Keys.S) {
             Test.main(null);
+        }
+        if (keycode == Input.Keys.L) {
+            LogisticTest.main(null);
         }
 
         if (keycode == Input.Keys.M) {
@@ -231,9 +234,10 @@ public class Play extends Stage implements Screen {
                                     sHex = eHex;
                                 }
                             }
-                            if (chosenForce != null) {
-                                chosenForce.order.pathsOrder = paths;
-                                chosenForce = null;
+                            if (selectedForce != null) {
+                                selectedForce.order.pathsOrder = paths;
+                                selectedForce.isSelected = false;
+                                selectedForce = null;
                             }
                         }
                         else {
@@ -249,9 +253,10 @@ public class Play extends Stage implements Screen {
 
                 if (actor instanceof Force) {
 
-                    chosenForce = (Force)actor;
-                    paths = chosenForce.order.pathsOrder;
-                    startHex = chosenForce.hex;
+                    selectedForce = (Force)actor;
+                    selectedForce.isSelected = true;
+                    paths = selectedForce.order.pathsOrder;
+                    startHex = selectedForce.hex;
                     endHex = null;
                     graphPath = null;
                 }
@@ -259,7 +264,7 @@ public class Play extends Stage implements Screen {
                 /*Hex hex = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
 
                 if (hex != null && hex.forces.size() == 0) {
-                    if (chosenForce == null) {
+                    if (selectedForce == null) {
 
                         TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get("TileLayer");
                         TiledMapTileLayer.Cell cell = null;
@@ -297,12 +302,12 @@ public class Play extends Stage implements Screen {
                             }
                         }
                     } else {
-                        System.out.println("Chosen Force: " + chosenForce);
-                        //startHex.forces.remove(chosenForce);
-                        //chosenForce.symbol.setX(hex.getRelX() - 8);
-                        //chosenForce.symbol.setY(hex.getRelY() - 8);
-                        //chosenForce.hex.hex = hex;
-                        //hex.forces.add(chosenForce);
+                        System.out.println("Chosen Force: " + selectedForce);
+                        //startHex.forces.remove(selectedForce);
+                        //selectedForce.symbol.setX(hex.getRelX() - 8);
+                        //selectedForce.symbol.setY(hex.getRelY() - 8);
+                        //selectedForce.hex.hex = hex;
+                        //hex.forces.add(selectedForce);
                         endHex = hex;
                         graphPath = hexGraph.findPath(startHex, endHex);
                         System.out.println("Start = " + startHex.index + " end = " + endHex.index +
@@ -326,22 +331,22 @@ public class Play extends Stage implements Screen {
                         tmo.setX(hex.getRelX() - 8);
                         tmo.setY(hex.getRelY() - 8);
                         objectLayer.getObjects().add(tmo);
-                        chosenForce.order.pathsOrder = paths;
-                        chosenForce = null;
+                        selectedForce.order.pathsOrder = paths;
+                        selectedForce = null;
                     }
 
 
-                } else if (chosenForce == null && hex != null) {
+                } else if (selectedForce == null && hex != null) {
                     Force force = hex.forces.get(0);
                     if (force != null) System.out.println("FORCE CHOSEN! Forces size = " + hex.forces.size());
-                    chosenForce = force;
+                    selectedForce = force;
                     //TODO check carefully! The fragment does not work properly
-                    paths = chosenForce.order.pathsOrder;
+                    paths = selectedForce.order.pathsOrder;
                     startHex = hex;
                     endHex = null;
                     //paths = null;
                     graphPath = null;
-                    System.out.println("Chosen Force: " + chosenForce + "Map Object: " + chosenForce.symbol);
+                    System.out.println("Chosen Force: " + selectedForce + "Map Object: " + selectedForce.symbol);
                 }*/
                 System.out.println(hit(getMousePosOnMap().x, getMousePosOnMap().y, true) + " " + screenX + " " + screenY);
             }
@@ -410,7 +415,7 @@ public class Play extends Stage implements Screen {
             float height = 14;
             if (object instanceof TextureMapObject) {
                 TextureMapObject textureObj = (TextureMapObject) object;
-                if (chosenForce != null && textureObj == chosenForce.symbol) {
+                if (selectedForce != null && textureObj == selectedForce.symbol) {
                     width = 16;
                     height = 16;
                 }

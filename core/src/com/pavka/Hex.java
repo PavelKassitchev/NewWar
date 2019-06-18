@@ -18,7 +18,9 @@ public class Hex extends Image {
     public final static int size = 10;
 
 
-    public Hex() {}
+    public Hex() {
+        forces = new ArrayList<Force>();
+    }
     public Hex(int q, int r) {
 
         col = q;

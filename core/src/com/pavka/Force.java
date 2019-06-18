@@ -16,9 +16,13 @@ import static com.pavka.Unit.*;
 
 public class Force extends Image {
 
+    public static final float IMAGE_SIZE = 12f;
+
     public TextureMapObject symbol;
 
     public Texture texture = new Texture("symbols/CavBlueDivision.png");
+
+    public boolean isSelected;
 
     List<Force> forces;
     List<Battalion> battalions;
@@ -57,7 +61,8 @@ public class Force extends Image {
 
     public void draw(Batch batch, float alpha){
 
-        batch.draw(texture,hex.getRelX() - 8,hex.getRelY() - 8, 12, 12);
+        if (!isSelected) batch.draw(texture,hex.getRelX() - 8,hex.getRelY() - 8, IMAGE_SIZE, IMAGE_SIZE);
+        else batch.draw(texture, hex.getRelX() - 8,hex.getRelY() - 8, IMAGE_SIZE * 1.1f, IMAGE_SIZE * 1.1f);
 
     }
 
@@ -254,6 +259,30 @@ public class Force extends Image {
             superForce.exclude(force);
         }
 
+    }
+
+    public double eat(){
+        double eatenFood = 0;
+        for (Force force: forces) {
+            if (force.isUnit) {
+                if (force.foodStock >= force.foodNeed) {
+                    force.foodStock -= force.foodNeed;
+                    foodStock -= force.foodNeed;
+                    eatenFood += force.foodNeed;
+                }
+                else {
+                    foodStock -= force.foodStock;
+                    eatenFood += force.foodStock;
+                    force.foodStock = 0;
+                }
+            }
+            else {
+                double f = force.eat();
+                force.superForce.foodStock -=f;
+                eatenFood += f;
+            }
+        }
+        return eatenFood;
     }
 
     //this methods shows morale change dependency on inside Unit morale change
