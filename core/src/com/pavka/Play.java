@@ -279,6 +279,7 @@ public class Play extends Stage implements Screen {
                     startHex = selectedForce.hex;
                     endHex = null;
                     graphPath = null;
+
                     //if (mileStone != null) mileStone.remove();
                 }
 
