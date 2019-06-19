@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
@@ -74,12 +75,13 @@ public class Play extends Stage implements Screen {
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
 
+        addActor(new MileStone());
+
         shapeRenderer = new ShapeRenderer();
         renderer = new MyInnerRenderer(map);
         camera = (OrthographicCamera) getCamera();
         camera.setToOrtho(false, w, h);
         Gdx.input.setInputProcessor(this);
-
     }
 
 
@@ -91,6 +93,7 @@ public class Play extends Stage implements Screen {
         renderer.setView(camera);
         renderer.render();
         draw();
+
         shapeRenderer.setProjectionMatrix(camera.combined);
 
         if (paths != null) {
