@@ -69,7 +69,10 @@ public class Force extends Image {
     @Override
     public void act(float delta) {
         super.act(delta);
+        eat();
+        distributeFood(0);
         move();
+        //order.mileStone.days = Path.getDaysToGo(order.pathsOrder, speed);
     }
     //STATIC SECTION
 
@@ -620,13 +623,15 @@ public class Force extends Image {
                 //symbol.setX(newHex.getRelX() - 8);
                 //symbol.setY(newHex.getRelY() - 8);
                 hex = newHex;
-                setBounds(newHex.getRelX() - 8, newHex.getRelY() - 8, 12, 12);
+                setBounds(newHex.getRelX() - 8, newHex.getRelY() - 8, 12, 12 );
                 hex.forces.add(this);
                 movePoints -= movementCost;
 
             }
 
         }
+        order.mileStone.days = Path.getDaysToGo(order.pathsOrder, speed);
+        //if (order.pathsOrder.size == 0) order.mileStone = new MileStone();
 
         return true;
     }

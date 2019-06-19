@@ -3,6 +3,7 @@ package com.pavka;
 import com.badlogic.gdx.ai.pfa.Connection;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Array;
 
 public class Path extends Image implements Connection<Hex> {
 
@@ -23,7 +24,16 @@ public class Path extends Image implements Connection<Hex> {
                 rotateBy(90);
             }
         }*/
-
+    }
+    public static int getDaysToGo(Array<Path> paths, double speed) {
+        double distance = 0;
+        for (Path path: paths) {
+            distance += Hex.size * (Float)path.getFromNode().cell.getTile().getProperties().get("cost");
+        }
+        return (int)Math.round(distance / speed);
+    }
+    public double getDays(double speed) {
+        return Hex.size * (Float)getFromNode().cell.getTile().getProperties().get("cost") / speed;
     }
 
     @Override

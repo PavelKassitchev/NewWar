@@ -39,6 +39,7 @@ public class Play extends Stage implements Screen {
     public boolean newMode;
     Hex startHex;
     Hex endHex;
+    MileStone mileStone;
     ShapeRenderer shapeRenderer;
     Array<Path> paths;
     Array<Force> blackTroops = new Array<Force>();
@@ -74,8 +75,6 @@ public class Play extends Stage implements Screen {
     public void show() {
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
-
-        addActor(new MileStone());
 
         shapeRenderer = new ShapeRenderer();
         renderer = new MyInnerRenderer(map);
@@ -184,12 +183,15 @@ public class Play extends Stage implements Screen {
         }
         if (keycode == Input.Keys.Q) {
             act();
+            if (mileStone != null && mileStone.days == 0) mileStone.remove();
             //for (Force w : whiteTroops) w.move();
             //for (Force b : blackTroops) b.move();
             if (selectedForce != null) selectedForce.isSelected = false;
             selectedForce = null;
             startHex = null;
             endHex = null;
+            paths = null;
+            mileStone.remove();
         }
         if (keycode == Input.Keys.S) {
             Test.main(null);
@@ -236,18 +238,27 @@ public class Play extends Stage implements Screen {
                                     paths.add(Play.hexGraph.getPath(sHex, eHex));
                                     sHex = eHex;
                                 }
+                                mileStone = new MileStone(paths.peek().getToNode());
+                                System.out.println("Milestone: " + mileStone.hex.getRelX() + " " + mileStone.hex.getRelY());
+                                mileStone.days = Path.getDaysToGo(paths, Battalion.SPEED);
+
+
                             }
                             if (selectedForce != null) {
-                                selectedForce.order.pathsOrder = paths;
+                                selectedForce.order.setPathsOrder(paths);
+                                selectedForce.order.mileStone = mileStone;
+                                mileStone.days = Path.getDaysToGo(paths, selectedForce.speed);
                                 selectedForce.isSelected = false;
                                 selectedForce = null;
                             }
+                            addActor(mileStone);
                         }
                         else {
                             endHex = null;
                             startHex = (Hex) actor;
                             paths = null;
                             graphPath = null;
+                            mileStone.remove();
                         }
 
 
@@ -259,9 +270,16 @@ public class Play extends Stage implements Screen {
                     selectedForce = (Force)actor;
                     selectedForce.isSelected = true;
                     paths = selectedForce.order.pathsOrder;
+                    if (mileStone != null) mileStone.remove();
+                    mileStone = selectedForce.order.mileStone;
+
+                    mileStone.days = Path.getDaysToGo(paths, ((Force)actor).speed);
+                    System.out.println("Hex X: " + mileStone.hex.getRelX());
+                    addActor(mileStone);
                     startHex = selectedForce.hex;
                     endHex = null;
                     graphPath = null;
+                    //if (mileStone != null) mileStone.remove();
                 }
 
                 /*Hex hex = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
@@ -377,6 +395,15 @@ public class Play extends Stage implements Screen {
         if (amount == 1) camera.zoom += 0.2;
         else camera.zoom -= 0.2;
         return true;
+    }
+
+    public int getDaysToArrival(double speed) {
+        if (paths != null) {
+            double trip = 0;
+            for (Path path: paths) trip += path.getDays(speed);
+            return (int)Math.round(trip);
+        }
+        return 0;
     }
 
     Vector3 getMousePosOnMap() {
