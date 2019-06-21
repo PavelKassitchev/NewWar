@@ -155,7 +155,7 @@ public class Play extends Stage implements Screen {
     @Override
     public boolean keyUp(int keycode) {
         if (keycode == Input.Keys.C) {
-            Force force = new Battalion(Nation.FRANCE, hexGraph.getHex(8, 4));
+            Force force = new Squadron(Nation.FRANCE, hexGraph.getHex(8, 4));
 
             System.out.println(force.getX() + " " + force.getY());
             //force.hex = hexGraph.getHex(8, 4);
@@ -214,9 +214,73 @@ public class Play extends Stage implements Screen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        // TODO FOR LEFT MOUSE BUTTON AND OLD MODE!!
+        //parameters: graphPath, paths, startHex, endHex, mileStone, seletedForce
+        Actor actor = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
+        //first touch
+        if (startHex == null && endHex == null) {
+            //hec touched
+            if (actor instanceof Hex) {
+                startHex = (Hex) actor;
+            }
+            //force touched
+            if (actor instanceof Force) {
+                selectedForce = (Force) actor;
+                selectedForce.isSelected = true;
+                startHex = selectedForce.hex;
+            }
+        }
+        //second touch
+        else if (startHex != null && endHex == null) {
+            //hex touched
+            {
+                if (actor instanceof Hex) {
+                    endHex = (Hex) actor;
+                }
+                //first hex was touched
+                if (selectedForce == null) {
+                    graphPath = hexGraph.findPath(startHex, endHex);
+                    paths = new Array<Path>();
+                    Iterator <Hex> iterator = graphPath.iterator();
+                    Hex sHex = iterator.next();
+                    Hex eHex;
+                    while (iterator.hasNext()) {
+                        eHex = iterator.next();
+                        paths.add(Play.hexGraph.getPath(sHex, eHex));
+                        sHex = eHex;
+                    }
+                    mileStone = new MileStone(paths.peek().getToNode());
+                    mileStone.days = Path.getDaysToGo(paths, Battalion.SPEED);
+                    addActor(mileStone);
+                }
+                //first force was touched
+                else if (selectedForce != null) {
+                    graphPath = hexGraph.findPath(startHex, endHex);
+                    paths = new Array<Path>();
+                    Iterator <Hex> iterator = graphPath.iterator();
+                    Hex sHex = iterator.next();
+                    Hex eHex;
+                    while (iterator.hasNext()) {
+                        eHex = iterator.next();
+                        paths.add(Play.hexGraph.getPath(sHex, eHex));
+                        sHex = eHex;
+                    }
+                    mileStone = new MileStone(paths.peek().getToNode());
+                    mileStone.days = Path.getDaysToGo(paths, selectedForce.speed);
+                    addActor(mileStone);
+
+                    selectedForce.order.setPathsOrder(paths);
+                    selectedForce.order.mileStone = mileStone;
+                    selectedForce.isSelected = false;
+                    selectedForce = null;
+                }
+            }
+        }
+
 
         //TODO Общий обзор работы с экраном
-        if (!newMode) {
+        //LAST VERSION
+        /*if (!newMode) {
             if (button == Input.Buttons.LEFT) {
                 Actor actor = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
                 //TiledMapTileLayer.Cell cell = null;
@@ -281,8 +345,9 @@ public class Play extends Stage implements Screen {
                     graphPath = null;
 
                     //if (mileStone != null) mileStone.remove();
-                }
-
+                }*/
+        //END OF LAST VERSION
+        // VERY OLD VERSION
                 /*Hex hex = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
 
                 if (hex != null && hex.forces.size() == 0) {
@@ -369,10 +434,12 @@ public class Play extends Stage implements Screen {
                     //paths = null;
                     graphPath = null;
                     System.out.println("Chosen Force: " + selectedForce + "Map Object: " + selectedForce.symbol);
-                }*/
+                }
+
                 System.out.println(hit(getMousePosOnMap().x, getMousePosOnMap().y, true) + " " + screenX + " " + screenY);
             }
-        }
+        }*/
+        // END OF VERY OLD VERSION
         return true;
     }
 
@@ -401,8 +468,8 @@ public class Play extends Stage implements Screen {
     public int getDaysToArrival(double speed) {
         if (paths != null) {
             double trip = 0;
-            for (Path path: paths) trip += path.getDays(speed);
-            return (int)Math.round(trip);
+            for (Path path : paths) trip += path.getDays(speed);
+            return (int) Math.round(trip);
         }
         return 0;
     }
