@@ -47,6 +47,7 @@ public class Play extends Stage implements Screen {
     private HexagonalTiledMapRenderer renderer;
     private OrthographicCamera camera;
     private Force selectedForce;
+    private Hex selectedHex;
 
     {
         Hex hex;
@@ -239,9 +240,14 @@ public class Play extends Stage implements Screen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        Actor hex = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
+        if(hex instanceof Hex) selectedHex = (Hex)hex;
+
+        System.out.println("Touch Down Pos: " + getMousePosOnMap().x + " " + getMousePosOnMap().y);
+        //TODO THIS METHOD MOVED TO TOUCHUP!
         // TODO FOR LEFT MOUSE BUTTON AND OLD MODE!!
         //parameters: graphPath, paths, startHex, endHex, mileStone, seletedForce
-        Actor actor = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
+        /*Actor actor = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
         //first touch
         if (startHex == null && endHex == null) {
             //hec touched
@@ -331,7 +337,7 @@ public class Play extends Stage implements Screen {
                     addActor(mileStone);
                 }
             }
-        }
+        }*/
 
 
         //TODO Общий обзор работы с экраном
@@ -501,11 +507,108 @@ public class Play extends Stage implements Screen {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        System.out.println("Touch UP Pos: " + getMousePosOnMap().x + " " + getMousePosOnMap().y);
+
+        Actor actor = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
+        //first touch
+        if (startHex == null && endHex == null) {
+            //hec touched
+            if (actor instanceof Hex) {
+                startHex = (Hex) actor;
+            }
+            //force touched
+            if (actor instanceof Force) {
+                selectedForce = (Force) actor;
+                selectedForce.isSelected = true;
+                startHex = selectedForce.hex;
+
+                //orders has already been set
+                if (selectedForce.order.pathsOrder.size > 0) {
+                    paths = selectedForce.order.pathsOrder;
+                    mileStone = selectedForce.order.mileStone;
+                    addActor(mileStone);
+                }
+            }
+        }
+        //second touch
+        else if (startHex != null && endHex == null) {
+            if (mileStone != null) mileStone.remove();
+            //hex touched
+            if (actor instanceof Hex) {
+                endHex = (Hex) actor;
+
+                //first hex was touched
+                if (selectedForce == null) {
+                    navigate(Battalion.SPEED);
+                }
+                //first force was touched
+                if (selectedForce != null) {
+                    navigate(selectedForce.speed);
+                    selectedForce.order.setPathsOrder(paths);
+                    selectedForce.order.mileStone = mileStone;
+                    selectedForce.isSelected = false;
+                    selectedForce = null;
+                }
+            }
+
+            //force touched
+            if (actor instanceof Force) {
+                Force force = (Force) actor;
+                endHex = force.hex;
+
+                //first hex was touched
+                if (selectedForce == null) {
+                    navigate(Battalion.SPEED);
+                }
+
+                //first force was touched
+                if (selectedForce != null) {
+                    navigate(selectedForce.speed);
+                    selectedForce.order.setPathsOrder(paths);
+                    selectedForce.order.mileStone = mileStone;
+                    //TODO attach?
+                    selectedForce.isSelected = false;
+                    selectedForce = null;
+                }
+            }
+
+        }
+        //further touches
+        else if (endHex != null) {
+            endHex = null;
+            graphPath = null;
+            paths = null;
+            if (mileStone != null) mileStone.remove();
+            mileStone = null;
+
+            //hec touched
+            if (actor instanceof Hex) {
+                startHex = (Hex) actor;
+            }
+            //force touched
+            if (actor instanceof Force) {
+                selectedForce = (Force) actor;
+                selectedForce.isSelected = true;
+                startHex = selectedForce.hex;
+
+                //orders has already been set
+                System.out.println(selectedForce.order.pathsOrder);
+                if (selectedForce.order.pathsOrder.size > 0) {
+                    paths = selectedForce.order.pathsOrder;
+                    mileStone = selectedForce.order.mileStone;
+                    addActor(mileStone);
+                }
+            }
+        }
+
+
         return false;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+
+        System.out.println("DRAGGED!" + getMousePosOnMap().x + " " + getMousePosOnMap().y);
         return false;
     }
 
