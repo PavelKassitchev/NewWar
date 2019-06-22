@@ -217,7 +217,7 @@ public class Play extends Stage implements Screen {
     private Array<Path> navigate(Hex start, Hex finish) {
         Array<Path> paths = new Array<Path>();
         if (start != finish) {
-            graphPath =hexGraph.findPath(start,finish);
+            graphPath = hexGraph.findPath(start, finish);
             Iterator<Hex> iterator = graphPath.iterator();
             Hex sHex = iterator.next();
             Hex eHex;
@@ -228,10 +228,10 @@ public class Play extends Stage implements Screen {
             }
 
 
-
         }
         return paths;
     }
+
     private void navigate(double speed) {
         if (startHex != endHex) {
             graphPath = hexGraph.findPath(startHex, endHex);
@@ -534,13 +534,20 @@ public class Play extends Stage implements Screen {
         if (selectedHex != null && actor instanceof Hex && selectedHex != (Hex) actor) {
             System.out.println("YES!");
             Hex start = paths.first().fromHex;
-            Hex interm = (Hex)actor;
             Hex finish = paths.peek().toHex;
-            paths = navigate(start, interm);
-            paths.addAll(navigate(interm, finish));
+            Hex end = finish;
+            if (selectedHex != finish) {
+                Hex interm = (Hex) actor;
+                paths = navigate(start, interm);
+                paths.addAll(navigate(interm, finish));
+            }
+            else {
+                paths = (navigate(start, (Hex)actor));
+                end = (Hex)actor;
+            }
             mileStone.remove();
             double speed = Battalion.SPEED;
-            mileStone = new MileStone(finish);
+            mileStone = new MileStone(end);
             if (selectedForce != null) {
                 System.out.println("FORCE SELECTED");
                 speed = selectedForce.speed;
@@ -590,8 +597,8 @@ public class Play extends Stage implements Screen {
                         navigate(selectedForce.speed);
                         selectedForce.order.setPathsOrder(paths);
                         selectedForce.order.mileStone = mileStone;
-                        selectedForce.isSelected = false;
-                        selectedForce = null;
+                        //selectedForce.isSelected = false;
+                        //selectedForce = null;
                     }
                 }
 
@@ -611,8 +618,8 @@ public class Play extends Stage implements Screen {
                         selectedForce.order.setPathsOrder(paths);
                         selectedForce.order.mileStone = mileStone;
                         //TODO attach?
-                        selectedForce.isSelected = false;
-                        selectedForce = null;
+                        //selectedForce.isSelected = false;
+                        //selectedForce = null;
                     }
                 }
 
@@ -622,10 +629,12 @@ public class Play extends Stage implements Screen {
                 endHex = null;
                 graphPath = null;
                 paths = null;
+                if (selectedForce != null) selectedForce.isSelected = false;
+                selectedForce = null;
                 if (mileStone != null) mileStone.remove();
                 mileStone = null;
 
-                //hec touched
+                //hex touched
                 if (actor instanceof Hex) {
                     startHex = (Hex) actor;
                 }
