@@ -214,7 +214,7 @@ public class Play extends Stage implements Screen {
         return false;
     }
 
-    private Array<Path> navigate(Hex start, Hex finish, double speed) {
+    private Array<Path> navigate(Hex start, Hex finish) {
         Array<Path> paths = new Array<Path>();
         if (start != finish) {
             graphPath =hexGraph.findPath(start,finish);
@@ -227,8 +227,7 @@ public class Play extends Stage implements Screen {
                 sHex = eHex;
             }
 
-            mileStone = new MileStone(paths.peek().getToNode());
-            mileStone.days = Path.getDaysToGo(paths, speed);
+
 
         }
         return paths;
@@ -537,8 +536,20 @@ public class Play extends Stage implements Screen {
             Hex start = paths.first().fromHex;
             Hex interm = (Hex)actor;
             Hex finish = paths.peek().toHex;
-            paths = navigate(start, interm, Battalion.SPEED);
-            paths.addAll(navigate(interm, finish, Battalion.SPEED));
+            paths = navigate(start, interm);
+            paths.addAll(navigate(interm, finish));
+            mileStone.remove();
+            double speed = Battalion.SPEED;
+            mileStone = new MileStone(finish);
+            if (selectedForce != null) {
+                System.out.println("FORCE SELECTED");
+                speed = selectedForce.speed;
+                selectedForce.order.setPathsOrder(paths);
+                selectedForce.order.mileStone = mileStone;
+            }
+            mileStone.days = Path.getDaysToGo(paths, speed);
+            System.out.println(mileStone.days);
+            addActor(mileStone);
             selectedHex = null;
             //TODO DRAG PATH METHOD!
         } else {
