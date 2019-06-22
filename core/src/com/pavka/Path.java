@@ -34,6 +34,14 @@ public class Path extends Image implements Connection<Hex> {
         if ((int)Math.round(distance / speed) == 0) return 1;
         return (int)Math.round(distance / speed);
     }
+
+    public static boolean isHexInside(Array<Path> paths, Hex hex) {
+        if (paths == null || paths.size == 0) return false;
+        for (Path path: paths) {
+            if(path.fromHex == hex || path.toHex == hex) return true;
+        }
+        return false;
+    }
     public double getDays(double speed) {
         return Hex.size * (Float)getFromNode().cell.getTile().getProperties().get("cost") / speed;
     }

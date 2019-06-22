@@ -230,8 +230,7 @@ public class Play extends Stage implements Screen {
             mileStone = new MileStone(paths.peek().getToNode());
             mileStone.days = Path.getDaysToGo(paths, speed);
             addActor(mileStone);
-        }
-        else {
+        } else {
             paths = new Array<Path>();
         }
 
@@ -241,9 +240,11 @@ public class Play extends Stage implements Screen {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Actor hex = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
-        if(hex instanceof Hex) selectedHex = (Hex)hex;
+        if (hex instanceof Hex && Path.isHexInside(paths, (Hex) hex)) {
+            selectedHex = (Hex) hex;
+        }
 
-        System.out.println("Touch Down Pos: " + getMousePosOnMap().x + " " + getMousePosOnMap().y);
+        System.out.println("Touch Down Pos: " + getMousePosOnMap().x + " " + getMousePosOnMap().y + "SELECTED HEX = " + selectedHex);
         //TODO THIS METHOD MOVED TO TOUCHUP!
         // TODO FOR LEFT MOUSE BUTTON AND OLD MODE!!
         //parameters: graphPath, paths, startHex, endHex, mileStone, seletedForce
@@ -509,94 +510,102 @@ public class Play extends Stage implements Screen {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         System.out.println("Touch UP Pos: " + getMousePosOnMap().x + " " + getMousePosOnMap().y);
 
+
         Actor actor = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
-        //first touch
-        if (startHex == null && endHex == null) {
-            //hec touched
-            if (actor instanceof Hex) {
-                startHex = (Hex) actor;
-            }
-            //force touched
-            if (actor instanceof Force) {
-                selectedForce = (Force) actor;
-                selectedForce.isSelected = true;
-                startHex = selectedForce.hex;
 
-                //orders has already been set
-                if (selectedForce.order.pathsOrder.size > 0) {
-                    paths = selectedForce.order.pathsOrder;
-                    mileStone = selectedForce.order.mileStone;
-                    addActor(mileStone);
+        if (selectedHex != null && actor instanceof Hex && selectedHex != (Hex) actor) {
+            System.out.println("YES!");
+            //TODO DRAG PATH METHOD!
+        } else {
+            selectedHex = null;
+            //first touch
+            if (startHex == null && endHex == null) {
+                //hec touched
+                if (actor instanceof Hex) {
+                    startHex = (Hex) actor;
+                }
+                //force touched
+                if (actor instanceof Force) {
+                    selectedForce = (Force) actor;
+                    selectedForce.isSelected = true;
+                    startHex = selectedForce.hex;
+
+                    //orders has already been set
+                    if (selectedForce.order.pathsOrder.size > 0) {
+                        paths = selectedForce.order.pathsOrder;
+                        mileStone = selectedForce.order.mileStone;
+                        addActor(mileStone);
+                    }
                 }
             }
-        }
-        //second touch
-        else if (startHex != null && endHex == null) {
-            if (mileStone != null) mileStone.remove();
-            //hex touched
-            if (actor instanceof Hex) {
-                endHex = (Hex) actor;
+            //second touch
+            else if (startHex != null && endHex == null) {
+                if (mileStone != null) mileStone.remove();
+                //hex touched
+                if (actor instanceof Hex) {
+                    endHex = (Hex) actor;
 
-                //first hex was touched
-                if (selectedForce == null) {
-                    navigate(Battalion.SPEED);
+                    //first hex was touched
+                    if (selectedForce == null) {
+                        navigate(Battalion.SPEED);
+                    }
+                    //first force was touched
+                    if (selectedForce != null) {
+                        navigate(selectedForce.speed);
+                        selectedForce.order.setPathsOrder(paths);
+                        selectedForce.order.mileStone = mileStone;
+                        selectedForce.isSelected = false;
+                        selectedForce = null;
+                    }
                 }
-                //first force was touched
-                if (selectedForce != null) {
-                    navigate(selectedForce.speed);
-                    selectedForce.order.setPathsOrder(paths);
-                    selectedForce.order.mileStone = mileStone;
-                    selectedForce.isSelected = false;
-                    selectedForce = null;
+
+                //force touched
+                if (actor instanceof Force) {
+                    Force force = (Force) actor;
+                    endHex = force.hex;
+
+                    //first hex was touched
+                    if (selectedForce == null) {
+                        navigate(Battalion.SPEED);
+                    }
+
+                    //first force was touched
+                    if (selectedForce != null) {
+                        navigate(selectedForce.speed);
+                        selectedForce.order.setPathsOrder(paths);
+                        selectedForce.order.mileStone = mileStone;
+                        //TODO attach?
+                        selectedForce.isSelected = false;
+                        selectedForce = null;
+                    }
                 }
+
             }
+            //further touches
+            else if (endHex != null) {
+                endHex = null;
+                graphPath = null;
+                paths = null;
+                if (mileStone != null) mileStone.remove();
+                mileStone = null;
 
-            //force touched
-            if (actor instanceof Force) {
-                Force force = (Force) actor;
-                endHex = force.hex;
-
-                //first hex was touched
-                if (selectedForce == null) {
-                    navigate(Battalion.SPEED);
+                //hec touched
+                if (actor instanceof Hex) {
+                    startHex = (Hex) actor;
                 }
+                //force touched
+                if (actor instanceof Force) {
+                    selectedForce = (Force) actor;
+                    selectedForce.isSelected = true;
+                    startHex = selectedForce.hex;
 
-                //first force was touched
-                if (selectedForce != null) {
-                    navigate(selectedForce.speed);
-                    selectedForce.order.setPathsOrder(paths);
-                    selectedForce.order.mileStone = mileStone;
-                    //TODO attach?
-                    selectedForce.isSelected = false;
-                    selectedForce = null;
-                }
-            }
-
-        }
-        //further touches
-        else if (endHex != null) {
-            endHex = null;
-            graphPath = null;
-            paths = null;
-            if (mileStone != null) mileStone.remove();
-            mileStone = null;
-
-            //hec touched
-            if (actor instanceof Hex) {
-                startHex = (Hex) actor;
-            }
-            //force touched
-            if (actor instanceof Force) {
-                selectedForce = (Force) actor;
-                selectedForce.isSelected = true;
-                startHex = selectedForce.hex;
-
-                //orders has already been set
-                System.out.println(selectedForce.order.pathsOrder);
-                if (selectedForce.order.pathsOrder.size > 0) {
-                    paths = selectedForce.order.pathsOrder;
-                    mileStone = selectedForce.order.mileStone;
-                    addActor(mileStone);
+                    //orders has already been set
+                    System.out.println(selectedForce.order.pathsOrder);
+                    if (selectedForce.order.pathsOrder.size > 0) {
+                        paths = selectedForce.order.pathsOrder;
+                        mileStone = selectedForce.order.mileStone;
+                        addActor(mileStone);
+                    }
                 }
             }
         }
