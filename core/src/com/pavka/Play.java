@@ -51,6 +51,8 @@ public class Play extends Stage implements Screen {
     private Hex currentHex;
     private MileStone currentStone;
 
+    private boolean secondClick;
+
     {
         Hex hex;
         hexGraph = new HexGraph();
@@ -259,16 +261,18 @@ public class Play extends Stage implements Screen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Actor hex = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
-        if (hex instanceof Hex && Path.isHexInside(paths, (Hex) hex)) {
-            selectedHex = (Hex) hex;
-            endHex = paths.peek().toHex;
-        }
+        if (button == Input.Keys.LEFT) {
 
-        System.out.println("Touch Down Pos: " + getMousePosOnMap().x + " " + getMousePosOnMap().y + "SELECTED HEX = " + selectedHex);
-        //TODO THIS METHOD MOVED TO TOUCHUP!
-        // TODO FOR LEFT MOUSE BUTTON AND OLD MODE!!
-        //parameters: graphPath, paths, startHex, endHex, mileStone, seletedForce
+            Actor hex = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
+            if (hex instanceof Hex && Path.isHexInside(paths, (Hex) hex)) {
+                selectedHex = (Hex) hex;
+                endHex = paths.peek().toHex;
+            }
+
+            System.out.println("Touch Down Pos: " + getMousePosOnMap().x + " " + getMousePosOnMap().y + "SELECTED HEX = " + selectedHex);
+            //TODO THIS METHOD MOVED TO TOUCHUP!
+            // TODO FOR LEFT MOUSE BUTTON AND OLD MODE!!
+            //parameters: graphPath, paths, startHex, endHex, mileStone, seletedForce
         /*Actor actor = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
         //first touch
         if (startHex == null && endHex == null) {
@@ -362,8 +366,8 @@ public class Play extends Stage implements Screen {
         }*/
 
 
-        //TODO Общий обзор работы с экраном
-        //LAST VERSION
+            //TODO Общий обзор работы с экраном
+            //LAST VERSION
         /*if (!newMode) {
             if (button == Input.Buttons.LEFT) {
                 Actor actor = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
@@ -430,8 +434,8 @@ public class Play extends Stage implements Screen {
 
                     //if (mileStone != null) mileStone.remove();
                 }*/
-        //END OF LAST VERSION
-        // VERY OLD VERSION
+            //END OF LAST VERSION
+            // VERY OLD VERSION
                 /*Hex hex = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
 
                 if (hex != null && hex.forces.size() == 0) {
@@ -523,14 +527,14 @@ public class Play extends Stage implements Screen {
                 System.out.println(hit(getMousePosOnMap().x, getMousePosOnMap().y, true) + " " + screenX + " " + screenY);
             }
         }*/
-        // END OF VERY OLD VERSION
+            // END OF VERY OLD VERSION
+        }
         return true;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.LEFT) {
-
 
             Actor actor = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
 
@@ -673,16 +677,22 @@ public class Play extends Stage implements Screen {
             }
         }
         if (button == Input.Buttons.RIGHT) {
-            startHex = null;
-            endHex = null;
-            selectedForce = null;
-            selectedHex = null;
-            paths = null;
-            if(mileStone != null) mileStone.remove();
-            mileStone = null;
-            if (currentStone != null) currentStone.remove();
-            currentStone = null;
-            currentHex = null;
+            if (!secondClick) {
+                startHex = null;
+                endHex = null;
+                selectedForce = null;
+                selectedHex = null;
+                paths = null;
+                if (mileStone != null) mileStone.remove();
+                mileStone = null;
+                if (currentStone != null) currentStone.remove();
+                currentStone = null;
+                currentHex = null;
+                secondClick = true;
+            }
+            else {
+                secondClick = false;
+            }
         }
 
 
