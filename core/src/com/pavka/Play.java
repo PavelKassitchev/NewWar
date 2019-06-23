@@ -260,6 +260,7 @@ public class Play extends Stage implements Screen {
         Actor hex = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
         if (hex instanceof Hex && Path.isHexInside(paths, (Hex) hex)) {
             selectedHex = (Hex) hex;
+            endHex = paths.peek().toHex;
         }
 
         System.out.println("Touch Down Pos: " + getMousePosOnMap().x + " " + getMousePosOnMap().y + "SELECTED HEX = " + selectedHex);
@@ -535,19 +536,33 @@ public class Play extends Stage implements Screen {
             System.out.println("YES!");
             Hex start = paths.first().fromHex;
             Hex finish = paths.peek().toHex;
-            Hex end = finish;
+            //Hex end = finish;
             if (selectedHex != finish) {
                 Hex interm = (Hex) actor;
                 paths = navigate(start, interm);
                 paths.addAll(navigate(interm, finish));
+                endHex = finish;
+            } else {
+                paths = (navigate(start, (Hex) actor));
+                endHex = (Hex) actor;
+            }
+
+            /*if (selectedHex != endHex) {
+                Hex interm = (Hex)actor;
+                paths = navigate(startHex, interm);
+                paths.addAll(navigate(interm, endHex));
+
             }
             else {
-                paths = (navigate(start, (Hex)actor));
-                end = (Hex)actor;
-            }
+                endHex = (Hex)actor;
+                paths = navigate(startHex, endHex);
+            }*/
+
+
             mileStone.remove();
             double speed = Battalion.SPEED;
-            mileStone = new MileStone(end);
+            //mileStone = new MileStone(end);
+            mileStone = new MileStone(endHex);
             if (selectedForce != null) {
                 System.out.println("FORCE SELECTED");
                 speed = selectedForce.speed;
@@ -661,8 +676,25 @@ public class Play extends Stage implements Screen {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+        if (selectedHex != null) {
 
-        System.out.println("DRAGGED!" + getMousePosOnMap().x + " " + getMousePosOnMap().y);
+            Hex start = paths.first().fromHex;
+            Hex finish = paths.peek().toHex;
+            Hex end = finish;
+
+            Hex current = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
+            if (selectedHex != endHex) {
+
+                paths = navigate(start, current);
+                paths.addAll(navigate(current, finish));
+            } else {
+                System.out.println("FINISH SELECTED!");
+                paths = (navigate(start, current));
+                end = current;
+            }
+        }
+
+
         return false;
     }
 
