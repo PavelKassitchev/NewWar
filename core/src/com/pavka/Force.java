@@ -265,6 +265,7 @@ public class Force extends Image {
     }
 
     public double eat(){
+
         double eatenFood = 0;
         for (Force force: forces) {
             if (force.isUnit) {

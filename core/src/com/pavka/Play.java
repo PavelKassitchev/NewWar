@@ -17,6 +17,7 @@ import com.badlogic.gdx.maps.tiled.renderers.HexagonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.Iterator;
@@ -53,6 +54,8 @@ public class Play extends Stage implements Screen {
     private Hex currentHex;
     private MileStone currentStone;
     private boolean secondClick;
+
+    private Control control;
 
     {
         Hex hex;
@@ -161,7 +164,7 @@ public class Play extends Stage implements Screen {
     @Override
     public boolean keyUp(int keycode) {
         if (keycode == Input.Keys.C) {
-            Force force = new Squadron(Nation.FRANCE, hexGraph.getHex(8, 4));
+            Force force = new Force(new Squadron(Nation.FRANCE, hexGraph.getHex(8, 4)));
 
             System.out.println(force.getX() + " " + force.getY());
             System.out.println(force.order.pathsOrder);
@@ -188,6 +191,10 @@ public class Play extends Stage implements Screen {
             addActor(force);
 
         }
+
+        if (keycode == Input.Keys.I) {
+            addActor(new Control(null, null));
+        }
         if (keycode == Input.Keys.Q) {
             act();
 
@@ -210,6 +217,12 @@ public class Play extends Stage implements Screen {
 
         if (keycode == Input.Keys.M) {
             newMode = !newMode;
+        }
+
+        if (keycode == Input.Keys.F) {
+            for (Force force: whiteTroops) {
+                System.out.println(force.foodStock);
+            }
         }
         return true;
     }
@@ -287,8 +300,12 @@ public class Play extends Stage implements Screen {
                 currentHex = null;
                 secondClick = true;
                 selectedPaths = null;
+                if(control != null) control.remove();
             }
             else {
+                Actor hex = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
+                control = new Control((Hex)hex, null);
+                addActor(control);
                 secondClick = false;
             }
         }
