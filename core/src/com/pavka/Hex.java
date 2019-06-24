@@ -1,5 +1,7 @@
 package com.pavka;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -17,6 +19,8 @@ public class Hex extends Image {
     public ArrayList<Force> forces;
     public final static int size = 10;
 
+    //static Texture texture = new Texture("symbols/Blue.png");
+
 
     public Hex() {
         forces = new ArrayList<Force>();
@@ -30,6 +34,11 @@ public class Hex extends Image {
         setBounds(getRelX() - 8, getRelY() - 8, 16, 16);
 
     }
+
+    /*@Override
+    public void draw(Batch batch, float alpha) {
+        batch.draw(texture, getRelX(), getRelY());
+    }*/
 
     public Array<Hex> getNeighbours() {
         Array<Hex> neighbours = new Array<Hex>();

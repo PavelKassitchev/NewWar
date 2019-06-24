@@ -48,9 +48,10 @@ public class Play extends Stage implements Screen {
     private OrthographicCamera camera;
     private Force selectedForce;
     private Hex selectedHex;
+    private Array<Path> selectedPaths;
+
     private Hex currentHex;
     private MileStone currentStone;
-
     private boolean secondClick;
 
     {
@@ -261,280 +262,46 @@ public class Play extends Stage implements Screen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (button == Input.Keys.LEFT) {
+        if (button == Input.Buttons.LEFT) {
 
             Actor hex = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
             if (hex instanceof Hex && Path.isHexInside(paths, (Hex) hex)) {
                 selectedHex = (Hex) hex;
+                selectedPaths = paths;
+                System.out.println("CLICKED!");
                 endHex = paths.peek().toHex;
             }
+        }
 
-            System.out.println("Touch Down Pos: " + getMousePosOnMap().x + " " + getMousePosOnMap().y + "SELECTED HEX = " + selectedHex);
-            //TODO THIS METHOD MOVED TO TOUCHUP!
-            // TODO FOR LEFT MOUSE BUTTON AND OLD MODE!!
-            //parameters: graphPath, paths, startHex, endHex, mileStone, seletedForce
-        /*Actor actor = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
-        //first touch
-        if (startHex == null && endHex == null) {
-            //hec touched
-            if (actor instanceof Hex) {
-                startHex = (Hex) actor;
+        else if (button == Input.Buttons.RIGHT) {
+            if(!secondClick) {
+                startHex = null;
+                endHex = null;
+                selectedForce = null;
+                selectedHex = null;
+                paths = null;
+                if (mileStone != null) mileStone.remove();
+                mileStone = null;
+                if (currentStone != null) currentStone.remove();
+                currentStone = null;
+                currentHex = null;
+                secondClick = true;
+                selectedPaths = null;
             }
-            //force touched
-            if (actor instanceof Force) {
-                selectedForce = (Force) actor;
-                selectedForce.isSelected = true;
-                startHex = selectedForce.hex;
-
-                //orders has already been set
-                if (selectedForce.order.pathsOrder.size > 0) {
-                    paths = selectedForce.order.pathsOrder;
-                    mileStone = selectedForce.order.mileStone;
-                    addActor(mileStone);
-                }
+            else {
+                secondClick = false;
             }
         }
-        //second touch
-        else if (startHex != null && endHex == null) {
-            if (mileStone != null) mileStone.remove();
-            //hex touched
-            if (actor instanceof Hex) {
-                endHex = (Hex) actor;
 
-                //first hex was touched
-                if (selectedForce == null) {
-                    navigate(Battalion.SPEED);
-                }
-                //first force was touched
-                if (selectedForce != null) {
-                    navigate(selectedForce.speed);
-                    selectedForce.order.setPathsOrder(paths);
-                    selectedForce.order.mileStone = mileStone;
-                    selectedForce.isSelected = false;
-                    selectedForce = null;
-                }
-            }
-
-            //force touched
-            if (actor instanceof Force) {
-                Force force = (Force) actor;
-                endHex = force.hex;
-
-                //first hex was touched
-                if (selectedForce == null) {
-                    navigate(Battalion.SPEED);
-                }
-
-                //first force was touched
-                if (selectedForce != null) {
-                    navigate(selectedForce.speed);
-                    selectedForce.order.setPathsOrder(paths);
-                    selectedForce.order.mileStone = mileStone;
-                    //TODO attach?
-                    selectedForce.isSelected = false;
-                    selectedForce = null;
-                }
-            }
-
-        }
-        //further touches
-        else if (endHex != null) {
-            endHex = null;
-            graphPath = null;
-            paths = null;
-            if (mileStone != null) mileStone.remove();
-            mileStone = null;
-
-            //hec touched
-            if (actor instanceof Hex) {
-                startHex = (Hex) actor;
-            }
-            //force touched
-            if (actor instanceof Force) {
-                selectedForce = (Force) actor;
-                selectedForce.isSelected = true;
-                startHex = selectedForce.hex;
-
-                //orders has already been set
-                System.out.println(selectedForce.order.pathsOrder);
-                if (selectedForce.order.pathsOrder.size > 0) {
-                    paths = selectedForce.order.pathsOrder;
-                    mileStone = selectedForce.order.mileStone;
-                    addActor(mileStone);
-                }
-            }
-        }*/
-
-
-            //TODO Общий обзор работы с экраном
-            //LAST VERSION
-        /*if (!newMode) {
-            if (button == Input.Buttons.LEFT) {
-                Actor actor = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
-                //TiledMapTileLayer.Cell cell = null;
-                if (actor instanceof Hex) {
-                    //cell = tileLayer.getCell(((Hex) actor).col, ((Hex) actor).row);
-                    if (startHex == null) startHex = (Hex) actor;
-                    else {
-                        if (endHex == null) {
-                            endHex = (Hex) actor;
-                            graphPath = hexGraph.findPath(startHex, endHex);
-                            paths = new Array<Path>();
-                            Iterator<Hex> iterator;
-                            if (Play.graphPath != null) {
-                                iterator = Play.graphPath.iterator();
-                                Hex sHex = iterator.next();
-                                Hex eHex;
-                                while (iterator.hasNext()) {
-                                    eHex = iterator.next();
-                                    paths.add(Play.hexGraph.getPath(sHex, eHex));
-                                    sHex = eHex;
-                                }
-                                mileStone = new MileStone(paths.peek().getToNode());
-                                System.out.println("Milestone: " + mileStone.hex.getRelX() + " " + mileStone.hex.getRelY());
-                                mileStone.days = Path.getDaysToGo(paths, Battalion.SPEED);
-
-
-                            }
-                            if (selectedForce != null) {
-                                selectedForce.order.setPathsOrder(paths);
-                                selectedForce.order.mileStone = mileStone;
-                                mileStone.days = Path.getDaysToGo(paths, selectedForce.speed);
-                                selectedForce.isSelected = false;
-                                selectedForce = null;
-                            }
-                            addActor(mileStone);
-                        }
-                        else {
-                            endHex = null;
-                            startHex = (Hex) actor;
-                            paths = null;
-                            graphPath = null;
-                            mileStone.remove();
-                        }
-
-
-                    }
-                }
-
-                if (actor instanceof Force) {
-
-                    selectedForce = (Force)actor;
-                    selectedForce.isSelected = true;
-                    paths = selectedForce.order.pathsOrder;
-                    if (mileStone != null) mileStone.remove();
-                    mileStone = selectedForce.order.mileStone;
-
-                    mileStone.days = Path.getDaysToGo(paths, ((Force)actor).speed);
-                    System.out.println("Hex X: " + mileStone.hex.getRelX());
-                    addActor(mileStone);
-                    startHex = selectedForce.hex;
-                    endHex = null;
-                    graphPath = null;
-
-                    //if (mileStone != null) mileStone.remove();
-                }*/
-            //END OF LAST VERSION
-            // VERY OLD VERSION
-                /*Hex hex = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
-
-                if (hex != null && hex.forces.size() == 0) {
-                    if (selectedForce == null) {
-
-                        TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get("TileLayer");
-                        TiledMapTileLayer.Cell cell = null;
-                        if (hex != null) {
-                            cell = layer.getCell(hex.col, hex.row);
-                            System.out.println("Cost: " + cell.getTile().getProperties().get("cost") + " Path: " +
-                                    graphPath);
-                        }
-
-                        if (startHex == null) startHex = hex;
-                        else {
-                            if (endHex == null) {
-                                endHex = hex;
-                                graphPath = hexGraph.findPath(startHex, endHex);
-                                System.out.println("Start = " + startHex.index + " end = " + endHex.index +
-                                        " Counts = " + graphPath.getCount());
-                                paths = new Array<Path>();
-                                Iterator<Hex> iterator;
-                                if (Play.graphPath != null) {
-                                    iterator = Play.graphPath.iterator();
-                                    Hex sHex = iterator.next();
-                                    Hex eHex;
-                                    while (iterator.hasNext()) {
-                                        eHex = iterator.next();
-                                        paths.add(Play.hexGraph.getPath(sHex, eHex));
-                                        sHex = eHex;
-                                    }
-
-                                }
-                            } else {
-                                endHex = null;
-                                startHex = hex;
-                                paths = null;
-                                graphPath = null;
-                            }
-                        }
-                    } else {
-                        System.out.println("Chosen Force: " + selectedForce);
-                        //startHex.forces.remove(selectedForce);
-                        //selectedForce.symbol.setX(hex.getRelX() - 8);
-                        //selectedForce.symbol.setY(hex.getRelY() - 8);
-                        //selectedForce.hex.hex = hex;
-                        //hex.forces.add(selectedForce);
-                        endHex = hex;
-                        graphPath = hexGraph.findPath(startHex, endHex);
-                        System.out.println("Start = " + startHex.index + " end = " + endHex.index +
-                                " Counts = " + graphPath.getCount());
-                        paths = new Array<Path>();
-                        Iterator<Hex> iterator;
-                        if (Play.graphPath != null) {
-                            iterator = Play.graphPath.iterator();
-                            Hex sHex = iterator.next();
-                            Hex eHex;
-                            while (iterator.hasNext()) {
-                                eHex = iterator.next();
-                                paths.add(Play.hexGraph.getPath(sHex, eHex));
-                                sHex = eHex;
-                            }
-
-                        }
-                        Texture t = new Texture("symbols/RedSuspected.png");
-                        TextureRegion tr = new TextureRegion(t);
-                        TextureMapObject tmo = new TextureMapObject(tr);
-                        tmo.setX(hex.getRelX() - 8);
-                        tmo.setY(hex.getRelY() - 8);
-                        objectLayer.getObjects().add(tmo);
-                        selectedForce.order.pathsOrder = paths;
-                        selectedForce = null;
-                    }
-
-
-                } else if (selectedForce == null && hex != null) {
-                    Force force = hex.forces.get(0);
-                    if (force != null) System.out.println("FORCE CHOSEN! Forces size = " + hex.forces.size());
-                    selectedForce = force;
-                    //TODO check carefully! The fragment does not work properly
-                    paths = selectedForce.order.pathsOrder;
-                    startHex = hex;
-                    endHex = null;
-                    //paths = null;
-                    graphPath = null;
-                    System.out.println("Chosen Force: " + selectedForce + "Map Object: " + selectedForce.symbol);
-                }
-
-                System.out.println(hit(getMousePosOnMap().x, getMousePosOnMap().y, true) + " " + screenX + " " + screenY);
-            }
-        }*/
-            // END OF VERY OLD VERSION
-        }
         return true;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.LEFT) {
+
+            System.out.println("Touch UP Pos: " + getMousePosOnMap().x + " " + getMousePosOnMap().y);
+
 
             Actor actor = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
 
@@ -543,13 +310,12 @@ public class Play extends Stage implements Screen {
                 Hex start = paths.first().fromHex;
                 Hex finish = paths.peek().toHex;
                 //Hex end = finish;
-                if (selectedHex != finish) {
-                    Hex interm = (Hex) actor;
-                    paths = navigate(start, interm);
-                    paths.addAll(navigate(interm, finish));
-                    endHex = finish;
+                if (selectedHex != endHex) {
+                    //Hex interm = (Hex) actor;
+                    //paths = navigate(start, interm);
+                    //paths.addAll(navigate(interm, endHex));
+                    //endHex = finish;
                 } else {
-                    paths = (navigate(start, (Hex) actor));
                     endHex = (Hex) actor;
                 }
 
@@ -557,7 +323,6 @@ public class Play extends Stage implements Screen {
                 Hex interm = (Hex)actor;
                 paths = navigate(startHex, interm);
                 paths.addAll(navigate(interm, endHex));
-
             }
             else {
                 endHex = (Hex)actor;
@@ -676,24 +441,6 @@ public class Play extends Stage implements Screen {
                 }
             }
         }
-        if (button == Input.Buttons.RIGHT) {
-            if (!secondClick) {
-                startHex = null;
-                endHex = null;
-                selectedForce = null;
-                selectedHex = null;
-                paths = null;
-                if (mileStone != null) mileStone.remove();
-                mileStone = null;
-                if (currentStone != null) currentStone.remove();
-                currentStone = null;
-                currentHex = null;
-                secondClick = true;
-            }
-            else {
-                secondClick = false;
-            }
-        }
 
 
         return false;
@@ -705,7 +452,7 @@ public class Play extends Stage implements Screen {
 
             Hex start = paths.first().fromHex;
             Hex finish = paths.peek().toHex;
-            Hex end = finish;
+            //Hex end = finish;
 
             Hex current = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
             if (selectedHex != endHex) {
@@ -714,8 +461,13 @@ public class Play extends Stage implements Screen {
                 paths.addAll(navigate(current, finish));
             } else {
                 System.out.println("FINISH SELECTED!");
-                paths = (navigate(start, current));
-                end = current;
+                //paths = navigate(start, endHex);
+                //paths.addAll(navigate(endHex, current));
+                //end = current;
+                //selectedPaths = paths;
+                paths = new Array<Path>(selectedPaths);
+                paths.addAll(navigate(endHex, current));
+                System.out.println("SELECTED PATH: " + selectedPaths.size + "TOTAL PATH: " + paths.size);
             }
         }
 
@@ -739,7 +491,6 @@ public class Play extends Stage implements Screen {
                 if (selectedForce != null) speed = selectedForce.speed;
                 currentStone.days = Path.getDaysToGo(trace, speed);
             }
-
         } else {
             currentHex = null;
             if (currentStone != null) currentStone.remove();

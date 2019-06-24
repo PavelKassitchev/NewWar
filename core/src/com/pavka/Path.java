@@ -1,6 +1,8 @@
 package com.pavka;
 
 import com.badlogic.gdx.ai.pfa.Connection;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
@@ -11,6 +13,8 @@ public class Path extends Image implements Connection<Hex> {
     Hex toHex;
     float cost;
 
+    //static Texture texture = new Texture("Symbols/Blue.png");
+
     public Path(Hex fromHex, Hex toHex){
         this.fromHex = fromHex;
         this.toHex = toHex;
@@ -18,10 +22,10 @@ public class Path extends Image implements Connection<Hex> {
         //cost = Vector2.dst(fromHex.col, fromHex.row, toHex.col, toHex.row);
         cost = ((Float)(fromHex.cell.getTile().getProperties().get("cost")) + (Float)(fromHex.cell.getTile().getProperties().get("cost"))) / 2;
 
-        /*setBounds(fromHex.getRelX(), fromHex.getRelY(), 16, 2);
+        /*setBounds(fromHex.getRelX(), fromHex.getRelY(), 16, 0.5f);
         if (fromHex.row != toHex.row) {
             if (fromHex.row % 2 == 0) {
-                rotateBy(90);
+                rotateBy(60);
             }
         }*/
     }
@@ -67,4 +71,10 @@ public class Path extends Image implements Connection<Hex> {
         shapeRenderer.rectLine(fromHex.getRelX(), fromHex.getRelY(), toHex.getRelX(), toHex.getRelY(), 1);
         shapeRenderer.end();
     }
+
+    /*@Override
+    public void draw(Batch batch, float alpha) {
+        batch.draw(texture, fromHex.getRelX(), toHex.getRelY());
+
+    }*/
 }
