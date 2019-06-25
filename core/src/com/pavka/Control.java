@@ -25,13 +25,13 @@ public class Control extends Table {
         Label forceLabel = new Label("Forces: ", new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
         add(forceLabel);
         setPosition(hex.getX(), hex.getY());
-        setBounds(getX(), getY(), 32, 32);
+        setBounds(getX()-8, getY()-8, 64, 64);
         setTouchable(Touchable.enabled);
         setVisible(true);
         setColor(255, 255, 255, 1);
         Skin skin = new Skin();
         TextureRegion region = new TextureRegion();
-        region.setRegion(new Texture("symbols/Blue.png"));
+        region.setRegion(new Texture("symbols/ArtRed.png"));
         skin.add("region", region);
         setSkin(skin);
         setBackground(skin.getDrawable("region"));
