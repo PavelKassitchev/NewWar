@@ -194,7 +194,7 @@ public class Play extends Stage implements Screen {
         }
 
         if (keycode == Input.Keys.I) {
-            addActor(new Control(null, null));
+            addActor(new Control(null));
         }
         if (keycode == Input.Keys.Q) {
             act();
@@ -310,7 +310,7 @@ public class Play extends Stage implements Screen {
             }
             else {
                 //Actor hex = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
-                if (actor instanceof Hex) control = new Control((Hex)actor, null);
+                if (actor instanceof Hex) control = new Control((Hex)actor);
                 addActor(control);
                 secondClick = false;
             }

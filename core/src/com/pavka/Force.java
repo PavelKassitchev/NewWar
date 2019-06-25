@@ -618,7 +618,7 @@ public class Force extends Image {
             }
             if (movePoints / movementCost >=1) {
 
-                hex.forces.remove(this);
+                hex.forces.removeValue(this, true);
                 Hex newHex = order.pathsOrder.get(0).toHex;
                 order.pathsOrder.removeRange(0, 0);
                 //symbol.setX(newHex.getRelX() - 8);

@@ -16,21 +16,21 @@ public class Hex extends Image {
     public String name;
     public int index;
     public TiledMapTileLayer.Cell cell;
-    public ArrayList<Force> forces;
+    public Array<Force> forces;
     public final static int size = 10;
 
     //static Texture texture = new Texture("symbols/Blue.png");
 
 
     public Hex() {
-        forces = new ArrayList<Force>();
+        forces = new Array<Force>();
     }
     public Hex(int q, int r) {
 
         col = q;
         row = r;
         cell = layer.getCell(col, row);
-        forces = new ArrayList<Force>();
+        forces = new Array<Force>();
         setBounds(getRelX() - 8, getRelY() - 8, 16, 16);
 
     }
