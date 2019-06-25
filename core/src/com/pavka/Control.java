@@ -30,11 +30,15 @@ public class Control extends Table {
         setVisible(true);
         setColor(255, 255, 255, 1);
         Skin skin = new Skin();
+        Color color = new Color(255, 255, 255, 1);
+        skin.add("color", color);
         TextureRegion region = new TextureRegion();
         region.setRegion(new Texture("symbols/ArtRed.png"));
         skin.add("region", region);
         setSkin(skin);
         setBackground(skin.getDrawable("region"));
+        setDebug(true);
+        setColor(skin.getColor("color"));
 
     }
 }
