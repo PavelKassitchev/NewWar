@@ -1,7 +1,10 @@
 package com.pavka;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -22,6 +25,16 @@ public class Control extends Table {
         Label forceLabel = new Label("Forces: ", new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
         add(forceLabel);
         setPosition(hex.getX(), hex.getY());
+        setBounds(getX(), getY(), 32, 32);
+        setTouchable(Touchable.enabled);
+        setVisible(true);
+        setColor(255, 255, 255, 1);
+        Skin skin = new Skin();
+        TextureRegion region = new TextureRegion();
+        region.setRegion(new Texture("symbols/Blue.png"));
+        skin.add("region", region);
+        setSkin(skin);
+        setBackground(skin.getDrawable("region"));
 
     }
 }

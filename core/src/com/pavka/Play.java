@@ -287,7 +287,9 @@ public class Play extends Stage implements Screen {
         }
 
         else if (button == Input.Buttons.RIGHT) {
+            Actor actor = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
             if(!secondClick) {
+                if (actor instanceof Control) System.out.println("AHA!");
                 startHex = null;
                 endHex = null;
                 selectedForce = null;
@@ -303,8 +305,8 @@ public class Play extends Stage implements Screen {
                 if(control != null) control.remove();
             }
             else {
-                Actor hex = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
-                control = new Control((Hex)hex, null);
+                //Actor hex = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
+                if (actor instanceof Hex) control = new Control((Hex)actor, null);
                 addActor(control);
                 secondClick = false;
             }
