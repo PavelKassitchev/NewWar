@@ -1,7 +1,6 @@
 package com.pavka;
 
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.objects.TextureMapObject;
@@ -86,7 +85,7 @@ public class Force extends Image {
         squadrons = new ArrayList<Squadron>();
         batteries = new ArrayList<Battery>();
         wagons = new ArrayList<Wagon>();
-        order = new Order(false, 0);
+        order = new Order(false, 0, 0);
         speed = 100;
 
         setTouchable(Touchable.enabled);
@@ -610,7 +609,7 @@ public class Force extends Image {
         float movementCost;
 
         while (order.pathsOrder.size > 0 && movePoints > 0) {
-            movementCost = Hex.size * (Float) hex.cell.getTile().getProperties().get("cost");
+            movementCost = Hex.SIZE * (Float) hex.cell.getTile().getProperties().get("cost");
             if (movePoints / movementCost < 1) {
                 Random random = new Random();
                 if (random.nextDouble() < movePoints / movementCost) movePoints = movementCost;
@@ -632,9 +631,39 @@ public class Force extends Image {
 
         }
         order.mileStone.days = Path.getDaysToGo(order.pathsOrder, speed);
-        //if (order.pathsOrder.size == 0) order.mileStone = new MileStone();
+        //if (order.pathsOrder.SIZE == 0) order.mileStone = new MileStone();
 
         return true;
+    }
+    public double forage() {
+        double food = 0;
+        double space = foodLimit - foodStock;
+        if ((foodStock - foodNeed) / (foodLimit - foodNeed) >= order.isForaging) {
+            return 0;
+        }
+        if (space <= hex.currentHarvest) {
+            hex.currentHarvest -= space;
+            food = space;
+            distributeFood(food);
+            return food;
+        }
+        food = hex.currentHarvest;
+        hex.currentHarvest = 0;
+        space -= food;
+        for (Hex h: hex.getNeighbours()) {
+            if(space <= h.currentHarvest) {
+                h.currentHarvest -= space;
+                food += space;
+                break;
+            }
+            else {
+                food += h.currentHarvest;
+                space -= h.currentHarvest;
+                h.currentHarvest = 0;
+            }
+        }
+        distributeFood(food);
+        return food;
     }
 
 

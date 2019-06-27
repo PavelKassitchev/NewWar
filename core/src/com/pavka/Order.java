@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Array;
 public class Order {
     public boolean seekBattle;
     public double retreatLevel;
+    public double isForaging;
     public Array<Path> pathsOrder = new Array<Path>();
     MileStone mileStone;
 
@@ -14,11 +15,12 @@ public class Order {
         mileStone = new MileStone();
     }
 
-    public Order(boolean seekBattle, double retreatLevel) {
+    public Order(boolean seekBattle, double retreatLevel, double isForaging) {
         pathsOrder = new Array<Path>();
         mileStone = new MileStone();
         this.seekBattle = seekBattle;
         this.retreatLevel = retreatLevel;
+        this.isForaging = isForaging;
     }
 
     public void setPathsOrder(Array<Path> pathsOrder) {

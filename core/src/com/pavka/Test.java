@@ -12,8 +12,8 @@ public class Test {
 
         Force france = createForce(FRANCE,0, 1, 0);
         Force austria = createForce(AUSTRIA, 0, 0, 1);
-        france.order = new Order(true, 0.4);
-        austria.order = new Order(false, 0.4);
+        france.order = new Order(true, 0.4, 0);
+        austria.order = new Order(false, 0.4, 0);
         Force f = new Force(new Battalion(FRANCE, hex), new Battalion(FRANCE, hex));
         Force w = new Wagon(FRANCE, hex);
         //france.attach(f);
@@ -55,9 +55,9 @@ public class Test {
         int n = 0;
         for (int i = 0; i < 1000; i++) {
             Force att = createForce(attacker.nation, attacker.battalions.size(), attacker.squadrons.size(), attacker.batteries.size(), attacker.morale);
-            att.order= new Order(attacker.order.seekBattle, attacker.order.retreatLevel);
+            att.order = new Order(attacker.order.seekBattle, attacker.order.retreatLevel, 0);
             Force def = createForce(defender.nation, defender.battalions.size(), defender.squadrons.size(), defender.batteries.size(), defender.morale);
-            def.order = new Order(defender.order.seekBattle, defender.order.retreatLevel);
+            def.order = new Order(defender.order.seekBattle, defender.order.retreatLevel, 0);
 
             Battle battle = new Battle(att, def);
             int r = battle.resolve();

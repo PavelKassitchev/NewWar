@@ -14,10 +14,13 @@ public class Hex extends Image {
     public int col;
     public int row;
     public String name;
+    public double maxHarvest = 6;
+    public double currentHarvest;
     public int index;
     public TiledMapTileLayer.Cell cell;
     public Array<Force> forces;
-    public final static int size = 10;
+    public final static int SIZE = 10;
+
 
     //static Texture texture = new Texture("symbols/Blue.png");
 
@@ -32,6 +35,7 @@ public class Hex extends Image {
         cell = layer.getCell(col, row);
         forces = new Array<Force>();
         setBounds(getRelX() - 8, getRelY() - 8, 16, 16);
+        currentHarvest = maxHarvest;
 
     }
 

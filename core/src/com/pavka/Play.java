@@ -166,6 +166,7 @@ public class Play extends Stage implements Screen {
     public boolean keyUp(int keycode) {
         if (keycode == Input.Keys.C) {
             Force force = new Force(new Squadron(Nation.FRANCE, hexGraph.getHex(8, 4)));
+            force.order.isForaging = 0.8;
 
             System.out.println(force.getX() + " " + force.getY());
             System.out.println(force.order.pathsOrder);

@@ -269,7 +269,7 @@ public class StagePlay extends Stage implements Screen {
 
                 } else if (chosenForce == null && hex != null) {
                     Force force = hex.forces.get(0);
-                    if (force != null) System.out.println("FORCE CHOSEN! Forces size = " + hex.forces.size);
+                    if (force != null) System.out.println("FORCE CHOSEN! Forces SIZE = " + hex.forces.size);
                     chosenForce = force;
                     //TODO check carefully! The fragment does not work properly
                     paths = chosenForce.order.pathsOrder;
