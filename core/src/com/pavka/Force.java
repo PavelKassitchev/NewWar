@@ -70,7 +70,7 @@ public class Force extends Image {
         super.act(delta);
         eat();
         distributeFood(0);
-        //forage();
+        forage();
         move();
         //order.mileStone.days = Path.getDaysToGo(order.pathsOrder, speed);
     }
@@ -111,6 +111,7 @@ public class Force extends Image {
         if (isUnit) {
             //TODO
         }
+        hex.forces.removeValue(force, true);
         force.isSub = true;
         force.superForce = this;
         forces.add(force);
@@ -122,6 +123,7 @@ public class Force extends Image {
     public Force detach(Force force) {
         force.isSub = false;
         force.superForce = null;
+        force.hex = hex;
         forces.remove(force);
         force.order = new Order();
         exclude(force);
@@ -230,6 +232,7 @@ public class Force extends Image {
         ammoStock -= force.ammoStock;
         fire -= force.fire;
         charge -= force.charge;
+
 
         if (strength > 0) {
             xp = (x - force.xp * force.strength) / strength;
