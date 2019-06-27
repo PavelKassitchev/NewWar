@@ -70,7 +70,7 @@ public class Force extends Image {
         super.act(delta);
         eat();
         distributeFood(0);
-        forage();
+        //forage();
         move();
         //order.mileStone.days = Path.getDaysToGo(order.pathsOrder, speed);
     }
@@ -618,6 +618,7 @@ public class Force extends Image {
             }
             if (movePoints / movementCost >=1) {
 
+                forage();
                 hex.forces.removeValue(this, true);
                 Hex newHex = order.pathsOrder.get(0).toHex;
                 order.pathsOrder.removeRange(0, 0);

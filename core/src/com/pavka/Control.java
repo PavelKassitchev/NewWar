@@ -22,6 +22,9 @@ public class Control extends Table {
         Label costLabel = new Label("Cost: " + hex.cell.getTile().getProperties().get("cost"), new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
         add(costLabel);
         row();
+        Label cropsLabel = new Label("Crops: " + hex.currentHarvest, new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
+        add(cropsLabel);
+        row();
         if (forces != null && forces.size > 0) {
             Label forceLabel = new Label("Forces: " + forces, new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
             add(forceLabel);
