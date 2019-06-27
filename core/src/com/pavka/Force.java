@@ -69,7 +69,7 @@ public class Force extends Image {
     public void act(float delta) {
         super.act(delta);
         eat();
-        distributeFood(0);
+        //distributeFood(0);
         forage();
         move();
         //order.mileStone.days = Path.getDaysToGo(order.pathsOrder, speed);
