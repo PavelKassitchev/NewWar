@@ -222,8 +222,10 @@ public class Play extends Stage implements Screen {
         }
 
         if (keycode == Input.Keys.F) {
-            for (Force force: whiteTroops) {
+            for (Force force : whiteTroops) {
                 System.out.println(force.foodStock);
+                force.eat();
+                System.out.println(force.forage());
             }
         }
         return true;
@@ -286,11 +288,9 @@ public class Play extends Stage implements Screen {
                 System.out.println("CLICKED!");
                 endHex = paths.peek().toHex;
             }
-        }
-
-        else if (button == Input.Buttons.RIGHT) {
+        } else if (button == Input.Buttons.RIGHT) {
             Actor actor = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
-            if(!secondClick) {
+            if (!secondClick) {
                 if (actor instanceof Control) System.out.println("Control!");
                 if (actor instanceof Hex) System.out.println("Hex!");
                 if (actor instanceof Force) System.out.println("Force!");
@@ -307,12 +307,13 @@ public class Play extends Stage implements Screen {
                 currentHex = null;
                 secondClick = true;
                 selectedPaths = null;
-                if(control != null) control.remove();
-            }
-            else {
+                if (control != null) control.remove();
+            } else {
                 //Actor hex = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
-                if (actor instanceof Hex) control = new Control((Hex)actor);
-                addActor(control);
+                if (actor instanceof Hex) {
+                    control = new Control((Hex) actor);
+                    addActor(control);
+                }
                 secondClick = false;
             }
         }

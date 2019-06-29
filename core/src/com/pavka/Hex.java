@@ -46,18 +46,18 @@ public class Hex extends Image {
 
     public Array<Hex> getNeighbours() {
         Array<Hex> neighbours = new Array<Hex>();
-        if (col > 0) neighbours.add(new Hex(col - 1, row));
-        if (col < 63) neighbours.add(new Hex(col + 1, row));
+        if (col > 0) neighbours.add(Play.hexGraph.getHex(col - 1, row));
+        if (col < 63) neighbours.add(Play.hexGraph.getHex(col + 1, row));
         int offset = 0;
         if (row % 2 == 1) {
             offset = -1;
         }
 
         if (row > 0) {
-            if (col + offset >= 0) neighbours.add(new Hex(col + offset, row - 1));
+            if (col + offset >= 0) neighbours.add(Play.hexGraph.getHex(col + offset, row - 1));
 
             if (col + 1 + offset < 64) {
-                neighbours.add(new Hex(col + 1 + offset, row - 1));
+                neighbours.add(Play.hexGraph.getHex(col + 1 + offset, row - 1));
             }
         }
         if (row < 63) {

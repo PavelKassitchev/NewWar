@@ -8,6 +8,7 @@ public abstract class Unit extends Force {
     public static final int INFANTRY = 1;
     public static final int CAVALRY = 2;
     public static final int ARTILLERY = 3;
+    public static final int HEADQUATERS = 4;
 
     public static final double FIRE_ON_ARTILLERY = 0.5;
     public static final double CHARGE_ON_ARTILLERY = 1.3;

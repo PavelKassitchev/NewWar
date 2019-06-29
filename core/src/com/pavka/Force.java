@@ -28,7 +28,8 @@ public class Force extends Image {
     List<Squadron> squadrons;
     List<Battery> batteries;
     List<Wagon> wagons;
-
+    General general;
+    Trace trace;
     Force superForce;
 
     Nation nation;
@@ -86,6 +87,7 @@ public class Force extends Image {
         squadrons = new ArrayList<Squadron>();
         batteries = new ArrayList<Battery>();
         wagons = new ArrayList<Wagon>();
+        trace = new Trace();
         order = new Order(false, 0, 0);
         speed = 100;
 
@@ -100,6 +102,7 @@ public class Force extends Image {
     public Force(Force... subForces) {
 
         this(subForces[0].nation, subForces[0].hex);
+        trace = subForces[0].trace;
         for (Force force : subForces) {
             attach(force);
         }
@@ -124,8 +127,10 @@ public class Force extends Image {
         force.isSub = false;
         force.superForce = null;
         force.hex = hex;
+        hex.forces.add(force);
         forces.remove(force);
         force.order = new Order();
+        force.trace = new Trace();
         exclude(force);
 
         return force;
@@ -658,6 +663,8 @@ public class Force extends Image {
         for (Hex h: hex.getNeighbours()) {
             if(space <= h.currentHarvest) {
                 h.currentHarvest -= space;
+                System.out.println("neighbour: " + h.currentHarvest);
+                System.out.println(h.col + " " + h.row);
                 food += space;
                 break;
             }
@@ -665,6 +672,7 @@ public class Force extends Image {
                 food += h.currentHarvest;
                 space -= h.currentHarvest;
                 h.currentHarvest = 0;
+                System.out.println("ZERO");
             }
         }
         distributeFood(food);
