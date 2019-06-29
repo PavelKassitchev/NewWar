@@ -629,6 +629,7 @@ public class Force extends Image {
                 forage();
                 hex.forces.removeValue(this, true);
                 Hex newHex = order.pathsOrder.get(0).toHex;
+                trace.add(newHex);
                 order.pathsOrder.removeRange(0, 0);
                 //symbol.setX(newHex.getRelX() - 8);
                 //symbol.setY(newHex.getRelY() - 8);
