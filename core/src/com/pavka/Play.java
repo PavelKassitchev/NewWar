@@ -25,7 +25,7 @@ import java.util.Iterator;
 
 public class Play extends Stage implements Screen {
 
-
+    public static int turn;
     public static final String MAP = "maps/WarMap.tmx";
 
     public static TiledMap map = new TmxMapLoader().load(MAP);
@@ -44,8 +44,10 @@ public class Play extends Stage implements Screen {
     MileStone mileStone;
     ShapeRenderer shapeRenderer;
     Array<Path> paths;
-    Array<Force> blackTroops = new Array<Force>();
-    Array<Force> whiteTroops = new Array<Force>();
+    static Array<Force> blackTroops = new Array<Force>();
+    static Array<Force> whiteTroops = new Array<Force>();
+    public static Commander blackCommander;
+    public static Commander whiteCommander;
     private HexagonalTiledMapRenderer renderer;
     private OrthographicCamera camera;
     private Force selectedForce;
@@ -194,10 +196,16 @@ public class Play extends Stage implements Screen {
 
         }
 
-        if (keycode == Input.Keys.I) {
-            addActor(new Control(null));
+        if (keycode == Input.Keys.T) {
+            Commander commander = new Commander(Nation.FRANCE, hexGraph.getHex(16, 16));
+            Force force = new Force(commander);
+            whiteCommander = commander;
+            whiteTroops.add(force);
+            addActor(force);
+
         }
         if (keycode == Input.Keys.Q) {
+            turn++;
             act();
 
             if (selectedForce != null) selectedForce.isSelected = false;
@@ -236,7 +244,7 @@ public class Play extends Stage implements Screen {
         return false;
     }
 
-    private Array<Path> navigate(Hex start, Hex finish) {
+    public static Array<Path> navigate(Hex start, Hex finish) {
         Array<Path> paths = new Array<Path>();
         if (start != finish) {
             graphPath = hexGraph.findPath(start, finish);

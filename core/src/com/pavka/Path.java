@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.Iterator;
+
 public class Path extends Image implements Connection<Hex> {
 
     Hex fromHex;
@@ -27,6 +29,8 @@ public class Path extends Image implements Connection<Hex> {
             }
         }*/
     }
+
+
     public static int getDaysToGo(Array<Path> paths, double speed) {
         double distance = 0;
         for (Path path: paths) {

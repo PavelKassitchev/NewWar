@@ -2,7 +2,7 @@ package com.pavka;
 
 import com.badlogic.gdx.utils.Array;
 
-public class Order {
+public class Order extends Message {
     public boolean seekBattle;
     public double retreatLevel;
     public double isForaging;

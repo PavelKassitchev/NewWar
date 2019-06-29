@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,7 @@ public class Force extends Image {
     Hex hex;
     //TODO create orders;
     Order order;
+    Message message;
 
     boolean isUnit;
     boolean isSub;
@@ -69,10 +71,19 @@ public class Force extends Image {
     @Override
     public void act(float delta) {
         super.act(delta);
+        if (message != null && message.turn == Play.turn) {
+            if (message instanceof Order) order = (Order)message;
+        }
         eat();
         //distributeFood(0);
         forage();
         move();
+        if (general != null && general instanceof Commander) {
+            Commander commander = (Commander) general;
+            commander.getReports();
+            commander.getViews();
+
+        }
         //order.mileStone.days = Path.getDaysToGo(order.pathsOrder, speed);
     }
     //STATIC SECTION
@@ -103,6 +114,8 @@ public class Force extends Image {
 
         this(subForces[0].nation, subForces[0].hex);
         trace = subForces[0].trace;
+        order = subForces[0].order;
+        message = subForces[0].message;
         for (Force force : subForces) {
             attach(force);
         }
@@ -128,9 +141,11 @@ public class Force extends Image {
         force.superForce = null;
         force.hex = hex;
         hex.forces.add(force);
+
         forces.remove(force);
         force.order = new Order();
         force.trace = new Trace();
+        force.message = null;
         exclude(force);
 
         return force;
@@ -634,6 +649,7 @@ public class Force extends Image {
                 //symbol.setX(newHex.getRelX() - 8);
                 //symbol.setY(newHex.getRelY() - 8);
                 hex = newHex;
+                if (general != null) general.hex = hex;
                 setBounds(newHex.getRelX() - 8, newHex.getRelY() - 8, 12, 12 );
                 hex.forces.add(this);
                 movePoints -= movementCost;
