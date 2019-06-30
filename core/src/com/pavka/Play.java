@@ -196,6 +196,7 @@ public class Play extends Stage implements Screen {
             addActor(force);
             whiteCommander.getReports();
             whiteCommander.getViews();
+            act();
 
         }
 
