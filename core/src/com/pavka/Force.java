@@ -78,10 +78,16 @@ public class Force extends Image {
         //distributeFood(0);
         forage();
         move();
+        trace.add(hex);
         if (general != null && general instanceof Commander) {
             Commander commander = (Commander) general;
             commander.getReports();
             commander.getViews();
+            if (commander.sentReports.size > 0) System.out.println("Sent from " + commander.sentReports.peek().force.name +
+                    "expected turn " + commander.sentReports.peek().turn);
+            System.out.println("Reported: " + commander.sentReports.size +
+                    " in Views: " + commander.receivedReports.size + " Element: " +
+                    commander.receivedReports.get(0).force.name + " turn: " + commander.receivedReports.get(0).turn);
 
         }
         //order.mileStone.days = Path.getDaysToGo(order.pathsOrder, speed);
@@ -99,6 +105,7 @@ public class Force extends Image {
         batteries = new ArrayList<Battery>();
         wagons = new ArrayList<Wagon>();
         trace = new Trace();
+        trace.add(hex);
         order = new Order(false, 0, 0);
         speed = 100;
 
@@ -644,7 +651,7 @@ public class Force extends Image {
                 forage();
                 hex.forces.removeValue(this, true);
                 Hex newHex = order.pathsOrder.get(0).toHex;
-                trace.add(newHex);
+                //trace.add(newHex);
                 order.pathsOrder.removeRange(0, 0);
                 //symbol.setX(newHex.getRelX() - 8);
                 //symbol.setY(newHex.getRelY() - 8);

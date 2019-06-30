@@ -31,13 +31,14 @@ public class Commander extends General {
     public void getReports() {
 
         for (Force force: Play.whiteTroops) {
+            System.out.println(force.name);
             Array<Path> paths = Play.navigate(force.hex, hex);
             int days = Path.getDaysToGo(paths, General.SPEED);
             Report report = new Report(force, Play.turn + days);
             report.issued = Play.turn;
             for (Iterator<Report> iterator = sentReports.iterator(); iterator.hasNext();) {
                 Report oldReport = iterator.next();
-                if(oldReport.force == force && oldReport.turn >= Play.turn) iterator.remove();
+                if(oldReport.force == force && oldReport.turn >= report.turn) iterator.remove();
             }
             sentReports.add(report);
         }
@@ -49,6 +50,7 @@ public class Commander extends General {
             Report report = iterator.next();
             if (report.turn == Play.turn) {
                 receivedReports.add(report);
+                System.out.println("REPORT ADDED! - " + report.force.name);
                 iterator.remove();
             }
         }

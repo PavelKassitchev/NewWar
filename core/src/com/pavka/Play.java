@@ -169,6 +169,7 @@ public class Play extends Stage implements Screen {
         if (keycode == Input.Keys.C) {
             Force force = new Force(new Squadron(Nation.FRANCE, hexGraph.getHex(8, 4)));
             force.order.isForaging = 0.8;
+            force.name = "Cavalry Sq.";
 
             System.out.println(force.getX() + " " + force.getY());
             System.out.println(force.order.pathsOrder);
@@ -197,8 +198,10 @@ public class Play extends Stage implements Screen {
         }
 
         if (keycode == Input.Keys.T) {
-            Commander commander = new Commander(Nation.FRANCE, hexGraph.getHex(16, 16));
+            Commander commander = new Commander(Nation.FRANCE, hexGraph.getHex(32, 32));
             Force force = new Force(commander);
+            force.name = "Headquarters";
+            force.general = commander;
             whiteCommander = commander;
             whiteTroops.add(force);
             addActor(force);
