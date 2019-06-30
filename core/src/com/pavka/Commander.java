@@ -7,7 +7,7 @@ import java.util.Iterator;
 public class Commander extends General {
 
     public Array<Report> sentReports = new Array<Report>();
-    public Array<Report> receivedReports;
+    public Array<Report> receivedReports = new Array<Report>();
 
     public Commander(Nation nation, Hex hex) {
         super(nation, hex);

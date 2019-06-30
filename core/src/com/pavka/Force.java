@@ -61,18 +61,32 @@ public class Force extends Image {
 
     double speed;
 
-    public void draw(Batch batch, float alpha){
+    public void draw(Batch batch, float alpha) {
 
-        if (!isSelected) batch.draw(texture,hex.getRelX() - 8,hex.getRelY() - 8, IMAGE_SIZE, IMAGE_SIZE);
-        else batch.draw(texture, hex.getRelX() - 8,hex.getRelY() - 8, IMAGE_SIZE * 1.1f, IMAGE_SIZE * 1.1f);
+        /*if (!isSelected) batch.draw(texture,hex.getRelX() - 8,hex.getRelY() - 8, IMAGE_SIZE, IMAGE_SIZE);
+        else batch.draw(texture, hex.getRelX() - 8,hex.getRelY() - 8, IMAGE_SIZE * 1.1f, IMAGE_SIZE * 1.1f);*/
+        if (general != null && general instanceof Commander) {
+            if (!isSelected) batch.draw(texture, hex.getRelX() - 8, hex.getRelY() - 8, IMAGE_SIZE, IMAGE_SIZE);
+            else batch.draw(texture, hex.getRelX() - 8, hex.getRelY() - 8, IMAGE_SIZE * 1.1f, IMAGE_SIZE * 1.1f);
+        } else {
+            for (Report report : Play.whiteCommander.receivedReports) {
+                if (report.force == this) {
+                    Hex hex = report.hex;
+                    if (!isSelected) batch.draw(texture, hex.getRelX() - 8, hex.getRelY() - 8, IMAGE_SIZE, IMAGE_SIZE);
+                    else
+                        batch.draw(texture, hex.getRelX() - 8, hex.getRelY() - 8, IMAGE_SIZE * 1.1f, IMAGE_SIZE * 1.1f);
+                    break;
+                }
+            }
 
+        }
     }
 
     @Override
     public void act(float delta) {
         super.act(delta);
         if (message != null && message.turn == Play.turn) {
-            if (message instanceof Order) order = (Order)message;
+            if (message instanceof Order) order = (Order) message;
         }
         eat();
         //distributeFood(0);
@@ -83,8 +97,9 @@ public class Force extends Image {
             Commander commander = (Commander) general;
             commander.getReports();
             commander.getViews();
-            if (commander.sentReports.size > 0) System.out.println("Sent from " + commander.sentReports.peek().force.name +
-                    "expected turn " + commander.sentReports.peek().turn);
+            if (commander.sentReports.size > 0)
+                System.out.println("Sent from " + commander.sentReports.peek().force.name +
+                        "expected turn " + commander.sentReports.peek().turn);
             System.out.println("Reported: " + commander.sentReports.size +
                     " in Views: " + commander.receivedReports.size + " Element: " +
                     commander.receivedReports.get(0).force.name + " turn: " + commander.receivedReports.get(0).turn);
@@ -294,25 +309,23 @@ public class Force extends Image {
 
     }
 
-    public double eat(){
+    public double eat() {
 
         double eatenFood = 0;
-        for (Force force: forces) {
+        for (Force force : forces) {
             if (force.isUnit) {
                 if (force.foodStock >= force.foodNeed) {
                     force.foodStock -= force.foodNeed;
                     foodStock -= force.foodNeed;
                     eatenFood += force.foodNeed;
-                }
-                else {
+                } else {
                     foodStock -= force.foodStock;
                     eatenFood += force.foodStock;
                     force.foodStock = 0;
                 }
-            }
-            else {
+            } else {
                 double f = force.eat();
-                force.superForce.foodStock -=f;
+                force.superForce.foodStock -= f;
                 eatenFood += f;
             }
         }
@@ -646,7 +659,7 @@ public class Force extends Image {
                 if (random.nextDouble() < movePoints / movementCost) movePoints = movementCost;
                 else movePoints = 0;
             }
-            if (movePoints / movementCost >=1) {
+            if (movePoints / movementCost >= 1) {
 
                 forage();
                 hex.forces.removeValue(this, true);
@@ -657,7 +670,7 @@ public class Force extends Image {
                 //symbol.setY(newHex.getRelY() - 8);
                 hex = newHex;
                 if (general != null) general.hex = hex;
-                setBounds(newHex.getRelX() - 8, newHex.getRelY() - 8, 12, 12 );
+                setBounds(newHex.getRelX() - 8, newHex.getRelY() - 8, 12, 12);
                 hex.forces.add(this);
                 movePoints -= movementCost;
 
@@ -669,6 +682,7 @@ public class Force extends Image {
 
         return true;
     }
+
     public double forage() {
         double food = 0;
         double space = foodLimit - foodStock;
@@ -684,15 +698,14 @@ public class Force extends Image {
         food = hex.currentHarvest;
         hex.currentHarvest = 0;
         space -= food;
-        for (Hex h: hex.getNeighbours()) {
-            if(space <= h.currentHarvest) {
+        for (Hex h : hex.getNeighbours()) {
+            if (space <= h.currentHarvest) {
                 h.currentHarvest -= space;
                 System.out.println("neighbour: " + h.currentHarvest);
                 System.out.println(h.col + " " + h.row);
                 food += space;
                 break;
-            }
-            else {
+            } else {
                 food += h.currentHarvest;
                 space -= h.currentHarvest;
                 h.currentHarvest = 0;

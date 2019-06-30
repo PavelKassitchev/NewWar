@@ -194,6 +194,8 @@ public class Play extends Stage implements Screen {
             //force.symbol = tmo;*/
 
             addActor(force);
+            whiteCommander.getReports();
+            whiteCommander.getViews();
 
         }
 
