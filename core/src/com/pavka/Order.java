@@ -7,7 +7,8 @@ public class Order extends Message {
     public double retreatLevel;
     public double isForaging;
     public Array<Path> pathsOrder = new Array<Path>();
-    MileStone mileStone;
+    public MileStone mileStone;
+    public Direction frontDirection;
 
 
     public Order() {

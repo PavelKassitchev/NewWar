@@ -66,7 +66,7 @@ public class Force extends Image {
         if (!isSelected) batch.draw(texture,hex.getRelX() - 8,hex.getRelY() - 8, IMAGE_SIZE, IMAGE_SIZE);
         else batch.draw(texture, hex.getRelX() - 8,hex.getRelY() - 8, IMAGE_SIZE * 1.1f, IMAGE_SIZE * 1.1f);
 
-        //THIS IS FOR DELAED VIEWS
+        //THIS IS FOR DELAYED VIEWS
 
         /*if (general != null && general instanceof Commander) {
             if (!isSelected) batch.draw(texture, hex.getRelX() - 8, hex.getRelY() - 8, IMAGE_SIZE, IMAGE_SIZE);
@@ -123,7 +123,10 @@ public class Force extends Image {
             return order.pathsOrder.get(0).toHex;
         }
         else {
-            if (getBackHex() == null) return null;
+            for (Hex h: hex.getNeighbours()) {
+
+
+            }
             //TODO add hex!!
             return null;
         }

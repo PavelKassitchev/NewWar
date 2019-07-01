@@ -51,6 +51,56 @@ public class Path extends Image implements Connection<Hex> {
     public double getDays(double speed) {
         return Hex.SIZE * (Float)getFromNode().cell.getTile().getProperties().get("cost") / speed;
     }
+    public Path getFrontDirection(Hex fromHex, Direction direction) {
+
+        int row = 0;
+        int col = 0;
+        switch (direction) {
+            case EAST:
+                row = fromHex.row;
+                col = fromHex.col == 63? fromHex.col: fromHex.col + 1;
+                break;
+
+            case WEST:
+                row = fromHex.row;
+                col = fromHex.col == 0? fromHex.col: fromHex.col - 1;
+                break;
+
+            case NORTHEAST:
+                row = fromHex.row == 63? fromHex.row: fromHex.row + 1;
+                if (fromHex.col == 63) col = fromHex.col;
+                else {
+                    col = fromHex.col % 2 == 0? fromHex.col + 1: fromHex.col;
+                }
+                break;
+
+            case NORTHWEST:
+                row = fromHex.row == 63? fromHex.row: fromHex.row + 1;
+                if (fromHex.col == 0) col = fromHex.col;
+                else {
+                    col = fromHex.col % 2 == 0? fromHex.col: fromHex.col - 1;
+                }
+                break;
+
+            case SOUTHWEST:
+                row = fromHex.row == 0? fromHex.row: fromHex.row - 1;
+                if (fromHex.col == 0) col = fromHex.col;
+                else {
+                    col = fromHex.col % 2 == 0? fromHex.col: fromHex.col - 1;
+                }
+                break;
+
+            case SOUTHEAST:
+                row = fromHex.row == 0? fromHex.row: fromHex.row - 1;
+                if (fromHex.col == 63) col = fromHex.col;
+                else {
+                    col = fromHex.col % 2 == 0? fromHex.col + 1: fromHex.col;
+                }
+                break;
+        }
+        Hex toHex = Play.hexGraph.getHex(col, row);
+        return Play.hexGraph.getPath(fromHex, toHex);
+    }
 
     @Override
     public float getCost() {
