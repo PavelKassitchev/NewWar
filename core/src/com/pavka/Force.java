@@ -21,7 +21,8 @@ public class Force extends Image {
 
     public TextureMapObject symbol;
 
-    public Texture texture = new Texture("symbols/CavBlueDivision.png");
+    public Texture textureFrance = new Texture("symbols/CavBlueDivision.png");
+    public Texture textureAustria = new Texture("symbols/CavRedDivision.png");
 
     public boolean isSelected;
 
@@ -63,6 +64,7 @@ public class Force extends Image {
     double speed;
 
     public void draw(Batch batch, float alpha) {
+        Texture texture = nation == Nation.FRANCE? textureFrance: textureAustria;
 
         if (!isSelected) batch.draw(texture,hex.getRelX() - 8,hex.getRelY() - 8, IMAGE_SIZE, IMAGE_SIZE);
         else batch.draw(texture, hex.getRelX() - 8,hex.getRelY() - 8, IMAGE_SIZE * 1.1f, IMAGE_SIZE * 1.1f);
@@ -126,19 +128,14 @@ public class Force extends Image {
             return hex.getNeighbour(order.frontDirection);
         }
 
-
         if (order.pathsOrder != null && order.pathsOrder.size > 0 ) {
-
             return order.pathsOrder.get(0).toHex;
         }
-        else {
-            for (Hex h: hex.getNeighbours()) {
 
-
-            }
-            //TODO add hex!!
-            return null;
+        if (getBackHex() != null){
+            return hex.getNeighbour(hex.getDirection(getBackHex()).getOpposite());
         }
+        return null;
     }
     //STATIC SECTION
 

@@ -175,29 +175,14 @@ public class Play extends Stage implements Screen {
             System.out.println(force.order.pathsOrder);
             whiteTroops.add(force);
             addActor(force);
-            //force.hex = hexGraph.getHex(8, 4);
+        }
 
-            //Texture texture = new Texture("symbols/InfRedCorps.png");
-            //TextureRegion tr = new TextureRegion(texture);
-            //TextureMapObject tmo = new TextureMapObject(tr);
-            //tmo.setX(force.hex.getRelX() - 8);
-            //tmo.setY(force.hex.getRelY() - 8);
-
-
-            //objectLayer.getObjects().add(tmo);
-            //force.hex.forces.add(force);
-            /*force.addListener(new InputListener() {
-                public boolean touchDown (InputEvent event, float x, float y, int pointer, int button){
-                    System.out.println(event.getTarget() +"hhh"+  x);
-                    return true;
-                }
-            });*/
-            //force.symbol = tmo;
-
-            /*whiteCommander.getReports();
-            whiteCommander.getViews();
-            act();*/
-
+        if(keycode == Input.Keys.O) {
+            Force force = new Force(new Squadron(Nation.AUSTRIA, hexGraph.getHex(18, 18)));
+            force.order.isForaging = 1;
+            force.name = "2.Squadron";
+            blackTroops.add(force);
+            addActor(force);
         }
 
         if (keycode == Input.Keys.T) {

@@ -122,6 +122,13 @@ public class Hex extends Image {
         return neighbour;
     }
 
+    public Direction getDirection(Hex hex) {
+        for (Direction d: Direction.values()) {
+            if (hex == getNeighbour(d)) return d;
+        }
+        return null;
+    }
+
     public float getRelX() {
         if (row % 2 == 0) return (16 + col * 16);
         return (8 + col * 16);
