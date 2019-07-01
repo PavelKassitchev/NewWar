@@ -1,5 +1,7 @@
 package com.pavka;
 
+import com.badlogic.gdx.utils.Array;
+
 public class LogisticTest {
 
     public static Hex hex = new Hex();
@@ -18,6 +20,13 @@ public class LogisticTest {
         double eatenFood = corps.eat();
         System.out.println("Lunch!");
         System.out.println("Food Need = " + corps.foodNeed + " Food Stock = " + corps.foodStock);
+
+        Array<Integer> numbers = new Array<Integer>();
+        numbers.add(0);
+        numbers.add(1);
+        System.out.println(numbers.size);
+        System.out.println(numbers.get(0));
+        System.out.println(numbers.get(1));
 
     }
 }

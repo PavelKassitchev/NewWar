@@ -173,6 +173,8 @@ public class Play extends Stage implements Screen {
 
             System.out.println(force.getX() + " " + force.getY());
             System.out.println(force.order.pathsOrder);
+            whiteTroops.add(force);
+            addActor(force);
             //force.hex = hexGraph.getHex(8, 4);
 
             //Texture texture = new Texture("symbols/InfRedCorps.png");
@@ -183,7 +185,6 @@ public class Play extends Stage implements Screen {
 
 
             //objectLayer.getObjects().add(tmo);
-            whiteTroops.add(force);
             //force.hex.forces.add(force);
             /*force.addListener(new InputListener() {
                 public boolean touchDown (InputEvent event, float x, float y, int pointer, int button){
@@ -191,12 +192,11 @@ public class Play extends Stage implements Screen {
                     return true;
                 }
             });*/
-            //force.symbol = tmo;*/
+            //force.symbol = tmo;
 
-            addActor(force);
-            whiteCommander.getReports();
+            /*whiteCommander.getReports();
             whiteCommander.getViews();
-            act();
+            act();*/
 
         }
 

@@ -63,9 +63,12 @@ public class Force extends Image {
 
     public void draw(Batch batch, float alpha) {
 
-        /*if (!isSelected) batch.draw(texture,hex.getRelX() - 8,hex.getRelY() - 8, IMAGE_SIZE, IMAGE_SIZE);
-        else batch.draw(texture, hex.getRelX() - 8,hex.getRelY() - 8, IMAGE_SIZE * 1.1f, IMAGE_SIZE * 1.1f);*/
-        if (general != null && general instanceof Commander) {
+        if (!isSelected) batch.draw(texture,hex.getRelX() - 8,hex.getRelY() - 8, IMAGE_SIZE, IMAGE_SIZE);
+        else batch.draw(texture, hex.getRelX() - 8,hex.getRelY() - 8, IMAGE_SIZE * 1.1f, IMAGE_SIZE * 1.1f);
+
+        //THIS IS FOR DELAED VIEWS
+
+        /*if (general != null && general instanceof Commander) {
             if (!isSelected) batch.draw(texture, hex.getRelX() - 8, hex.getRelY() - 8, IMAGE_SIZE, IMAGE_SIZE);
             else batch.draw(texture, hex.getRelX() - 8, hex.getRelY() - 8, IMAGE_SIZE * 1.1f, IMAGE_SIZE * 1.1f);
         } else {
@@ -79,7 +82,7 @@ public class Force extends Image {
                 }
             }
 
-        }
+        }*/
     }
 
     @Override
@@ -106,6 +109,24 @@ public class Force extends Image {
 
         }
         //order.mileStone.days = Path.getDaysToGo(order.pathsOrder, speed);
+    }
+
+    public Hex getBackHex() {
+        int size = trace.route.size;
+        if (size > 1 && trace.route.get(size - 2) != trace.route.get(size - 1)) return trace.route.get(size - 2);
+        else return null;
+    }
+
+    public Hex getForwardHex() {
+        if (order.pathsOrder != null && order.pathsOrder.size > 0 ) {
+
+            return order.pathsOrder.get(0).toHex;
+        }
+        else {
+            if (getBackHex() == null) return null;
+            //TODO add hex!!
+            return null;
+        }
     }
     //STATIC SECTION
 
