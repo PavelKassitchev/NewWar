@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static com.pavka.Direction.*;
 import static com.pavka.Unit.*;
 
 public class Force extends Image {
@@ -112,12 +113,29 @@ public class Force extends Image {
     }
 
     public Hex getBackHex() {
+        if (order.frontDirection != null) {
+            switch (order.frontDirection) {
+                case EAST:
+                    return Path.getFrontDirection(hex, WEST).toHex;
+                case NORTHEAST:
+                    return Path.getFrontDirection(hex, SOUTHWEST).toHex;
+                case NORTHWEST:
+                    return Path.getFrontDirection(hex, SOUTHEAST).toHex;
+                case SOUTHWEST:
+                    return Path.getFrontDirection(hex, NORTHEAST).toHex;
+                case SOUTHEAST:
+                    return Path.getFrontDirection(hex, NORTHWEST).toHex;
+                case WEST:
+                    return Path.getFrontDirection(hex, EAST).toHex;
+            }
+        }
         int size = trace.route.size;
         if (size > 1 && trace.route.get(size - 2) != trace.route.get(size - 1)) return trace.route.get(size - 2);
         else return null;
     }
 
     public Hex getForwardHex() {
+        if (order.frontDirection != null) return Path.getFrontDirection(hex, order.frontDirection).toHex;
         if (order.pathsOrder != null && order.pathsOrder.size > 0 ) {
 
             return order.pathsOrder.get(0).toHex;

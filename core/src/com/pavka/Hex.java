@@ -72,6 +72,56 @@ public class Hex extends Image {
         return neighbours;
     }
 
+    public Hex getNeighbour(Direction direction) {
+        int row = 0;
+        int col = 0;
+        switch (direction) {
+            case EAST:
+                row = this.row;
+                col = this.col == 63? this.col: this.col + 1;
+                break;
+
+            case WEST:
+                row = this.row;
+                col = this.col == 0? this.col: this.col - 1;
+                break;
+
+            case NORTHEAST:
+                row = this.row == 63? this.row: this.row + 1;
+                if (this.col == 63) col = this.col;
+                else {
+                    col = this.col % 2 == 0? this.col + 1: this.col;
+                }
+                break;
+
+            case NORTHWEST:
+                row = this.row == 63? this.row: this.row + 1;
+                if (this.col == 0) col = this.col;
+                else {
+                    col = this.col % 2 == 0? this.col: this.col - 1;
+                }
+                break;
+
+            case SOUTHWEST:
+                row = this.row == 0? this.row: this.row - 1;
+                if (this.col == 0) col = this.col;
+                else {
+                    col = this.col % 2 == 0? this.col: this.col - 1;
+                }
+                break;
+
+            case SOUTHEAST:
+                row = this.row == 0? this.row: this.row - 1;
+                if (this.col == 63) col = this.col;
+                else {
+                    col = this.col % 2 == 0? this.col + 1: this.col;
+                }
+                break;
+        }
+        Hex neighbour = Play.hexGraph.getHex(col, row);
+        return neighbour;
+    }
+
     public float getRelX() {
         if (row % 2 == 0) return (16 + col * 16);
         return (8 + col * 16);

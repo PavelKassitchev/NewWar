@@ -6,5 +6,23 @@ public enum Direction {
     NORTHWEST,
     WEST,
     SOUTHWEST,
-    SOUTHEAST
+    SOUTHEAST;
+
+    public Direction getOpposite() {
+        switch(this) {
+            case EAST:
+                return WEST;
+            case WEST:
+                return EAST;
+            case NORTHEAST:
+                return SOUTHWEST;
+            case NORTHWEST:
+                return SOUTHEAST;
+            case SOUTHWEST:
+                return NORTHEAST;
+            case SOUTHEAST:
+                return NORTHWEST;
+        }
+        return null;
+    }
 }
