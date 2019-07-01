@@ -114,20 +114,7 @@ public class Force extends Image {
 
     public Hex getBackHex() {
         if (order.frontDirection != null) {
-            switch (order.frontDirection) {
-                case EAST:
-                    return Path.getFrontDirection(hex, WEST).toHex;
-                case NORTHEAST:
-                    return Path.getFrontDirection(hex, SOUTHWEST).toHex;
-                case NORTHWEST:
-                    return Path.getFrontDirection(hex, SOUTHEAST).toHex;
-                case SOUTHWEST:
-                    return Path.getFrontDirection(hex, NORTHEAST).toHex;
-                case SOUTHEAST:
-                    return Path.getFrontDirection(hex, NORTHWEST).toHex;
-                case WEST:
-                    return Path.getFrontDirection(hex, EAST).toHex;
-            }
+            return hex.getNeighbour(order.frontDirection.getOpposite());
         }
         int size = trace.route.size;
         if (size > 1 && trace.route.get(size - 2) != trace.route.get(size - 1)) return trace.route.get(size - 2);
@@ -135,7 +122,11 @@ public class Force extends Image {
     }
 
     public Hex getForwardHex() {
-        if (order.frontDirection != null) return Path.getFrontDirection(hex, order.frontDirection).toHex;
+        if (order.frontDirection != null) {
+            return hex.getNeighbour(order.frontDirection);
+        }
+
+
         if (order.pathsOrder != null && order.pathsOrder.size > 0 ) {
 
             return order.pathsOrder.get(0).toHex;
