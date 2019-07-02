@@ -219,6 +219,8 @@ public class Force extends Image {
         force.message = null;
         exclude(force);
 
+        force.setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
+
         return force;
     }
 
