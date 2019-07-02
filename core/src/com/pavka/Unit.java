@@ -24,6 +24,9 @@ public abstract class Unit extends Force {
     public Unit(Nation nation, Hex hex) {
         super(nation, hex);
     }
+    public Unit(Play play, Nation nation, Hex hex) {
+        super(play, nation, hex);
+    }
 
 
     @Override

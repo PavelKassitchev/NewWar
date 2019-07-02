@@ -167,7 +167,7 @@ public class Play extends Stage implements Screen {
     @Override
     public boolean keyUp(int keycode) {
         if (keycode == Input.Keys.C) {
-            Force force = new Force(new Squadron(Nation.FRANCE, hexGraph.getHex(8, 4)));
+            Force force = new Force(new Squadron(this, Nation.FRANCE, hexGraph.getHex(8, 4)), new Squadron(this, Nation.FRANCE, hexGraph.getHex(8, 4)));
             force.order.isForaging = 0.8;
             force.order.seekBattle = true;
             force.name = "Cavalry Sq.";
@@ -179,7 +179,7 @@ public class Play extends Stage implements Screen {
         }
 
         if(keycode == Input.Keys.O) {
-            Force force = new Force(new Squadron(Nation.AUSTRIA, hexGraph.getHex(18, 18)));
+            Force force = new Force(new Squadron(this, Nation.AUSTRIA, hexGraph.getHex(18, 18)), new Squadron(this, Nation.AUSTRIA, hexGraph.getHex(18, 18)));
             force.order.isForaging = 1;
             force.order.seekBattle = true;
             force.name = "2.Squadron";

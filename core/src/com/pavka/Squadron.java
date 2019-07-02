@@ -15,6 +15,10 @@ public class Squadron extends Unit {
     public Squadron(Nation nation, Hex hex) {
         this(nation, hex, MAX_STRENGTH);
     }
+    public Squadron(Play play, Nation nation, Hex hex) {
+        this(nation, hex);
+        this.play = play;
+    }
 
     public Squadron(Nation nation, Hex hex, int strength) {
         super(nation, hex);

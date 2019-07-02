@@ -21,6 +21,8 @@ public class Force extends Image {
 
     public TextureMapObject symbol;
 
+    public Play play;
+
     public Texture textureFrance = new Texture("symbols/CavBlueDivision.png");
     public Texture textureAustria = new Texture("symbols/CavRedDivision.png");
 
@@ -142,7 +144,7 @@ public class Force extends Image {
 
     @Override
     public String toString() {
-        return name;
+        return name + " men: " + strength;
     }
 
     public void retreat() {
@@ -152,15 +154,20 @@ public class Force extends Image {
             int index  = (int)(r.nextDouble() * 6);
             back = hex.getNeighbour(Direction.values()[index]);
         }
-        hex.forces.removeValue(this, true);
-        back.forces.add(this);
-        hex = back;
+        moveTo(back);
     }
     //STATIC SECTION
 
     //TODO exclude SUPPLY xp
 
+    public Force(Play play, Nation nation, Hex hex) {
+        this(nation, hex);
+        this.play = play;
+        play.addActor(this);
+    }
+
     public Force(Nation nation, Hex hex) {
+        this.play = null;
         this.nation = nation;
         this.hex = hex;
         forces = new ArrayList<Force>();
@@ -186,6 +193,7 @@ public class Force extends Image {
         this(subForces[0].nation, subForces[0].hex);
         trace = subForces[0].trace;
         order = subForces[0].order;
+        play = subForces[0].play;
         message = subForces[0].message;
         for (Force force : subForces) {
             attach(force);
@@ -203,7 +211,7 @@ public class Force extends Image {
         force.superForce = this;
         forces.add(force);
         include(force);
-
+        if (play != null) force.remove();
         return this;
     }
 
@@ -220,6 +228,9 @@ public class Force extends Image {
         exclude(force);
 
         force.setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
+        if (play != null) {
+            play.addActor(force);
+        }
 
         return force;
     }
@@ -732,6 +743,13 @@ public class Force extends Image {
         //if (order.pathsOrder.SIZE == 0) order.mileStone = new MileStone();
 
         return true;
+    }
+
+    public void moveTo(Hex hex) {
+        this.hex.forces.removeValue(this, true);
+        hex.forces.add(this);
+        this.hex = hex;
+        setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
     }
 
     public double forage() {
