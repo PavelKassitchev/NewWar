@@ -254,6 +254,8 @@ public class Battle {
             defenderUnits.add((Unit) defender);
         }
 
+        //TODO what if min = 0?
+
         int min = Math.min(attackerUnits.size(), defenderUnits.size());
 
         int defenderStep = defenderUnits.size() / min;
@@ -283,10 +285,14 @@ public class Battle {
 
                 for (Unit unit : rootedDef) {
                     if (unit.isSub) unit.superForce.detach(unit);
+                    //new
+                    unit.retreat();
 
                 }
                 if (defender.strength <= defenderInit * defender.order.retreatLevel) {
                     winner = 1;
+                    //new
+                    defender.retreat();
 
                     return result.toString();
                 }
@@ -309,10 +315,14 @@ public class Battle {
 
                 for (Unit unit : rootedAtt) {
                     if (unit.isSub) unit.superForce.detach(unit);
+                    //new
+                    unit.retreat();
 
                 }
                 if (attacker.strength <= attackerInit * attacker.order.retreatLevel) {
                     winner = -1;
+                    //new
+                    attacker.retreat();
 
                 }
             }

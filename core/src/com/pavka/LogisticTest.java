@@ -2,6 +2,8 @@ package com.pavka;
 
 import com.badlogic.gdx.utils.Array;
 
+import java.util.Random;
+
 public class LogisticTest {
 
     public static Hex hex = new Hex();
@@ -27,6 +29,9 @@ public class LogisticTest {
         System.out.println(numbers.size);
         System.out.println(numbers.get(0));
         System.out.println(numbers.get(1));
+        System.out.println("RANDOM");
+        Random r = new Random();
+        System.out.println(r.nextDouble());
 
     }
 }

@@ -137,6 +137,25 @@ public class Force extends Image {
         }
         return null;
     }
+
+    //new retreat method
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
+    public void retreat() {
+        Hex back = getBackHex();
+        if (back == null){
+            Random r = new Random();
+            int index  = (int)(r.nextDouble() * 6);
+            back = hex.getNeighbour(Direction.values()[index]);
+        }
+        hex.forces.removeValue(this, true);
+        back.forces.add(this);
+        hex = back;
+    }
     //STATIC SECTION
 
     //TODO exclude SUPPLY xp

@@ -169,6 +169,7 @@ public class Play extends Stage implements Screen {
         if (keycode == Input.Keys.C) {
             Force force = new Force(new Squadron(Nation.FRANCE, hexGraph.getHex(8, 4)));
             force.order.isForaging = 0.8;
+            force.order.seekBattle = true;
             force.name = "Cavalry Sq.";
 
             System.out.println(force.getX() + " " + force.getY());
@@ -180,6 +181,7 @@ public class Play extends Stage implements Screen {
         if(keycode == Input.Keys.O) {
             Force force = new Force(new Squadron(Nation.AUSTRIA, hexGraph.getHex(18, 18)));
             force.order.isForaging = 1;
+            force.order.seekBattle = true;
             force.name = "2.Squadron";
             blackTroops.add(force);
             addActor(force);
@@ -207,6 +209,13 @@ public class Play extends Stage implements Screen {
             if (mileStone != null) {
                 mileStone.remove();
                 mileStone = null;
+            }
+
+            //Battle check
+            for (Force w: whiteTroops) {
+                for (Force b: blackTroops) {
+                    if (w.hex == b.hex) new Battle(w, b).resolve();
+                }
             }
         }
         if (keycode == Input.Keys.S) {
