@@ -10,19 +10,20 @@ public class Test {
     static Hex hex = new Hex();
     public static void main(String[] args) {
 
-        Force france = createForce(FRANCE,0, 1, 0);
-        Force austria = createForce(AUSTRIA, 0, 0, 1);
+        Force france = createForce(FRANCE,4, 1, 0);
+        Force austria = createForce(AUSTRIA, 3, 0, 1);
+        //Force austria = new Squadron(AUSTRIA, hex);
         france.order = new Order(true, 0.4, 0);
         austria.order = new Order(false, 0.4, 0);
-        Force f = new Force(new Battalion(FRANCE, hex), new Battalion(FRANCE, hex));
-        Force w = new Wagon(FRANCE, hex);
-        france.attach(f);
+        //Force f = new Force(new Battalion(FRANCE, hex), new Battalion(FRANCE, hex));
+        //Force w = new Wagon(FRANCE, hex);
+        //france.attach(f);
         /*Force france = new Force(new Battalion(FRANCE, hex, 50), new Battalion(FRANCE, hex, 50),
                 new Battalion(FRANCE, hex, 50), new Battalion(FRANCE, hex, 50), new Battalion(FRANCE, hex, 50));*/
         //france.attach(f);
-        france.attach(w);
-        austria.attach(new Battalion(AUSTRIA, hex));
-        austria.attach(new Squadron(AUSTRIA, hex));
+        //france.attach(w);
+        //austria.attach(new Battalion(AUSTRIA, hex));
+        //austria.attach(new Squadron(AUSTRIA, hex));
 
         System.out.println("Before the battle");
         System.out.println();
@@ -37,9 +38,9 @@ public class Test {
         //france.distributeAmmo(15.0);
 
         Battle battle = new Battle(france, austria);
-        getStat(france, austria);
+        //getStat(france, austria);
         //battle.longDistanceBombing();
-        //battle.resolve();
+        battle.resolve();
         //battle.resolveStage();
         //battle.resolveStage();
         //battle.resolveStage();

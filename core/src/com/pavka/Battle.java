@@ -49,6 +49,7 @@ public class Battle {
 
     public double getBonus(Force force) {
         int units = force.battalions.size() + force.batteries.size() + force.squadrons.size();
+        if (units == 0) units = 1;
         if (units > 20) return 1;
         return 1.0045 - 0.1253 / units;
 
