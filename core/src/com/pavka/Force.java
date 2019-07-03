@@ -40,7 +40,7 @@ public class Force extends Image {
     Nation nation;
     String name;
     Hex hex;
-    //TODO create orders;
+
     Order order;
     Message message;
 
@@ -66,10 +66,10 @@ public class Force extends Image {
     double speed;
 
     public void draw(Batch batch, float alpha) {
-        Texture texture = nation == Nation.FRANCE? textureFrance: textureAustria;
+        Texture texture = nation == Nation.FRANCE ? textureFrance : textureAustria;
 
-        if (!isSelected) batch.draw(texture,hex.getRelX() - 8,hex.getRelY() - 8, IMAGE_SIZE, IMAGE_SIZE);
-        else batch.draw(texture, hex.getRelX() - 8,hex.getRelY() - 8, IMAGE_SIZE * 1.1f, IMAGE_SIZE * 1.1f);
+        if (!isSelected) batch.draw(texture, hex.getRelX() - 8, hex.getRelY() - 8, IMAGE_SIZE, IMAGE_SIZE);
+        else batch.draw(texture, hex.getRelX() - 8, hex.getRelY() - 8, IMAGE_SIZE * 1.1f, IMAGE_SIZE * 1.1f);
 
         //THIS IS FOR DELAYED VIEWS
 
@@ -93,14 +93,16 @@ public class Force extends Image {
     @Override
     public void act(float delta) {
         super.act(delta);
+        //This is for delays
         if (message != null && message.turn == Play.turn) {
             if (message instanceof Order) order = (Order) message;
         }
         eat();
-        //distributeFood(0);
+
         forage();
         move();
         trace.add(hex);
+        //This is for delays
         if (general != null && general instanceof Commander) {
             Commander commander = (Commander) general;
             commander.getReports();
@@ -122,6 +124,7 @@ public class Force extends Image {
         }
         int size = trace.route.size;
         if (size > 1 && trace.route.get(size - 2) != trace.route.get(size - 1)) return trace.route.get(size - 2);
+
         else return null;
     }
 
@@ -130,11 +133,11 @@ public class Force extends Image {
             return hex.getNeighbour(order.frontDirection);
         }
 
-        if (order.pathsOrder != null && order.pathsOrder.size > 0 ) {
+        if (order.pathsOrder != null && order.pathsOrder.size > 0) {
             return order.pathsOrder.get(0).toHex;
         }
 
-        if (getBackHex() != null){
+        if (getBackHex() != null) {
             return hex.getNeighbour(hex.getDirection(getBackHex()).getOpposite());
         }
         return null;
@@ -149,9 +152,9 @@ public class Force extends Image {
 
     public void retreat() {
         Hex back = getBackHex();
-        if (back == null){
+        if (back == null) {
             Random r = new Random();
-            int index  = (int)(r.nextDouble() * 6);
+            int index = (int) (r.nextDouble() * 6);
             back = hex.getNeighbour(Direction.values()[index]);
         }
         moveTo(back);
@@ -163,6 +166,7 @@ public class Force extends Image {
     public Force(Play play, Nation nation, Hex hex) {
         this(nation, hex);
         this.play = play;
+
         play.addActor(this);
     }
 
@@ -179,7 +183,7 @@ public class Force extends Image {
         trace.add(hex);
         order = new Order(false, 0, 0);
         speed = 100;
-
+        //TODO this should be moved to the constructor with Play
         setTouchable(Touchable.enabled);
         setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
 
@@ -203,9 +207,6 @@ public class Force extends Image {
 
     public Force attach(Force force) {
 
-        if (isUnit) {
-            //TODO
-        }
         hex.forces.removeValue(force, true);
         force.isSub = true;
         force.superForce = this;
@@ -220,16 +221,19 @@ public class Force extends Image {
         force.superForce = null;
         force.hex = hex;
         hex.forces.add(force);
-
+        //TODO This may be a mistake! What if the force isn't in forces list?
         forces.remove(force);
         force.order = new Order();
         force.trace = new Trace();
+        force.trace.add(hex);
         force.message = null;
         exclude(force);
 
-        force.setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
+        //force.setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
         if (play != null) {
+            force.setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
             play.addActor(force);
+            force.play = play;
         }
 
         return force;
@@ -374,21 +378,31 @@ public class Force extends Image {
     public double eat() {
 
         double eatenFood = 0;
-        for (Force force : forces) {
-            if (force.isUnit) {
-                if (force.foodStock >= force.foodNeed) {
-                    force.foodStock -= force.foodNeed;
-                    foodStock -= force.foodNeed;
-                    eatenFood += force.foodNeed;
-                } else {
-                    foodStock -= force.foodStock;
-                    eatenFood += force.foodStock;
-                    force.foodStock = 0;
-                }
+        if (isUnit && !isSub) {
+            if (foodStock >= foodNeed) {
+                foodStock -= foodNeed;
+                eatenFood += foodNeed;
             } else {
-                double f = force.eat();
-                force.superForce.foodStock -= f;
-                eatenFood += f;
+                eatenFood = foodStock;
+                foodStock = 0;
+            }
+        } else {
+            for (Force force : forces) {
+                if (force.isUnit) {
+                    if (force.foodStock >= force.foodNeed) {
+                        force.foodStock -= force.foodNeed;
+                        foodStock -= force.foodNeed;
+                        eatenFood += force.foodNeed;
+                    } else {
+                        foodStock -= force.foodStock;
+                        eatenFood += force.foodStock;
+                        force.foodStock = 0;
+                    }
+                } else {
+                    double f = force.eat();
+                    force.superForce.foodStock -= f;
+                    eatenFood += f;
+                }
             }
         }
         return eatenFood;
@@ -493,10 +507,16 @@ public class Force extends Image {
     }
 
     public double loadAmmo(double ratio, int... types) {
-        if (isUnit) {
-            //TODo
-        }
         double need = 0;
+        if (isUnit && !isSub && ((Unit) this).belongsToTypes(types)) {
+            ammoStock = ammoNeed * ratio;
+            need = ammoStock;
+            if (ratio < 1) {
+                fire = ((Unit) this).maxFire * ratio * strength / ((Unit) this).maxStrength;
+            } else {
+                fire = ((Unit) this).maxFire * strength / ((Unit) this).maxStrength;
+            }
+        }
         for (Force force : forces) {
             if (force.isUnit) {
                 if (((Unit) force).belongsToTypes(types)) {
@@ -524,41 +544,55 @@ public class Force extends Image {
     }
 
     public double loadAmmoToWagons(double ammo) {
-        for (Wagon wagon : wagons) {
-            if (ammo <= Wagon.AMMO_LIMIT) {
-                wagon.ammoStock = ammo;
-                ammoStock += ammo;
+        if (isUnit && ((Unit) this).type == SUPPLY) {
+            if (ammo <= ammoLimit) {
+                ammoStock = ammo;
                 ammo = 0;
-                break;
             } else {
-                wagon.ammoStock = Wagon.AMMO_LIMIT;
-                ammoStock += Wagon.AMMO_LIMIT;
-                ammo -= Wagon.AMMO_LIMIT;
+                ammoStock = ammoLimit;
+                ammo -= ammoLimit;
+            }
+
+        } else {
+            for (Wagon wagon : wagons) {
+                if (ammo <= Wagon.AMMO_LIMIT) {
+                    wagon.ammoStock = ammo;
+                    ammoStock += ammo;
+                    ammo = 0;
+                    break;
+                } else {
+                    wagon.ammoStock = Wagon.AMMO_LIMIT;
+                    ammoStock += Wagon.AMMO_LIMIT;
+                    ammo -= Wagon.AMMO_LIMIT;
+                }
             }
         }
         return ammo;
     }
 
     public double loadAmmo(int... types) {
-        if (isUnit) {
-            //TODO
-        }
         double need = 0;
-        for (Force force : forces) {
-            if (force.isUnit) {
-                if (((Unit) force).belongsToTypes(types)) {
-                    force.ammoStock = force.ammoLimit;
-                    ammoStock += force.ammoLimit;
-                    need += force.ammoLimit;
-                    force.fire = ((Unit) force).maxFire * force.strength / ((Unit) force).maxStrength;
-                    fire += force.fire;
+        if (isUnit && !isSub && ((Unit) this).belongsToTypes(types)) {
+            ammoStock = ammoLimit;
+            need = ammoLimit;
+            fire = ((Unit) this).maxFire * strength / ((Unit) this).maxStrength;
+        } else {
+            for (Force force : forces) {
+                if (force.isUnit) {
+                    if (((Unit) force).belongsToTypes(types)) {
+                        force.ammoStock = force.ammoLimit;
+                        ammoStock += force.ammoLimit;
+                        need += force.ammoLimit;
+                        force.fire = ((Unit) force).maxFire * force.strength / ((Unit) force).maxStrength;
+                        fire += force.fire;
+                    }
+                } else {
+                    double initFire = force.fire;
+                    double n = force.loadAmmo(types);
+                    need += n;
+                    ammoStock += n;
+                    fire += (force.fire - initFire);
                 }
-            } else {
-                double initFire = force.fire;
-                double n = force.loadAmmo(types);
-                need += n;
-                ammoStock += n;
-                fire += (force.fire - initFire);
             }
         }
         return need;
@@ -566,20 +600,27 @@ public class Force extends Image {
 
     public double unloadAmmo() {
         double ammo = 0;
-        for (Force force : forces) {
-            if (force.isUnit) {
-                ammo += force.ammoStock;
-                ammoStock -= force.ammoStock;
-                force.ammoStock = 0;
-                fire -= force.fire;
-                force.fire = 0;
-            } else {
-                double fi = force.fire;
-                double f = force.unloadAmmo();
-                ammoStock -= f;
-                fire -= fi;
-                ammo += f;
+        if (isUnit && !isSub) {
+            ammo = ammoStock;
+            ammoStock = 0;
+            fire = 0;
 
+        } else {
+            for (Force force : forces) {
+                if (force.isUnit) {
+                    ammo += force.ammoStock;
+                    ammoStock -= force.ammoStock;
+                    force.ammoStock = 0;
+                    fire -= force.fire;
+                    force.fire = 0;
+                } else {
+                    double fi = force.fire;
+                    double f = force.unloadAmmo();
+                    ammoStock -= f;
+                    fire -= fi;
+                    ammo += f;
+
+                }
             }
         }
         return ammo;
@@ -642,18 +683,24 @@ public class Force extends Image {
 
     public double loadFood(double ratio, int... types) {
         double need = 0;
-        for (Force force : forces) {
-            if (force.isUnit) {
-                if (((Unit) force).belongsToTypes(types)) {
-                    double n = force.foodNeed * ratio;
-                    force.foodStock = n;
+        if (isUnit && !isSub && ((Unit) this).belongsToTypes(types)) {
+
+            foodStock = foodNeed * ratio;
+            need = foodStock;
+        } else {
+            for (Force force : forces) {
+                if (force.isUnit) {
+                    if (((Unit) force).belongsToTypes(types)) {
+                        double n = force.foodNeed * ratio;
+                        force.foodStock = n;
+                        foodStock += n;
+                        need += n;
+                    }
+                } else {
+                    double n = force.loadFood(ratio, types);
                     foodStock += n;
                     need += n;
                 }
-            } else {
-                double n = force.loadFood(ratio, types);
-                foodStock += n;
-                need += n;
             }
         }
 
@@ -661,6 +708,15 @@ public class Force extends Image {
     }
 
     public double loadFoodToWagons(double food) {
+        if (isUnit && ((Unit) this).type == SUPPLY) {
+            if (food <= foodLimit) {
+                foodStock = food;
+                food = 0;
+            } else {
+                foodStock = foodLimit;
+                food -= foodLimit;
+            }
+        }
         for (Wagon wagon : wagons) {
             if (food <= Wagon.FOOD_LIMIT) {
                 wagon.foodStock = food;
@@ -678,17 +734,24 @@ public class Force extends Image {
 
     public double loadFood(int... types) {
         double need = 0;
-        for (Force force : forces) {
-            if (force.isUnit) {
-                if (((Unit) force).belongsToTypes(types)) {
-                    force.foodStock = force.foodLimit;
-                    foodStock += force.foodLimit;
-                    need += force.foodLimit;
+        if (isUnit && !isSub && ((Unit) this).belongsToTypes(types)) {
+
+            foodStock = foodLimit;
+            need = foodLimit;
+        }
+        else {
+            for (Force force : forces) {
+                if (force.isUnit) {
+                    if (((Unit) force).belongsToTypes(types)) {
+                        force.foodStock = force.foodLimit;
+                        foodStock += force.foodLimit;
+                        need += force.foodLimit;
+                    }
+                } else {
+                    double n = force.loadFood(types);
+                    need += n;
+                    foodStock += n;
                 }
-            } else {
-                double n = force.loadFood(types);
-                need += n;
-                foodStock += n;
             }
         }
         return need;
@@ -696,6 +759,10 @@ public class Force extends Image {
 
     public double unloadFood() {
         double food = 0;
+        if(isUnit && !isSub) {
+            food = foodStock;
+            foodStock = 0;
+        }
         for (Force force : forces) {
             if (force.isUnit) {
                 food += force.foodStock;

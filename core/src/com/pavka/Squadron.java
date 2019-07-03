@@ -22,8 +22,9 @@ public class Squadron extends Unit {
 
     public Squadron(Nation nation, Hex hex, int strength) {
         super(nation, hex);
-        isUnit = true;
+        //isUnit = true;
         type = CAVALRY;
+        imprisoned = 0.75;
         maxStrength = MAX_STRENGTH;
         maxFire = FIRE;
         maxCharge = CHARGE;

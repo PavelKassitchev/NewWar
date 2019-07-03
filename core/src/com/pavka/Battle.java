@@ -36,14 +36,14 @@ public class Battle {
 
             attacker = force2;
             defender = force1;
-        }
-        else {
+        } else {
             attacker = force1;
             defender = force2;
         }
 
         attackerInit = attacker.strength;
         defenderInit = defender.strength;
+        //This simply to make chances more equal
         defenderBonus = getBonus(defender);
     }
 
@@ -59,24 +59,24 @@ public class Battle {
         double prisonnedShare;
         if (winner == 1) {
             if (PURSUIT_CHARGE * attacker.charge > rooted) {
-                prisonnedShare = 1;
+                prisonnedShare = 0.9;
             } else {
-                prisonnedShare = PURSUIT_CHARGE * attacker.charge / rooted;
+                prisonnedShare = 0.9 * PURSUIT_CHARGE * attacker.charge / rooted;
             }
             for (Unit unit : rootedDef) {
-                prisoners += unit.strength * prisonnedShare;
-                unit.bearLoss(prisonnedShare);
+                prisoners += unit.strength * prisonnedShare * unit.imprisoned;
+                unit.bearLoss(prisonnedShare * unit.imprisoned);
             }
         }
         if (winner == -1) {
             if (PURSUIT_CHARGE * defender.charge > rooted) {
-                prisonnedShare = 1;
+                prisonnedShare = 0.9;
             } else {
-                prisonnedShare = PURSUIT_CHARGE * defender.charge / rooted;
+                prisonnedShare = 0.9 * PURSUIT_CHARGE * defender.charge / rooted;
             }
             for (Unit unit : rootedAtt) {
-                prisoners += unit.strength * prisonnedShare;
-                unit.bearLoss(prisonnedShare);
+                prisoners += unit.strength * prisonnedShare * unit.imprisoned;
+                unit.bearLoss(prisonnedShare * unit.imprisoned);
             }
         }
         return prisoners;
@@ -104,9 +104,13 @@ public class Battle {
         if (winner == 1) {
             for (Unit unit : rootedDef) defenderRooted += unit.strength;
             System.out.println("Attacker took prisoners: " + pursuit(defenderRooted));
-            for (Battalion unit : attacker.battalions) unit.changeMorale(VICTORY_BONUS);
-            for (Squadron unit : attacker.squadrons) unit.changeMorale(VICTORY_BONUS);
-            for (Battery unit : attacker.batteries) unit.changeMorale(VICTORY_BONUS);
+            if (attacker.isUnit) {
+                ((Unit) attacker).changeMorale(VICTORY_BONUS);
+            } else {
+                for (Battalion unit : attacker.battalions) unit.changeMorale(VICTORY_BONUS);
+                for (Squadron unit : attacker.squadrons) unit.changeMorale(VICTORY_BONUS);
+                for (Battery unit : attacker.batteries) unit.changeMorale(VICTORY_BONUS);
+            }
             for (Unit unit : rootedAtt) {
                 unit.changeMorale(SMALL_VICTORY_BONUS);
                 if (unit.morale > 0) {
@@ -120,9 +124,13 @@ public class Battle {
         } else {
             for (Unit unit : rootedAtt) attackerRooted += unit.strength;
             System.out.println("Defender took prisoners: " + pursuit(attackerRooted));
-            for (Battalion unit : defender.battalions) unit.changeMorale(VICTORY_BONUS);
-            for (Squadron unit : defender.squadrons) unit.changeMorale(VICTORY_BONUS);
-            for (Battery unit : defender.batteries) unit.changeMorale(VICTORY_BONUS);
+            if (defender.isUnit) {
+                ((Unit) defender).changeMorale(VICTORY_BONUS);
+            } else {
+                for (Battalion unit : defender.battalions) unit.changeMorale(VICTORY_BONUS);
+                for (Squadron unit : defender.squadrons) unit.changeMorale(VICTORY_BONUS);
+                for (Battery unit : defender.batteries) unit.changeMorale(VICTORY_BONUS);
+            }
             for (Unit unit : rootedDef) {
                 unit.changeMorale(SMALL_VICTORY_BONUS);
                 if (unit.morale > 0) {
@@ -134,13 +142,13 @@ public class Battle {
             }
         }
 
-        System.out.println("ATTACKER: Initial - " + attackerInit + " Casualities - " + (attackerInit - attacker.strength - attackerRooted) +
+        /*System.out.println("ATTACKER: Initial - " + attackerInit + " Casualities - " + (attackerInit - attacker.strength - attackerRooted) +
                 " Percentage - " + (attackerInit - attacker.strength - attackerRooted) * 100 / attackerInit + " Rooted - " + attackerRooted);
         System.out.println("DEFENDER: Initial - " + defenderInit + " Casualities - " + (defenderInit - defender.strength - defenderRooted) +
                 " Percentage - " + (defenderInit - defender.strength - defenderRooted) * 100 / defenderInit + " Rooted - " + defenderRooted);
         System.out.println("Number of stages: " + count);
         System.out.println("WINNER = " + winner);
-        System.out.println();
+        System.out.println();*/
 
         return winner;
     }
@@ -184,16 +192,24 @@ public class Battle {
         }
 
 
-        for (Unit unit: attackerUnits) {
+        for (Unit unit : attackerUnits) {
             int initStrength = unit.strength;
             double ratio = (double) initStrength / attackerInit;
-
-            for (Battery b: defender.batteries) {
+            if (defender.isUnit && ((Unit) defender).type == Unit.ARTILLERY) {
+                Battery b = (Battery) defender;
                 b.fire(ratio);
                 double fireEffect = LONG_DISTANCE_FIRE * ((0.7 + 0.6 * random.nextDouble() * b.fire * FIRE_ON_UNIT) / attackerInit);
                 System.out.println("ATTACKER INIT: " + attackerInit + "battery fire " + b.fire);
                 System.out.println("FIRE: " + fireEffect);
                 hitUnit(unit, fireEffect, (-CASUALITY_INTO_MORALE * fireEffect));
+            } else {
+                for (Battery b : defender.batteries) {
+                    b.fire(ratio);
+                    double fireEffect = LONG_DISTANCE_FIRE * ((0.7 + 0.6 * random.nextDouble() * b.fire * FIRE_ON_UNIT) / attackerInit);
+                    System.out.println("ATTACKER INIT: " + attackerInit + "battery fire " + b.fire);
+                    System.out.println("FIRE: " + fireEffect);
+                    hitUnit(unit, fireEffect, (-CASUALITY_INTO_MORALE * fireEffect));
+                }
             }
             System.out.println("MORALE " + unit.morale);
         }
@@ -237,20 +253,28 @@ public class Battle {
 
 
         ArrayList<Unit> attackerUnits = new ArrayList<Unit>();
-        if (!attacker.isUnit) {
+        if (!attacker.isUnit && attacker.forces.size() > 0) {
             attackerUnits.addAll(attacker.battalions);
             attackerUnits.addAll(attacker.batteries);
             attackerUnits.addAll(attacker.squadrons);
         } else {
+            if (attacker.strength < MIN_SOLDIERS) {
+                winner = -1;
+                return "Attacker dissapeared";
+            }
             attackerUnits.add((Unit) attacker);
         }
 
         ArrayList<Unit> defenderUnits = new ArrayList<Unit>();
-        if (!defender.isUnit) {
+        if (!defender.isUnit && defender.forces.size() > 0) {
             defenderUnits.addAll(defender.battalions);
             defenderUnits.addAll(defender.batteries);
             defenderUnits.addAll(defender.squadrons);
         } else {
+            if (defender.strength < MIN_SOLDIERS) {
+                winner = 1;
+                return "Defender dissapeared";
+            }
             defenderUnits.add((Unit) defender);
         }
 
@@ -272,12 +296,12 @@ public class Battle {
             for (int i = 0; i < defenderStep; i++) {
                 if (defIterator.hasNext()) {
                     Unit b = defIterator.next();
-                    double ratio = (double)b.strength / initDef;
-                    System.out.println("defender ratio - " + ratio  + " strength - " + b.strength + " Total: " + defender.strength);
+                    double ratio = (double) b.strength / initDef;
+                    System.out.println("defender ratio - " + ratio + " strength - " + b.strength + " Total: " + defender.strength);
                     double fluke = 0.7 + 0.6 * random.nextDouble();
                     //fluke = 1;
                     hitUnit(b, fluke * fireOnDefender, fluke * chargeOnDefender);
-                    for (Unit unit: attackerUnits) unit.fire(ratio);
+                    for (Unit unit : attackerUnits) unit.fire(ratio);
                     System.out.println(b.name + " " + b.nation + " hit, morale = " + b.morale);
                 }
             }
@@ -300,12 +324,12 @@ public class Battle {
             for (int i = 0; i < attackerStep; i++) {
                 if (attIterator.hasNext()) {
                     Unit b = attIterator.next();
-                    double ratio = (double)b.strength / initAtt;
+                    double ratio = (double) b.strength / initAtt;
                     System.out.println("attacker ratio - " + ratio + " strength - " + b.strength + " Total: " + attacker.strength);
                     double fluke = 0.7 + 0.6 * random.nextDouble();
                     //fluke = 1;
                     hitUnit(b, fluke * fireOnAttacker, fluke * chargeOnAttacker);
-                    for (Unit unit: defenderUnits) unit.fire(ratio);
+                    for (Unit unit : defenderUnits) unit.fire(ratio);
                     System.out.println(b.name + " " + b.nation + " hit, morale = " + b.morale);
                 }
 

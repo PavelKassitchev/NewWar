@@ -16,11 +16,13 @@ public class Test {
         austria.order = new Order(false, 0.4, 0);
         Force f = new Force(new Battalion(FRANCE, hex), new Battalion(FRANCE, hex));
         Force w = new Wagon(FRANCE, hex);
-        //france.attach(f);
+        france.attach(f);
         /*Force france = new Force(new Battalion(FRANCE, hex, 50), new Battalion(FRANCE, hex, 50),
                 new Battalion(FRANCE, hex, 50), new Battalion(FRANCE, hex, 50), new Battalion(FRANCE, hex, 50));*/
         //france.attach(f);
-        //france.attach(w);
+        france.attach(w);
+        austria.attach(new Battalion(AUSTRIA, hex));
+        austria.attach(new Squadron(AUSTRIA, hex));
 
         System.out.println("Before the battle");
         System.out.println();

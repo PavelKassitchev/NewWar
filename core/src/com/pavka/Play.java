@@ -195,6 +195,7 @@ public class Play extends Stage implements Screen {
             whiteCommander = commander;
             whiteTroops.add(force);
             addActor(force);
+            //addActor(commander);
 
         }
         if (keycode == Input.Keys.Q) {

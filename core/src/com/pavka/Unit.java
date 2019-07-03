@@ -20,12 +20,17 @@ public abstract class Unit extends Force {
     int maxStrength;
     double maxFire;
     double maxCharge;
+    double imprisoned;
+    double isolatedUnitPenalty;
 
     public Unit(Nation nation, Hex hex) {
+
         super(nation, hex);
+        isUnit = true;
     }
     public Unit(Play play, Nation nation, Hex hex) {
-        super(play, nation, hex);
+        this(nation, hex);
+        this.play = play;
     }
 
 

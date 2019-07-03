@@ -21,8 +21,9 @@ public class Battalion extends Unit {
 
     public Battalion (Nation nation, Hex hex, int strength) {
         super(nation, hex);
-        isUnit = true;
+        //isUnit = true;
         type = INFANTRY;
+        imprisoned = 1;
         maxStrength = MAX_STRENGTH;
         maxFire = FIRE;
         maxCharge = CHARGE;
