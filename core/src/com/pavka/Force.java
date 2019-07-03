@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 import static com.pavka.Direction.*;
+import static com.pavka.Nation.FRANCE;
 import static com.pavka.Unit.*;
 
 public class Force extends Image {
@@ -66,7 +67,7 @@ public class Force extends Image {
     double speed;
 
     public void draw(Batch batch, float alpha) {
-        Texture texture = nation == Nation.FRANCE ? textureFrance : textureAustria;
+        Texture texture = nation == FRANCE ? textureFrance : textureAustria;
 
         if (!isSelected) batch.draw(texture, hex.getRelX() - 8, hex.getRelY() - 8, IMAGE_SIZE, IMAGE_SIZE);
         else batch.draw(texture, hex.getRelX() - 8, hex.getRelY() - 8, IMAGE_SIZE * 1.1f, IMAGE_SIZE * 1.1f);
@@ -212,7 +213,11 @@ public class Force extends Image {
         force.superForce = this;
         forces.add(force);
         include(force);
-        if (play != null) force.remove();
+        if (play != null) {
+            force.remove();
+            if (nation == FRANCE) play.whiteTroops.removeValue(force, true);
+            else play.blackTroops.removeValue(force, true);
+        }
         return this;
     }
 
@@ -234,6 +239,8 @@ public class Force extends Image {
             force.setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
             play.addActor(force);
             force.play = play;
+            if (nation == FRANCE) play.whiteTroops.add(force);
+            else play.blackTroops.add(force);
         }
 
         return force;
@@ -738,8 +745,7 @@ public class Force extends Image {
 
             foodStock = foodLimit;
             need = foodLimit;
-        }
-        else {
+        } else {
             for (Force force : forces) {
                 if (force.isUnit) {
                     if (((Unit) force).belongsToTypes(types)) {
@@ -759,7 +765,7 @@ public class Force extends Image {
 
     public double unloadFood() {
         double food = 0;
-        if(isUnit && !isSub) {
+        if (isUnit && !isSub) {
             food = foodStock;
             foodStock = 0;
         }
