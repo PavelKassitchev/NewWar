@@ -85,6 +85,10 @@ public class Battle {
 
     public int resolve() {
 
+        System.out.println("The battle begins!");
+        Test.list(attacker);
+        Test.list(defender);
+
         if (!attacker.order.seekBattle && !defender.order.seekBattle) return 0;
         if (!attacker.order.seekBattle || !defender.order.seekBattle) {
             Random random = new Random();
@@ -142,6 +146,10 @@ public class Battle {
                 }
             }
         }
+        System.out.println("WINNER = " + winner);
+        System.out.println("The battle ends!");
+        Test.list(attacker);
+        Test.list(defender);;
 
         return winner;
     }
@@ -206,10 +214,14 @@ public class Battle {
             for (Unit unit : rootedAtt) {
                 if (unit.isSub) unit.superForce.detach(unit);
                 unit.order.retreatLevel = 0.95;
+                unit.retreat();
+                if (unit.strength <= MIN_SOLDIERS) unit.disappear();
 
             }
             if (attacker.strength <= attackerInit * attacker.order.retreatLevel) {
                 winner = -1;
+                attacker.retreat();
+                if (attacker.strength <= MIN_SOLDIERS) attacker.disappear();
 
             }
         }
@@ -287,12 +299,14 @@ public class Battle {
                     unit.order.retreatLevel = 0.95;
                     //new
                     unit.retreat();
+                    if (unit.strength <= MIN_SOLDIERS) unit.disappear();
 
                 }
                 if (defender.strength <= defenderInit * defender.order.retreatLevel) {
                     winner = 1;
                     //new
                     defender.retreat();
+                    if (defender.strength <= MIN_SOLDIERS) defender.disappear();
 
                     return result.toString();
                 }
@@ -316,12 +330,14 @@ public class Battle {
                     unit.order.retreatLevel = 0.95;
                     //new
                     unit.retreat();
+                    if (unit.strength <= MIN_SOLDIERS) unit.disappear();
 
                 }
                 if (attacker.strength <= attackerInit * attacker.order.retreatLevel) {
                     winner = -1;
                     //new
                     attacker.retreat();
+                    if (attacker.strength <= MIN_SOLDIERS) attacker.disappear();
 
                 }
             }
@@ -329,8 +345,8 @@ public class Battle {
             if (winner != 0) break;
 
         }
-        Test.list(attacker);
-        Test.list(defender);
+        //Test.list(attacker);
+        //Test.list(defender);
 
 
         return result.toString();

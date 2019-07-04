@@ -858,5 +858,18 @@ public class Force extends Image {
         return food;
     }
 
+    public void disappear() {
+        hex.forces.removeValue(this, true);
+        if (play != null) {
+            if (nation == FRANCE) {
+                play.whiteTroops.removeValue(this, true);
+            } else {
+                play.blackTroops.removeValue(this, true);
+            }
+            remove();
+        }
+
+    }
+
 
 }
