@@ -214,8 +214,15 @@ public class Play extends Stage implements Screen {
 
             //Battle check
             for (Force w: whiteTroops) {
+                w.order.seekBattle = true;
+                System.out.println("White: strength - " + w.strength + " morale - " + w.morale + " Hex: " + w.hex.getRelX() + " " + w.hex.getRelY());
                 for (Force b: blackTroops) {
-                    if (w.hex == b.hex) new Battle(w, b).resolve();
+                    b.order.seekBattle = true;
+                    System.out.println("Black: strength - " + b.strength + " morale - " + b.morale + " Hex: " + b.hex.getRelX() + " " + b.hex.getRelY());
+                    if (w.hex == b.hex) {
+                        System.out.println("Battle!");
+                        new Battle(w, b).resolve();
+                    }
                 }
             }
         }
@@ -301,7 +308,7 @@ public class Play extends Stage implements Screen {
             Actor actor = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
             if (!secondClick) {
                 if (actor instanceof Control) System.out.println("Control!");
-                if (actor instanceof Hex) System.out.println("Hex!");
+                if (actor instanceof Hex) System.out.println("Hex! " + ((Hex)actor).getRelX() + " " + ((Hex)actor).getRelY());
                 if (actor instanceof Force) System.out.println("Force!");
                 if (actor instanceof Label) System.out.println("Label!");
                 startHex = null;
