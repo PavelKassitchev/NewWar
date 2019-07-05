@@ -30,6 +30,11 @@ public class Battle {
     HashSet<Unit> rootedDef = new HashSet<Unit>();
     HashSet<Unit> rootedAtt = new HashSet<Unit>();
 
+    int attackerKilled;
+    int defenderKilled;
+    int attackerImprisoned;
+    int defenderImprisoned;
+
     public Battle(Force force1, Force force2) {
 
         if (force2.order.seekBattle && (!force1.order.seekBattle || force2.strength > force1.strength)) {
@@ -107,8 +112,13 @@ public class Battle {
 
 
         if (winner == 1) {
-            for (Unit unit : rootedDef) defenderRooted += unit.strength;
-            System.out.println("Attacker took prisoners: " + pursuit(defenderRooted));
+            for (Unit unit : rootedDef) {
+                defenderRooted += unit.strength;
+                unit.retreat();
+            }
+
+            //System.out.println("Attacker took prisoners: " + pursuit(defenderRooted));
+            defenderImprisoned = pursuit(defenderRooted);
             if (attacker.isUnit) {
                 ((Unit) attacker).changeMorale(VICTORY_BONUS);
             } else {
@@ -119,16 +129,22 @@ public class Battle {
             for (Unit unit : rootedAtt) {
                 unit.changeMorale(SMALL_VICTORY_BONUS);
                 if (unit.morale > 0) {
+                    //TODO what if the unit retreated?
                     attacker.attach(unit);
 
                 } else {
                     attackerRooted += unit.strength;
+                    //unit.retreat();
                 }
             }
 
         } else {
-            for (Unit unit : rootedAtt) attackerRooted += unit.strength;
-            System.out.println("Defender took prisoners: " + pursuit(attackerRooted));
+            for (Unit unit : rootedAtt) {
+                attackerRooted += unit.strength;
+                unit.retreat();;
+            }
+            //System.out.println("Defender took prisoners: " + pursuit(attackerRooted));
+            attackerImprisoned = pursuit(attackerRooted);
             if (defender.isUnit) {
                 ((Unit) defender).changeMorale(VICTORY_BONUS);
             } else {
@@ -139,27 +155,33 @@ public class Battle {
             for (Unit unit : rootedDef) {
                 unit.changeMorale(SMALL_VICTORY_BONUS);
                 if (unit.morale > 0) {
+                    //TODO what if the unit retreated
                     defender.attach(unit);
 
                 } else {
                     defenderRooted += unit.strength;
+                    //unit.retreat();
                 }
             }
         }
-        System.out.println("WINNER = " + winner);
+
         System.out.println("The battle ends!");
+        System.out.println("WINNER = " + winner);
+        System.out.println("Attacker: imprisoned - " + attackerImprisoned + " , killed and wounded - " + attackerKilled);
+        System.out.println("Defender: imprisoned - " + defenderImprisoned + " , killed and wounded - " + defenderKilled);
         Test.list(attacker);
         Test.list(defender);;
 
         return winner;
     }
 
-    public void hitUnit(Unit unit, double fire, double charge) {
-
+    public int hitUnit(Unit unit, double fire, double charge) {
+        int in = unit.strength;
         Force opponent = (unit.nation == attacker.nation) ? defender : attacker;
         HashSet<Unit> rooted = (unit.nation == attacker.nation) ? rootedAtt : rootedDef;
 
         unit.bearLoss(fire);
+        int out = unit.strength;
         unit.changeMorale(charge);
         if (unit.strength <= MIN_SOLDIERS || unit.morale <= MIN_MORALE) {
 
@@ -176,6 +198,7 @@ public class Battle {
                 }
             }
         }
+        return in - out;
 
     }
 
@@ -200,12 +223,12 @@ public class Battle {
                 Battery b = (Battery) defender;
                 b.fire(ratio);
                 double fireEffect = LONG_DISTANCE_FIRE * ((0.7 + 0.6 * random.nextDouble() * b.fire * FIRE_ON_UNIT) / attackerInit);
-                hitUnit(unit, fireEffect, (-CASUALITY_INTO_MORALE * fireEffect));
+                attackerKilled += hitUnit(unit, fireEffect, (-CASUALITY_INTO_MORALE * fireEffect));
             } else {
                 for (Battery b : defender.batteries) {
                     b.fire(ratio);
                     double fireEffect = LONG_DISTANCE_FIRE * ((0.7 + 0.6 * random.nextDouble() * b.fire * FIRE_ON_UNIT) / attackerInit);
-                    hitUnit(unit, fireEffect, (-CASUALITY_INTO_MORALE * fireEffect));
+                    attackerKilled += hitUnit(unit, fireEffect, (-CASUALITY_INTO_MORALE * fireEffect));
                 }
             }
         }
@@ -288,7 +311,7 @@ public class Battle {
                     double ratio = (double) b.strength / initDef;
                     double fluke = 0.7 + 0.6 * random.nextDouble();
                     //fluke = 1;
-                    hitUnit(b, fluke * fireOnDefender, fluke * chargeOnDefender);
+                    defenderKilled += hitUnit(b, fluke * fireOnDefender, fluke * chargeOnDefender);
                     for (Unit unit : attackerUnits) unit.fire(ratio);
                 }
             }
@@ -317,7 +340,7 @@ public class Battle {
                     double ratio = (double) b.strength / initAtt;
                     double fluke = 0.7 + 0.6 * random.nextDouble();
                     //fluke = 1;
-                    hitUnit(b, fluke * fireOnAttacker, fluke * chargeOnAttacker);
+                    attackerKilled += hitUnit(b, fluke * fireOnAttacker, fluke * chargeOnAttacker);
                     for (Unit unit : defenderUnits) unit.fire(ratio);
                 }
 

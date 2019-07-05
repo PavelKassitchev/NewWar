@@ -180,7 +180,7 @@ public class Play extends Stage implements Screen {
 
         if(keycode == Input.Keys.O) {
             Force force = new Force(new Squadron(this, Nation.AUSTRIA, hexGraph.getHex(18, 18)), new Squadron(this, Nation.AUSTRIA, hexGraph.getHex(18, 18)));
-            force.order.isForaging = 1;
+            force.order.isForaging = 0.9;
             force.order.seekBattle = true;
             force.name = "2.Squadron";
             blackTroops.add(force);

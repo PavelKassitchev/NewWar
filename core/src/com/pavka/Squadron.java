@@ -24,7 +24,7 @@ public class Squadron extends Unit {
         super(nation, hex);
         //isUnit = true;
         type = CAVALRY;
-        imprisoned = 0.75;
+        imprisoned = 0.7;
         maxStrength = MAX_STRENGTH;
         maxFire = FIRE;
         maxCharge = CHARGE;
