@@ -7,7 +7,38 @@ import static com.pavka.Nation.*;
 
 public class Test {
 
-    static Hex hex = new Hex();
+    static Hex hex = Play.hexGraph.getHex(4, 8);
+    static Hex hex2 = Play.hexGraph.getHex(16, 16);
+    static Force force1;
+    static Force force2;
+
+    static {
+
+        Force regiment11 = new Force(new Battalion(FRANCE, hex), new Battalion(FRANCE, hex), new Battalion(FRANCE, hex));
+        Force regiment12 = new Force(new Battalion(FRANCE, hex), new Battalion(FRANCE, hex), new Battalion(FRANCE, hex));
+        Force regiment13 = new Force(new Battalion(FRANCE, hex), new Battalion(FRANCE, hex), new Battalion(FRANCE, hex));
+        Force regiment14 = new Force(new Battalion(FRANCE, hex), new Battalion(FRANCE, hex), new Battalion(FRANCE, hex));
+        Force brigade11 = new Force(regiment11, regiment12);
+        Force brigade12 = new Force (regiment13, regiment14);
+        force1 = new Force(brigade11, brigade12);
+        force1.attach(new Squadron(FRANCE, hex));
+        force1.attach(new Squadron(FRANCE, hex));
+        Force artillery1 = new Force(new Battery(FRANCE, hex), new Battery(FRANCE, hex), new Battery(FRANCE, hex), new Battery(FRANCE, hex));
+        force1.attach(artillery1);
+
+        Force regiment21 = new Force(new Battalion(AUSTRIA, hex2), new Battalion(AUSTRIA, hex2), new Battalion(AUSTRIA, hex2));
+        Force regiment22 = new Force(new Battalion(AUSTRIA, hex2), new Battalion(AUSTRIA, hex2), new Battalion(AUSTRIA, hex2));
+        Force regiment23 = new Force(new Battalion(AUSTRIA, hex2), new Battalion(AUSTRIA, hex2), new Battalion(AUSTRIA, hex2));
+        Force regiment24 = new Force(new Battalion(AUSTRIA, hex2), new Battalion(AUSTRIA, hex2), new Battalion(AUSTRIA, hex2));
+        Force brigade21 = new Force(regiment21, regiment22);
+        Force brigade22 = new Force (regiment23, regiment24);
+        force2 = new Force(brigade21, brigade22);
+        force2.attach(new Squadron(AUSTRIA, hex2));
+        force2.attach(new Squadron(AUSTRIA, hex2));
+        Force artillery2 = new Force(new Battery(AUSTRIA, hex2), new Battery(AUSTRIA, hex2), new Battery(AUSTRIA, hex2), new Battery(AUSTRIA, hex2));
+        force2.attach(artillery2);
+    }
+
     public static void main(String[] args) {
 
         Force france = createForce(FRANCE,4, 1, 0);

@@ -167,7 +167,7 @@ public class Play extends Stage implements Screen {
     @Override
     public boolean keyUp(int keycode) {
         if (keycode == Input.Keys.C) {
-            Force force = new Force(new Squadron(this, Nation.FRANCE, hexGraph.getHex(8, 4)), new Squadron(this, Nation.FRANCE, hexGraph.getHex(8, 4)));
+            /*Force force = new Force(new Squadron(this, Nation.FRANCE, hexGraph.getHex(8, 4)), new Squadron(this, Nation.FRANCE, hexGraph.getHex(8, 4)));
             force.order.isForaging = 0.8;
             force.order.seekBattle = true;
             force.name = "Cavalry Sq.";
@@ -175,17 +175,35 @@ public class Play extends Stage implements Screen {
             System.out.println(force.getX() + " " + force.getY());
             System.out.println(force.order.pathsOrder);
             whiteTroops.add(force);
-            addActor(force);
+            addActor(force);*/
+
+            Force france = Test.force1;
+            france.play = this;
+            //france.hex = hexGraph.getHex(8, 4);
+            france.order.seekBattle = true;
+            france.order.isForaging = 0.8;
+            france.name = "France";
+            whiteTroops.add(france);
+            addActor(france);
         }
 
         if(keycode == Input.Keys.O) {
-            Force force = new Force(new Squadron(this, Nation.AUSTRIA, hexGraph.getHex(18, 18)), new Squadron(this, Nation.AUSTRIA, hexGraph.getHex(18, 18)));
+            /*Force force = new Force(new Squadron(this, Nation.AUSTRIA, hexGraph.getHex(18, 18)), new Squadron(this, Nation.AUSTRIA, hexGraph.getHex(18, 18)));
             force.order.isForaging = 0.9;
             force.order.seekBattle = true;
             force.name = "2.Squadron";
             blackTroops.add(force);
-            addActor(force);
+            addActor(force);*/
+            Force austria = Test.force2;
+            austria.play = this;
+            //austria.hex = hexGraph.getHex(18, 18);
+            austria.order.seekBattle = true;
+            austria.order.isForaging = 0.8;
+            austria.name = "Austria";
+            blackTroops.add(austria);
+            addActor(austria);
         }
+
 
         if (keycode == Input.Keys.T) {
             Commander commander = new Commander(Nation.FRANCE, hexGraph.getHex(32, 32));
