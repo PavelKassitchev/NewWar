@@ -10,7 +10,7 @@ public class Battle {
     public static final int FIRE_ON_UNIT = 40;
     public static final double CASUALITY_INTO_MORALE = 3.3;
     public static final int CHARGE_ON_ENEMY = 30;
-    public static final int PURSUIT_CHARGE = 40;
+    public static final int PURSUIT_CHARGE = 45;
     public static final int MIN_SOLDIERS = 6;
     public static final double MIN_MORALE = 0.2;
     public static final double MORALE_PENALTY = -0.03;
@@ -91,8 +91,8 @@ public class Battle {
     public int resolve() {
 
         System.out.println("The battle begins!");
-        Test.list(attacker);
-        Test.list(defender);
+        //Test.list(attacker);
+        //Test.list(defender);
 
         if (!attacker.order.seekBattle && !defender.order.seekBattle) return 0;
         if (!attacker.order.seekBattle || !defender.order.seekBattle) {
@@ -102,6 +102,7 @@ public class Battle {
         String s;
         int count = 0;
         longDistanceBombing();
+        System.out.println("Bombing");
         while (winner == 0) {
             s = resolveStage();
             count++;
@@ -169,8 +170,12 @@ public class Battle {
         System.out.println("WINNER = " + winner);
         System.out.println("Attacker: imprisoned - " + attackerImprisoned + " , killed and wounded - " + attackerKilled);
         System.out.println("Defender: imprisoned - " + defenderImprisoned + " , killed and wounded - " + defenderKilled);
+        System.out.println("Attacker left: " + attacker.strength + " routed: " + (attackerRooted - attackerImprisoned));
+        System.out.println("Defender left: " + defender.strength + " routed: " + (defenderRooted - defenderImprisoned));
+
         Test.list(attacker);
         Test.list(defender);;
+        System.out.println("Number of rounds: " + count);
 
         return winner;
     }
@@ -208,6 +213,7 @@ public class Battle {
 
         ArrayList<Unit> attackerUnits = new ArrayList<Unit>();
         if (!attacker.isUnit) {
+
             attackerUnits.addAll(attacker.battalions);
             attackerUnits.addAll(attacker.batteries);
             attackerUnits.addAll(attacker.squadrons);
@@ -219,6 +225,7 @@ public class Battle {
         for (Unit unit : attackerUnits) {
             int initStrength = unit.strength;
             double ratio = (double) initStrength / attackerInit;
+
             if (defender.isUnit && ((Unit) defender).type == Unit.ARTILLERY) {
                 Battery b = (Battery) defender;
                 b.fire(ratio);
@@ -227,6 +234,7 @@ public class Battle {
             } else {
                 for (Battery b : defender.batteries) {
                     b.fire(ratio);
+                    System.out.println("Bombing!!!");
                     double fireEffect = LONG_DISTANCE_FIRE * ((0.7 + 0.6 * random.nextDouble() * b.fire * FIRE_ON_UNIT) / attackerInit);
                     attackerKilled += hitUnit(unit, fireEffect, (-CASUALITY_INTO_MORALE * fireEffect));
                 }
@@ -248,6 +256,7 @@ public class Battle {
 
             }
         }
+        casualities = attackerKilled;
         System.out.println("LONG BOMBING CASUALITIES: " + casualities);
         return casualities;
     }
@@ -293,6 +302,7 @@ public class Battle {
         //TODO what if min = 0?
 
         int min = Math.min(attackerUnits.size(), defenderUnits.size());
+        if (min == 0) min = 1;
 
         int defenderStep = defenderUnits.size() / min;
 
@@ -349,7 +359,11 @@ public class Battle {
             if (rootedAtt.size() > 0) {
 
                 for (Unit unit : rootedAtt) {
-                    if (unit.isSub) unit.superForce.detach(unit);
+                    if (unit.isSub) {
+                        System.out.println(unit.superForce.name + " lost a unit" + "play = " + unit.superForce.play);
+                        unit.superForce.detach(unit);
+
+                    }
                     unit.order.retreatLevel = 0.95;
                     //new
                     unit.retreat();
@@ -368,8 +382,10 @@ public class Battle {
             if (winner != 0) break;
 
         }
-        //Test.list(attacker);
-        //Test.list(defender);
+        System.out.println("Attacker: " + attacker.name);
+        Test.list(attacker);
+        System.out.println("Defender: " + defender.name);
+        Test.list(defender);
 
 
         return result.toString();

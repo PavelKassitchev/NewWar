@@ -178,7 +178,7 @@ public class Play extends Stage implements Screen {
             addActor(force);*/
 
             Force france = Test.force1;
-            france.play = this;
+            france.setPlay(this);
             //france.hex = hexGraph.getHex(8, 4);
             france.order.seekBattle = true;
             france.order.isForaging = 0.8;
@@ -195,7 +195,7 @@ public class Play extends Stage implements Screen {
             blackTroops.add(force);
             addActor(force);*/
             Force austria = Test.force2;
-            austria.play = this;
+            austria.setPlay(this);
             //austria.hex = hexGraph.getHex(18, 18);
             austria.order.seekBattle = true;
             austria.order.isForaging = 0.8;

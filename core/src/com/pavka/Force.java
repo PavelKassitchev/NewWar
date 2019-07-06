@@ -206,6 +206,13 @@ public class Force extends Image {
 
     }
 
+    public void setPlay(Play play) {
+        this.play = play;
+        if (!isUnit) {
+            for (Force force: forces) force.setPlay(play);
+        }
+    }
+
     public Force attach(Force force) {
 
         hex.forces.removeValue(force, true);
@@ -223,6 +230,7 @@ public class Force extends Image {
 
     public Force detach(Force force) {
         force.isSub = false;
+        System.out.println("Detaching... From " + force.superForce.name + " Play: " + force.superForce.play);
         force.superForce = null;
         force.hex = hex;
         hex.forces.add(force);
@@ -236,6 +244,7 @@ public class Force extends Image {
 
         //force.setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
         if (play != null) {
+            System.out.println("Detaching from... Strength: " + force.strength + " Hex: " + force.hex.getRelX() + " " + force.hex.getRelY());
             force.setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
             play.addActor(force);
             force.play = play;
@@ -860,6 +869,7 @@ public class Force extends Image {
 
     public void disappear() {
         hex.forces.removeValue(this, true);
+        if (isSub) superForce.detach(this);
         if (play != null) {
             if (nation == FRANCE) {
                 play.whiteTroops.removeValue(this, true);
