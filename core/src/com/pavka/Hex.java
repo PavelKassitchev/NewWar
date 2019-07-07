@@ -76,11 +76,12 @@ public class Hex extends Image {
         int row = 0;
         int col = 0;
         switch (direction) {
+            //OK
             case EAST:
                 row = this.row;
                 col = this.col == 63? this.col: this.col + 1;
                 break;
-
+            //OK
             case WEST:
                 row = this.row;
                 col = this.col == 0? this.col: this.col - 1;
@@ -90,7 +91,7 @@ public class Hex extends Image {
                 row = this.row == 63? this.row: this.row + 1;
                 if (this.col == 63) col = this.col;
                 else {
-                    col = this.col % 2 == 0? this.col + 1: this.col;
+                    col = this.row % 2 == 0? this.col + 1: this.col;
                 }
                 break;
 
@@ -98,7 +99,7 @@ public class Hex extends Image {
                 row = this.row == 63? this.row: this.row + 1;
                 if (this.col == 0) col = this.col;
                 else {
-                    col = this.col % 2 == 0? this.col: this.col - 1;
+                    col = this.row % 2 == 0? this.col: this.col - 1;
                 }
                 break;
 
@@ -106,7 +107,7 @@ public class Hex extends Image {
                 row = this.row == 0? this.row: this.row - 1;
                 if (this.col == 0) col = this.col;
                 else {
-                    col = this.col % 2 == 0? this.col: this.col - 1;
+                    col = this.row % 2 == 0? this.col: this.col - 1;
                 }
                 break;
 
@@ -114,7 +115,7 @@ public class Hex extends Image {
                 row = this.row == 0? this.row: this.row - 1;
                 if (this.col == 63) col = this.col;
                 else {
-                    col = this.col % 2 == 0? this.col + 1: this.col;
+                    col = this.row % 2 == 0? this.col + 1: this.col;
                 }
                 break;
         }

@@ -328,7 +328,7 @@ public class Play extends Stage implements Screen {
             Actor actor = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
             if (!secondClick) {
                 if (actor instanceof Control) System.out.println("Control!");
-                if (actor instanceof Hex) System.out.println("Hex! " + ((Hex)actor).getRelX() + " " + ((Hex)actor).getRelY());
+                if (actor instanceof Hex) System.out.println("Hex! " + ((Hex)actor).getRelX() + " " + ((Hex)actor).getRelY() + " Column: " + ((Hex)actor).col + " Row: " + ((Hex)actor).row);
                 if (actor instanceof Force) System.out.println("Force!");
                 if (actor instanceof Label) System.out.println("Label!");
                 startHex = null;

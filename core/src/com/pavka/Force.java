@@ -37,6 +37,7 @@ public class Force extends Image {
     General general;
     Trace trace;
     Force superForce;
+    Force formerSuper;
 
     Nation nation;
     String name;
@@ -136,8 +137,8 @@ public class Force extends Image {
         }
 
         if (getBackHex() != null) {
-            System.out.println("My hex: " + hex.getRelX() + " " + hex.getRelY());
-            System.out.println("Back Hex : " + getBackHex().getRelX() + " " + getBackHex().getRelY());
+            System.out.println("My hex: " + hex.col + " " + hex.row);
+            System.out.println("Back Hex : " + getBackHex().col + " " + getBackHex().row);
             System.out.println("Direction = " + hex.getDirection(getBackHex()));
             System.out.println(hex.getDirection(getBackHex()).getOpposite());
             return hex.getNeighbour(hex.getDirection(getBackHex()).getOpposite());
@@ -164,7 +165,7 @@ public class Force extends Image {
         else direction = order.retreatDirection;
 
         back = hex.getNeighbour(direction);
-        System.out.println("While retreating... HEX = " + hex.getRelX() + " " + hex.getRelY() + " for " + name);
+        System.out.println(name + " Retreat Order Direction = " + order.retreatDirection + " But retreat to " + direction);
 
         moveTo(back);
         trace.add(back);
@@ -852,7 +853,7 @@ public class Force extends Image {
                 //if (general != null) general.hex = hex;
                 setBounds(newHex.getRelX() - 8, newHex.getRelY() - 8, 12, 12);
                 hex.forces.add(this);
-                trace.add(hex);
+                //trace.add(hex);
                 movePoints -= movementCost;
 
             }
@@ -866,11 +867,12 @@ public class Force extends Image {
 
     public void moveTo(Hex hex) {
         this.hex.forces.removeValue(this, true);
+        backHex = this.hex;
         hex.forces.add(this);
         //this.hex = hex;
         setHex(hex);
         setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
-        trace.add(hex);
+        //trace.add(hex);
     }
 
     public double forage() {
