@@ -1,5 +1,7 @@
 package com.pavka;
 
+import java.util.Random;
+
 public enum Direction {
     EAST,
     NORTHEAST,
@@ -7,6 +9,11 @@ public enum Direction {
     WEST,
     SOUTHWEST,
     SOUTHEAST;
+
+    public static Direction getRandom() {
+        Random random = new Random();
+        return Direction.values()[(int)(random.nextDouble() * 6)];
+    }
 
     public Direction getOpposite() {
         switch (this) {

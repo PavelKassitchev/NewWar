@@ -124,9 +124,16 @@ public class Force extends Image {
             return hex.getNeighbour(order.frontDirection.getOpposite());
         }
         int size = trace.route.size;
-        if (size > 1 && trace.route.get(size - 2) != trace.route.get(size - 1)) return trace.route.get(size - 2);
+        System.out.println("ROUTE SIZE - " + trace.route.size);
+        if (size > 1 && trace.route.get(size - 2) != trace.route.get(size - 1)) {
+            System.out.println("WE HAVE A BACK!");
+            return trace.route.get(size - 2);
+        }
 
-        else return null;
+        else {
+            System.out.println("WE DON'T HAVE A BACK!");
+            return null;
+        }
     }
 
     public Hex getForwardHex() {
@@ -139,6 +146,10 @@ public class Force extends Image {
         }
 
         if (getBackHex() != null) {
+            System.out.println("My hex: " + hex.getRelX() + " " + hex.getRelY());
+            System.out.println("Back Hex : " + getBackHex().getRelX() + " " + getBackHex().getRelY());
+            System.out.println("Direction = " + hex.getDirection(getBackHex()));
+            System.out.println(hex.getDirection(getBackHex()).getOpposite());
             return hex.getNeighbour(hex.getDirection(getBackHex()).getOpposite());
         }
         return null;
@@ -152,14 +163,39 @@ public class Force extends Image {
     }
 
     public void retreat() {
-        Hex back = getBackHex();
-        if (back == null) {
-            Random r = new Random();
-            int index = (int) (r.nextDouble() * 6);
-            back = hex.getNeighbour(Direction.values()[index]);
-        }
+        double dispersal = 0.2;
+        Random random = new Random();
+        double d = 1 + 2 * dispersal;
+        double s = random.nextDouble() * d;
+        Direction direction;
+        Hex back;
+        if (s < dispersal) direction = order.retreatDirection.getLeftForward();
+        else if (s > dispersal + 1) direction = order.retreatDirection.getRightForward();
+        else direction = order.retreatDirection;
+
+        back = hex.getNeighbour(direction);
+        System.out.println("While retreating... HEX = " + hex.getRelX() + " " + hex.getRelY() + " for " + name);
+
         moveTo(back);
+        trace.add(back);
     }
+
+    public void setRetreatDirection(Force enemy) {
+        if (enemy.getForwardHex() != null) {
+            order.retreatDirection = hex.getDirection(enemy.getForwardHex());
+            System.out.println("Forward is not null");
+        }
+        else if (getBackHex() != null) {
+            order.retreatDirection = hex.getDirection(getBackHex());
+            System.out.println("Back is not null");
+        }
+        else {
+            order.retreatDirection = Direction.getRandom();
+            System.out.println("ELSE");
+        }
+        System.out.println("Retreat Direction = " + order.retreatDirection + " " + name + " " + nation);
+    }
+
     //STATIC SECTION
 
     //TODO exclude SUPPLY xp
@@ -792,6 +828,15 @@ public class Force extends Image {
         return food;
     }
 
+    public void setHex(Hex hex) {
+        this.hex = hex;
+        if (!isUnit) {
+            for (Force force: forces) {
+                force.setHex(hex);
+            }
+        }
+    }
+
     public boolean move() {
         double movePoints = speed;
         float movementCost;
@@ -812,10 +857,12 @@ public class Force extends Image {
                 order.pathsOrder.removeRange(0, 0);
                 //symbol.setX(newHex.getRelX() - 8);
                 //symbol.setY(newHex.getRelY() - 8);
-                hex = newHex;
-                if (general != null) general.hex = hex;
+                //hex = newHex;
+                setHex(newHex);
+                //if (general != null) general.hex = hex;
                 setBounds(newHex.getRelX() - 8, newHex.getRelY() - 8, 12, 12);
                 hex.forces.add(this);
+                trace.add(hex);
                 movePoints -= movementCost;
 
             }
@@ -830,8 +877,10 @@ public class Force extends Image {
     public void moveTo(Hex hex) {
         this.hex.forces.removeValue(this, true);
         hex.forces.add(this);
-        this.hex = hex;
+        //this.hex = hex;
+        setHex(hex);
         setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
+        trace.add(hex);
     }
 
     public double forage() {

@@ -9,6 +9,7 @@ public class Order extends Message {
     public Array<Path> pathsOrder = new Array<Path>();
     public MileStone mileStone;
     public Direction frontDirection;
+    public Direction retreatDirection;
 
 
     public Order() {

@@ -243,6 +243,8 @@ public class Play extends Stage implements Screen {
                     }
                 }
             }
+            //for (Force w: whiteTroops) w.order.retreatDirection = null;
+            //for (Force b: blackTroops) b.order.retreatDirection = null;
         }
         if (keycode == Input.Keys.S) {
             Test.main(null);

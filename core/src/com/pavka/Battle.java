@@ -35,6 +35,8 @@ public class Battle {
     int attackerImprisoned;
     int defenderImprisoned;
 
+    int number;
+
     public Battle(Force force1, Force force2) {
 
         if (force2.order.seekBattle && (!force1.order.seekBattle || force2.strength > force1.strength)) {
@@ -90,7 +92,7 @@ public class Battle {
 
     public int resolve() {
 
-        System.out.println("The battle begins!");
+        System.out.println("The battle begins! " + attacker.hex.getRelX() + attacker.hex.getRelY());
         //Test.list(attacker);
         //Test.list(defender);
 
@@ -115,7 +117,7 @@ public class Battle {
         if (winner == 1) {
             for (Unit unit : rootedDef) {
                 defenderRooted += unit.strength;
-                unit.retreat();
+                //unit.retreat();
             }
 
             //System.out.println("Attacker took prisoners: " + pursuit(defenderRooted));
@@ -142,7 +144,7 @@ public class Battle {
         } else {
             for (Unit unit : rootedAtt) {
                 attackerRooted += unit.strength;
-                unit.retreat();;
+                //unit.retreat();;
             }
             //System.out.println("Defender took prisoners: " + pursuit(attackerRooted));
             attackerImprisoned = pursuit(attackerRooted);
@@ -189,7 +191,7 @@ public class Battle {
         int out = unit.strength;
         unit.changeMorale(charge);
         if (unit.strength <= MIN_SOLDIERS || unit.morale <= MIN_MORALE) {
-
+            unit.name = "Unit No." + (++number) + " " + unit.nation;
             rooted.add(unit);
             opponent.selectRandomUnit().changeMorale(MORALE_BONUS);
 
@@ -245,13 +247,17 @@ public class Battle {
             for (Unit unit : rootedAtt) {
                 if (unit.isSub) unit.superForce.detach(unit);
                 unit.order.retreatLevel = 0.95;
+                if (unit.order.retreatDirection == null) unit.setRetreatDirection(defender);
                 unit.retreat();
+                System.out.println(unit.name + " retreats to " + unit.hex.getRelX() + " " + unit.hex.getRelY());
                 if (unit.strength <= MIN_SOLDIERS) unit.disappear();
 
             }
             if (attacker.strength <= attackerInit * attacker.order.retreatLevel) {
                 winner = -1;
+                if (attacker.order.retreatDirection == null) attacker.setRetreatDirection(defender);
                 attacker.retreat();
+                System.out.println("Attacker retreats");
                 if (attacker.strength <= MIN_SOLDIERS) attacker.disappear();
 
             }
@@ -331,14 +337,18 @@ public class Battle {
                     if (unit.isSub) unit.superForce.detach(unit);
                     unit.order.retreatLevel = 0.95;
                     //new
+                    if (unit.order.retreatDirection == null) unit.setRetreatDirection(attacker);
                     unit.retreat();
+                    System.out.println(unit.name + " retreats to " + unit.hex.getRelX() + " " + unit.hex.getRelY());
                     if (unit.strength <= MIN_SOLDIERS) unit.disappear();
 
                 }
                 if (defender.strength <= defenderInit * defender.order.retreatLevel) {
                     winner = 1;
                     //new
+                    if (defender.order.retreatDirection == null) defender.setRetreatDirection(attacker);
                     defender.retreat();
+                    System.out.println("Defender retreats");
                     if (defender.strength <= MIN_SOLDIERS) defender.disappear();
 
                     return result.toString();
@@ -366,14 +376,18 @@ public class Battle {
                     }
                     unit.order.retreatLevel = 0.95;
                     //new
+                    if (unit.order.retreatDirection == null) unit.setRetreatDirection(defender);
                     unit.retreat();
+                    System.out.println(unit.name + " retreats to " + unit.hex.getRelX() + " " + unit.hex.getRelY());
                     if (unit.strength <= MIN_SOLDIERS) unit.disappear();
 
                 }
                 if (attacker.strength <= attackerInit * attacker.order.retreatLevel) {
                     winner = -1;
                     //new
+                    if (attacker.order.retreatDirection == null) attacker.setRetreatDirection(defender);
                     attacker.retreat();
+                    System.out.println("Attacker retreats");
                     if (attacker.strength <= MIN_SOLDIERS) attacker.disappear();
 
                 }
@@ -382,10 +396,10 @@ public class Battle {
             if (winner != 0) break;
 
         }
-        System.out.println("Attacker: " + attacker.name);
+        /*System.out.println("Attacker: " + attacker.name);
         Test.list(attacker);
         System.out.println("Defender: " + defender.name);
-        Test.list(defender);
+        Test.list(defender);*/
 
 
         return result.toString();
