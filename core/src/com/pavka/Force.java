@@ -41,6 +41,7 @@ public class Force extends Image {
     Nation nation;
     String name;
     Hex hex;
+    Hex backHex;
 
     Order order;
     Message message;
@@ -120,20 +121,9 @@ public class Force extends Image {
     }
 
     public Hex getBackHex() {
-        if (order.frontDirection != null) {
-            return hex.getNeighbour(order.frontDirection.getOpposite());
-        }
-        int size = trace.route.size;
-        System.out.println("ROUTE SIZE - " + trace.route.size);
-        if (size > 1 && trace.route.get(size - 2) != trace.route.get(size - 1)) {
-            System.out.println("WE HAVE A BACK!");
-            return trace.route.get(size - 2);
-        }
-
-        else {
-            System.out.println("WE DON'T HAVE A BACK!");
-            return null;
-        }
+        if (backHex == null) System.out.println("BACK HEX NULL!");
+        else System.out.println("BACK HEX IS NOT NULL!");
+        return backHex;
     }
 
     public Hex getForwardHex() {
@@ -849,7 +839,7 @@ public class Force extends Image {
                 else movePoints = 0;
             }
             if (movePoints / movementCost >= 1) {
-
+                backHex = hex;
                 forage();
                 hex.forces.removeValue(this, true);
                 Hex newHex = order.pathsOrder.get(0).toHex;
