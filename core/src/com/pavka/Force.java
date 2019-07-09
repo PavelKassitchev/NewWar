@@ -118,7 +118,7 @@ public class Force extends Image {
                     commander.receivedReports.get(0).force.name + " turn: " + commander.receivedReports.get(0).turn);
 
         }
-        //order.mileStone.days = Path.getDaysToGo(order.pathsOrder, speed);
+
     }
 
     public Hex getBackHex() {
