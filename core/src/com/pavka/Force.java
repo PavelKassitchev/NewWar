@@ -160,15 +160,17 @@ public class Force extends Image {
         double s = random.nextDouble() * d;
         Direction direction;
         Hex back;
-        if (s < dispersal) direction = order.retreatDirection.getLeftForward();
-        else if (s > dispersal + 1) direction = order.retreatDirection.getRightForward();
-        else direction = order.retreatDirection;
+        if (order.retreatDirection != null) {
+            if (s < dispersal) direction = order.retreatDirection.getLeftForward();
+            else if (s > dispersal + 1) direction = order.retreatDirection.getRightForward();
+            else direction = order.retreatDirection;
 
-        back = hex.getNeighbour(direction);
-        System.out.println(name + " Retreat Order Direction = " + order.retreatDirection + " But retreat to " + direction);
+            back = hex.getNeighbour(direction);
+            System.out.println(name + " Retreat Order Direction = " + order.retreatDirection + " But retreat to " + direction);
 
-        moveTo(back);
-        trace.add(back);
+            moveTo(back);
+            trace.add(back);
+        }
     }
 
     public void setRetreatDirection(Force enemy) {
