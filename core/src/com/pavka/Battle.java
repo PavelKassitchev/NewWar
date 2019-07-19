@@ -116,14 +116,14 @@ public class Battle {
 
 
         if (winner == 1) {
-            defender.retreat();
+            defender.retreat(0.2);
             System.out.println("Defender retreated to Hex " + defender.hex.col + " " + defender.hex.row);
             int i = 0;
             for (Unit unit : disorderedDef) {
                 defenderRouted += unit.strength;
                 unit.name = "Defender unit No." + (++i);
-                unit.retreat();
-                if (count > 1 && random.nextBoolean()) unit.retreat();
+                unit.retreat(0.2);
+                if (count > 1 && random.nextBoolean()) unit.retreat(0.2);
                 System.out.println(unit.name + " with Retreat Order to " + unit.order.retreatDirection + " retreated to Hex " + unit.hex.col + " " + unit.hex.row);
             }
 
@@ -144,19 +144,19 @@ public class Battle {
 
                 } else {
                     attackerRouted += unit.strength;
-                    unit.retreat();
+                    unit.retreat(0.2);
                 }
             }
 
         } else {
-            attacker.retreat();
+            attacker.retreat(0.2);
             System.out.println("Attacker retreated to Hex " + attacker.hex.col + " " + attacker.hex.row);
             int i = 0;
             for (Unit unit : disorderedAtt) {
                 attackerRouted += unit.strength;
                 unit.name = "Attacker Unit No." + (++i);
-                unit.retreat();
-                if (count > 1 && random.nextBoolean()) unit.retreat();
+                unit.retreat(0.2);
+                if (count > 1 && random.nextBoolean()) unit.retreat(0.2);
                 System.out.println(unit.name + " with Retreat Order to " + unit.order.retreatDirection + " retreated to Hex " + unit.hex.col + " " + unit.hex.row);
             }
             //System.out.println("Defender took prisoners: " + pursuit(attackerRooted));
@@ -176,7 +176,7 @@ public class Battle {
 
                 } else {
                     defenderRouted += unit.strength;
-                    unit.retreat();
+                    unit.retreat(0.2);
                 }
             }
         }

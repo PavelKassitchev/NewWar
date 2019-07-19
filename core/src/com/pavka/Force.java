@@ -153,8 +153,8 @@ public class Force extends Image {
         return name + " men: " + strength;
     }
 
-    public void retreat() {
-        double dispersal = 0.2;
+    public void retreat(double dispersal) {
+        //double dispersal = 0.2;
         Random random = new Random();
         double d = 1 + 2 * dispersal;
         double s = random.nextDouble() * d;
