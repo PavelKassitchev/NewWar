@@ -171,6 +171,7 @@ public class Force extends Image {
             moveTo(back);
             trace.add(back);
         }
+        else disappear();
     }
 
     public void setRetreatDirection(Force enemy) {
