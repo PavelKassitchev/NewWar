@@ -71,8 +71,7 @@ public abstract class Unit extends Force {
         return false;
     }
 
-    public Unit bearLoss(double ratio) {
-        if (type == ARTILLERY) ratio *= FIRE_ON_ARTILLERY;
+    public int bearLoss(double ratio) {
         if (ratio > 1) ratio = 1;
         int s = (int) (strength * ratio);
         double fS = foodStock * ratio;
@@ -96,7 +95,7 @@ public abstract class Unit extends Force {
         if (isSub)
             superForce.getReinforced(-s, this.xp, this.morale, this.fatigue, -fS, -aS, -fN, -aN, -fL, -aL, -f, -c);
 
-        return this;
+        return s;
     }
 
     public Unit changeMorale(double change) {
@@ -122,4 +121,11 @@ public abstract class Unit extends Force {
         if (isSub) superForce.doFire(ammoStock - initStock, fire - fireAttack);
         return fireAttack;
     }
+    public void route() {
+        if (isSub) superForce.detach(this);
+        //TODO
+        hex.eliminate(this);
+    }
+
+
 }

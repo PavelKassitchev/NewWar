@@ -150,7 +150,12 @@ public class Force extends Image {
 
     @Override
     public String toString() {
-        return name + " men: " + strength;
+        String type = "";
+        if(isUnit) type += " Unit of " +((Unit)this).type;
+        return name + " men: " + strength + " morale: " + morale + type;
+    }
+    public void retreat() {
+
     }
 
     public void retreat(double dispersal) {
@@ -218,7 +223,7 @@ public class Force extends Image {
         setTouchable(Touchable.enabled);
         setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
 
-        hex.forces.add(this);
+        hex.locate(this);
 
 
     }
@@ -245,7 +250,7 @@ public class Force extends Image {
 
     public Force attach(Force force) {
 
-        hex.forces.removeValue(force, true);
+        hex.eliminate(force);
         force.isSub = true;
         force.superForce = this;
         forces.add(force);
@@ -261,9 +266,10 @@ public class Force extends Image {
     public Force detach(Force force) {
         force.isSub = false;
         System.out.println("Detaching... From " + force.superForce.name + " Play: " + force.superForce.play);
+        force.formerSuper = force.superForce;
         force.superForce = null;
         force.hex = hex;
-        hex.forces.add(force);
+        hex.locate(force);
         //TODO This may be a mistake! What if the force isn't in forces list?
         forces.remove(force);
         force.order = new Order();
@@ -845,7 +851,7 @@ public class Force extends Image {
             if (movePoints / movementCost >= 1) {
                 backHex = hex;
                 forage();
-                hex.forces.removeValue(this, true);
+                hex.eliminate(this);
                 Hex newHex = order.pathsOrder.get(0).toHex;
                 //trace.add(newHex);
                 order.pathsOrder.removeRange(0, 0);
@@ -855,7 +861,7 @@ public class Force extends Image {
                 setHex(newHex);
                 //if (general != null) general.hex = hex;
                 setBounds(newHex.getRelX() - 8, newHex.getRelY() - 8, 12, 12);
-                hex.forces.add(this);
+                hex.locate(this);
                 //trace.add(hex);
                 movePoints -= movementCost;
 
@@ -869,9 +875,9 @@ public class Force extends Image {
     }
 
     public void moveTo(Hex hex) {
-        this.hex.forces.removeValue(this, true);
+        this.hex.eliminate(this);
         backHex = this.hex;
-        hex.forces.add(this);
+        hex.locate(this);
         //this.hex = hex;
         setHex(hex);
         setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
@@ -912,8 +918,8 @@ public class Force extends Image {
     }
 
     public void disappear() {
-        hex.forces.removeValue(this, true);
         if (isSub) superForce.detach(this);
+        hex.eliminate(this);
         if (play != null) {
             if (nation == FRANCE) {
                 play.whiteTroops.removeValue(this, true);
@@ -921,9 +927,21 @@ public class Force extends Image {
                 play.blackTroops.removeValue(this, true);
             }
             remove();
+
         }
+        strength = 0;
+    }
+    public void setRetreatDirection(Array<Force> enemies) {
 
     }
+    public int surrender() {
+        int prisoners = strength;
+        disappear();
+        return prisoners;
+    }
+
+
+
 
 
 }

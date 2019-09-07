@@ -161,7 +161,7 @@ public class StagePlay extends Stage implements Screen {
 
             objectLayer.getObjects().add(tmo);
             whiteTroops.add(force);
-            force.hex.forces.add(force);
+            force.hex.locate(force);
             force.symbol = tmo;
 
         }
@@ -194,7 +194,7 @@ public class StagePlay extends Stage implements Screen {
 
                 Hex hex = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
 
-                if (hex != null && hex.forces.size == 0) {
+                if (hex != null && hex.whiteForces.size == 0 && hex.blackForces.size == 0) {
                     if (chosenForce == null) {
 
                         TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get("TileLayer");
@@ -268,8 +268,15 @@ public class StagePlay extends Stage implements Screen {
 
 
                 } else if (chosenForce == null && hex != null) {
-                    Force force = hex.forces.get(0);
-                    if (force != null) System.out.println("FORCE CHOSEN! Forces SIZE = " + hex.forces.size);
+                    Force force = null;
+                    if (!hex.whiteForces.isEmpty()) {
+                        force = hex.whiteForces.get(0);
+                        if (force != null) System.out.println("FORCE CHOSEN! Forces SIZE = " + hex.whiteForces.size);
+                    }
+                    if (!hex.blackForces.isEmpty()) {
+                        force = hex.blackForces.get(0);
+                        if (force != null) System.out.println("FORCE CHOSEN! Forces SIZE = " + hex.blackForces.size);
+                    }
                     chosenForce = force;
                     //TODO check carefully! The fragment does not work properly
                     paths = chosenForce.order.pathsOrder;

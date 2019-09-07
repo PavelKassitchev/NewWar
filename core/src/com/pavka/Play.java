@@ -239,7 +239,9 @@ public class Play extends Stage implements Screen {
                     System.out.println("Black: strength - " + b.strength + " morale - " + b.morale + " Hex: " + b.hex.getRelX() + " " + b.hex.getRelY());
                     if (w.hex == b.hex) {
                         System.out.println("Battle!");
-                        new Battle(w, b).resolve();
+                        //new Battle(w, b).resolve();
+                        Fighting fighting = w.hex.startFighting();
+                        fighting.resolve();
                     }
                 }
             }

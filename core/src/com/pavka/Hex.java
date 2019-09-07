@@ -9,6 +9,9 @@ import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
 
+import static com.pavka.Nation.*;
+import static com.pavka.Unit.*;
+
 public class Hex extends Image {
     public static TiledMapTileLayer layer = (TiledMapTileLayer) (Play.map).getLayers().get("TileLayer");
     public int col;
@@ -18,31 +21,88 @@ public class Hex extends Image {
     public double currentHarvest;
     public int index;
     public TiledMapTileLayer.Cell cell;
-    public Array<Force> forces;
     public final static int SIZE = 10;
+    public Array<Force> whiteForces;
+    public Array<Force> blackForces;
+    public Fighting fighting;
 
 
     //static Texture texture = new Texture("symbols/Blue.png");
 
 
     public Hex() {
-        forces = new Array<Force>();
+        blackForces = new Array<Force>();
+        whiteForces = new Array<Force>();
     }
     public Hex(int q, int r) {
 
         col = q;
         row = r;
         cell = layer.getCell(col, row);
-        forces = new Array<Force>();
+        blackForces = new Array<Force>();
+        whiteForces = new Array<Force>();
         setBounds(getRelX() - 8, getRelY() - 8, 16, 16);
         currentHarvest = maxHarvest;
 
+    }
+    public Fighting startFighting() {
+
+        fighting = new Fighting(this);
+        return fighting;
     }
 
     /*@Override
     public void draw(Batch batch, float alpha) {
         batch.draw(texture, getRelX(), getRelY());
     }*/
+
+    public void locate(Force force) {
+        if (force.nation.color == WHITE) {
+            whiteForces.add(force);
+        }
+        else {
+            blackForces.add(force);
+        }
+    }
+
+    public void eliminate(Force force) {
+        if (force.nation.color == WHITE) {
+            whiteForces.removeValue(force, true);
+        }
+        else {
+            blackForces.removeValue(force, true);
+        }
+    }
+    public boolean containsEnemy(Force force) {
+        if (force.nation.color == WHITE && !blackForces.isEmpty()) return true;
+        if (force.nation.color == BLACK && !whiteForces.isEmpty()) return true;
+        return false;
+    }
+
+    public double getFireFactor(Unit unit) {
+        switch(unit.type) {
+            case INFANTRY:
+
+                //TODO
+        }
+        return 1;
+    }
+    public double getChargeFactor(Unit unit) {
+        //TODO
+        return 1;
+    }
+    public double getFireDefenseFactor(Unit unit) {
+        //TODO
+        return 1;
+    }
+    public double getChargeDefenseFactor(Unit unit) {
+        //TODO
+        return 1;
+    }
+    public void clean() {
+        for (Force f: whiteForces) f.disappear();
+        for (Force f: blackForces) f.disappear();
+    }
 
     public Array<Hex> getNeighbours() {
         Array<Hex> neighbours = new Array<Hex>();
