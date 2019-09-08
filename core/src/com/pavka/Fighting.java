@@ -483,6 +483,7 @@ public class Fighting {
                         if (unit != null) {
                             unit.isDisordered = false;
                             whiteRouted.add(unit);
+                            unit.setRetreatDirection(black.keySet(), true);
                             unit.route();
                         }
 
@@ -509,6 +510,7 @@ public class Fighting {
                         if (unit != null) {
                             unit.isDisordered = false;
                             blackRouted.add(unit);
+                            unit.setRetreatDirection(white.keySet(), true);
                             unit.route();
                         }
                     } else blackLosing = true;
@@ -643,6 +645,7 @@ public class Fighting {
                     u.isDisordered = false;
                     whiteRouted.add(u);
                     Force f = u.superForce;
+                    u.setRetreatDirection(black.keySet(), true);
                     u.route();
 
                     /*whiteImprisoned += pursuit(u);
@@ -663,6 +666,7 @@ public class Fighting {
                     u.isDisordered = false;
                     blackRouted.add(u);
                     Force f = u.superForce;
+                    u.setRetreatDirection(white.keySet(), true);
                     u.route();
 
                     /*blackImprisoned += pursuit(u);
@@ -699,7 +703,10 @@ public class Fighting {
         }
 
         if (winner == 1) {
-            for (Force f : blackRetreaters) f.retreat();
+            for (Force f : blackRetreaters) {
+                f.setRetreatDirection(white.keySet(), false);
+                f.retreat();
+            }
             for (Unit u : blackRouted) {
                 blackImprisoned += pursuit(u);
                 blackDisordered += u.strength;
@@ -707,7 +714,10 @@ public class Fighting {
             for (Unit u : whiteRouted) whiteDisordered += u.strength;
         }
         if (winner == -1) {
-            for (Force f : whiteRetreaters) f.retreat();
+            for (Force f : whiteRetreaters) {
+                f.setRetreatDirection(black.keySet(), false);
+                f.retreat();
+            }
             for (Unit u : whiteRouted) {
                 whiteImprisoned += pursuit(u);
                 System.out.println("White routed and pursuited: " + u.strength);
@@ -759,6 +769,7 @@ public class Fighting {
     }
 
     public void resolve() {
+
         while (!isOver) {
             init();
             fight();

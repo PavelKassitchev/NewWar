@@ -135,6 +135,7 @@ public class Hex extends Image {
     public Hex getNeighbour(Direction direction) {
         int row = 0;
         int col = 0;
+        if(direction == null) return null;
         switch (direction) {
             //OK
             case EAST:

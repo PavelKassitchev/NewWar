@@ -1,6 +1,10 @@
 package com.pavka;
 
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Random;
+
 
 public enum Direction {
     EAST,
@@ -13,6 +17,10 @@ public enum Direction {
     public static Direction getRandom() {
         Random random = new Random();
         return Direction.values()[(int)(random.nextDouble() * 6)];
+    }
+
+    public static Set<Direction> asSet() {
+        return new HashSet(EnumSet.allOf(Direction.class));
     }
 
     public Direction getOpposite() {

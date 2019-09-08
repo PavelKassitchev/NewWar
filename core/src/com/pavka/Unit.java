@@ -123,8 +123,10 @@ public abstract class Unit extends Force {
     }
     public void route() {
         if (isSub) superForce.detach(this);
-        //TODO
-        hex.eliminate(this);
+        Hex hx = hex.getNeighbour(order.retreatDirection);
+        if(hx == null) surrender();
+        else moveTo(hx);
+
     }
 
 

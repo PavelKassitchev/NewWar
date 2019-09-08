@@ -230,8 +230,15 @@ public class Play extends Stage implements Screen {
                 mileStone = null;
             }
 
+            for(Hex hex: hexGraph.hexes) {
+                //if(!hex.whiteForces.isEmpty() && !hex.blackForces.isEmpty()) {
+                    Fighting fighting = hex.startFighting();
+                    fighting.resolve();
+                //}
+            }
+
             //Battle check
-            for (Force w: whiteTroops) {
+            /*for (Force w: whiteTroops) {
                 w.order.seekBattle = true;
                 System.out.println("White: strength - " + w.strength + " morale - " + w.morale + " Hex: " + w.hex.getRelX() + " " + w.hex.getRelY());
                 for (Force b: blackTroops) {
@@ -244,7 +251,7 @@ public class Play extends Stage implements Screen {
                         fighting.resolve();
                     }
                 }
-            }
+            }*/
             //for (Force w: whiteTroops) w.order.retreatDirection = null;
             //for (Force b: blackTroops) b.order.retreatDirection = null;
         }

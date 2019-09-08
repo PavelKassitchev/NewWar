@@ -11,6 +11,8 @@ import com.badlogic.gdx.utils.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.HashSet;
 
 import static com.pavka.Direction.*;
 import static com.pavka.Nation.FRANCE;
@@ -155,6 +157,9 @@ public class Force extends Image {
         return name + " men: " + strength + " morale: " + morale + type;
     }
     public void retreat() {
+        Hex hx = hex.getNeighbour(order.retreatDirection);
+        if(hx == null) surrender();
+        else moveTo(hx);
 
     }
 
@@ -910,7 +915,7 @@ public class Force extends Image {
                 food += h.currentHarvest;
                 space -= h.currentHarvest;
                 h.currentHarvest = 0;
-                System.out.println("ZERO");
+                //System.out.println("ZERO");
             }
         }
         distributeFood(food);
@@ -931,9 +936,31 @@ public class Force extends Image {
         }
         strength = 0;
     }
-    public void setRetreatDirection(Array<Force> enemies) {
+    public void setRetreatDirection(Set<Force> enemies, boolean dispersed) {
+        Set<Direction> directions = new HashSet<Direction>();
+        for(Force f: enemies) {
+            directions.add(f.order.frontDirection);
+        }
+        Direction d = hex.getDirection(getBackHex());
+        if(!directions.contains(d) && !dispersed) {
+            order.retreatDirection = d;
+            return;
+        }
 
+        Set<Direction> allDirections = Direction.asSet();
+        allDirections.removeAll(directions);
+        if(allDirections.isEmpty()) {
+            order.retreatDirection = null;
+            return;
+        }
+        int num = (int) (Math.random() * allDirections.size());
+        for (Direction direction : allDirections) {
+            if (--num < 0) d = direction;
+        }
+        order.retreatDirection = d;
+        return;
     }
+
     public int surrender() {
         int prisoners = strength;
         disappear();
