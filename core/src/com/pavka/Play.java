@@ -121,7 +121,7 @@ public class Play extends Stage implements Screen {
     public void resize(int width, int height) {
         camera.viewportWidth = width;
         camera.viewportHeight = height;
-        camera.position.set(width / 2, height / 2, 0);
+        camera.position.set(width / 1.5F, height / 1.5F, 0);
         camera.update();
 
     }
@@ -230,11 +230,13 @@ public class Play extends Stage implements Screen {
                 mileStone = null;
             }
 
-            for(Hex hex: hexGraph.hexes) {
-                //if(!hex.whiteForces.isEmpty() && !hex.blackForces.isEmpty()) {
-                    Fighting fighting = hex.startFighting();
-                    fighting.resolve();
-                //}
+            Array<Hex> battlfields = new Array<Hex>();
+            for(Hex h: hexGraph.hexes){
+                if(!h.whiteForces.isEmpty() && !h.blackForces.isEmpty()) battlfields.add(h);
+            }
+            for(Hex hx: battlfields) {
+                Fighting fighting = hx.startFighting();
+                fighting.resolve();
             }
 
             //Battle check

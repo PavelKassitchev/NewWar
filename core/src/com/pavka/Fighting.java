@@ -651,7 +651,7 @@ public class Fighting {
                     /*whiteImprisoned += pursuit(u);
                     whiteDisordered += u.strength;*/
 
-                    f.surrender();
+                    if(f != null) f.surrender();
                     white.remove(f);
 
                 }
@@ -672,7 +672,7 @@ public class Fighting {
                     /*blackImprisoned += pursuit(u);
                     blackDisordered += u.strength;*/
 
-                    f.surrender();
+                    if(f != null) f.surrender();
                     black.remove(f);
                 }
             }
