@@ -121,7 +121,7 @@ public class Play extends Stage implements Screen {
     public void resize(int width, int height) {
         camera.viewportWidth = width;
         camera.viewportHeight = height;
-        camera.position.set(width / 1.5F, height / 1.5F, 0);
+        camera.position.set(width / 2, height / 2, 0);
         camera.update();
 
     }

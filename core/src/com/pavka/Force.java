@@ -153,8 +153,8 @@ public class Force extends Image {
     @Override
     public String toString() {
         String type = "";
-        if(isUnit) type += " Unit of " +((Unit)this).type;
-        return name + " men: " + strength + " morale: " + morale + type;
+        if(isUnit) type += ", Type" +((Unit)this).type;
+        return nation + ": " + strength + " mrl: " + ((int)(morale*100)/100.0) + type;
     }
     public void retreat() {
         Hex hx = hex.getNeighbour(order.retreatDirection);
