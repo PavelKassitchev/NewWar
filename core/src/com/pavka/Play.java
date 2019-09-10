@@ -361,6 +361,10 @@ public class Play extends Stage implements Screen {
                     control = new Control((Hex) actor);
                     addActor(control);
                 }
+                else if(actor instanceof Force) {
+                    control = new Control(((Force)actor).hex);
+                    addActor(control);
+                }
                 secondClick = false;
             }
         }
