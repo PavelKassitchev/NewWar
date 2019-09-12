@@ -28,8 +28,12 @@ public class Control extends Table {
         add(cropsLabel);
         row();
         if (forces != null && forces.size > 0) {
-            Label forceLabel = new Label("Forces: " + forces, new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
-            add(forceLabel);
+            for (Force f : forces) {
+                //Label forceLabel = new Label("Forces: " + forces, new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
+                Label forceLabel = new Label(f.toString(), new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
+                add(forceLabel);
+                row();
+            }
         }
         setPosition(hex.getX(), hex.getY());
         setBounds(getX() - 8, getY() - 8, 64, 64);
