@@ -10,7 +10,10 @@ public abstract class Unit extends Force {
     public static final int ARTILLERY = 3;
     public static final int HEADQUATERS = 4;
 
-    public static final double FIRE_ON_ARTILLERY = 0.5;
+    public static final int[] ALL_TYPES = {SUPPLY, INFANTRY, CAVALRY, ARTILLERY};
+    public static final int[] COMBAT_TYPES_BY_FOOD = {INFANTRY, CAVALRY, ARTILLERY};
+    public static final int[] COMBAT_TYPES_BY_AMMO = {ARTILLERY, INFANTRY, CAVALRY};
+
     public static final double CHARGE_ON_ARTILLERY = 1.25;
     public static final double CHARGE_ON_CAVALRY = 0.75;
     public static final double LACK_OF_AMMO_PENALTY = - 0.1;
@@ -33,6 +36,55 @@ public abstract class Unit extends Force {
         this(nation, hex);
         this.play = play;
     }
+
+    public static double getFoodRatio(int type) {
+        switch(type) {
+            case 1:
+                return (Battalion.FOOD_LIMIT / Battalion.FOOD_NEED);
+            case 2:
+                return (Squadron.FOOD_LIMIT / Squadron.FOOD_NEED);
+            case 3:
+                return (Battery.FOOD_LIMIT / Battery.FOOD_NEED);
+        }
+        return 0;
+    }
+
+    public static double getUnitFoodNeed(int type) {
+        switch(type) {
+            case 1:
+                return Battalion.FOOD_NEED;
+            case 2:
+                return Squadron.FOOD_NEED;
+            case 3:
+                return Battery.FOOD_NEED;
+        }
+        return 0;
+    }
+
+    public static double getAmmoRatio(int type) {
+        switch(type) {
+            case 1:
+                return (Battalion.AMMO_LIMIT / Battalion.AMMO_NEED);
+            case 2:
+                return (Squadron.AMMO_LIMIT / Squadron.AMMO_NEED);
+            case 3:
+                return (Battery.AMMO_LIMIT / Battery.AMMO_NEED);
+        }
+        return 0;
+    }
+
+    public static double getUnitAmmoNeed(int type) {
+        switch(type) {
+            case 1:
+                return Battalion.AMMO_NEED;
+            case 2:
+                return Squadron.AMMO_NEED;
+            case 3:
+                return Battery.AMMO_NEED;
+        }
+        return 0;
+    }
+
 
 
     @Override

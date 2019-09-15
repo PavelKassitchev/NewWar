@@ -25,6 +25,7 @@ public class Hex extends Image {
     public Array<Force> whiteForces;
     public Array<Force> blackForces;
     public Fighting fighting;
+    public Base base;
 
 
     //static Texture texture = new Texture("symbols/Blue.png");
@@ -43,8 +44,8 @@ public class Hex extends Image {
         whiteForces = new Array<Force>();
         setBounds(getRelX() - 8, getRelY() - 8, 16, 16);
         currentHarvest = maxHarvest;
-
     }
+
     public Fighting startFighting() {
 
         fighting = new Fighting(this);
@@ -64,6 +65,9 @@ public class Hex extends Image {
             blackForces.add(force);
         }
     }
+    public void locate(Base base) {
+        this.base = base;
+    }
 
     public void eliminate(Force force) {
         if (force.nation.color == WHITE) {
@@ -72,6 +76,9 @@ public class Hex extends Image {
         else {
             blackForces.removeValue(force, true);
         }
+    }
+    public void eliminate(Base base) {
+        base = null;
     }
     public boolean containsEnemy(Force force) {
         if (force.nation.color == WHITE && !blackForces.isEmpty()) return true;
@@ -107,7 +114,9 @@ public class Hex extends Image {
     public Array<Hex> getNeighbours() {
         Array<Hex> neighbours = new Array<Hex>();
         if (col > 0) neighbours.add(Play.hexGraph.getHex(col - 1, row));
+
         if (col < 63) neighbours.add(Play.hexGraph.getHex(col + 1, row));
+
         int offset = 0;
         if (row % 2 == 1) {
             offset = -1;
@@ -121,15 +130,20 @@ public class Hex extends Image {
             }
         }
         if (row < 63) {
-            if (col + offset >= 0) neighbours.add(new Hex(col + offset, row + 1));
+            if (col + offset >= 0) neighbours.add(Play.hexGraph.getHex(col + offset, row + 1));
 
 
             if (col + 1 + offset < 64) {
-                neighbours.add(new Hex(col + 1 + offset, row + 1));
+                neighbours.add(Play.hexGraph.getHex(col + 1 + offset, row + 1));
             }
         }
 
         return neighbours;
+    }
+
+    public boolean isNeighbour(Hex h) {
+        if(getNeighbours().contains(h, true)) return true;
+        return false;
     }
 
     public Hex getNeighbour(Direction direction) {

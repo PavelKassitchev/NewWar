@@ -35,6 +35,11 @@ public class Control extends Table {
                 row();
             }
         }
+        if (hex.base != null) {
+            Label baseLabel = new Label(hex.base.toString(), new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
+            add(baseLabel);
+            row();
+        }
         setPosition(hex.getX(), hex.getY());
         setBounds(getX() - 8, getY() - 8, 64, 64);
         setTouchable(Touchable.enabled);

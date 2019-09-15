@@ -748,8 +748,12 @@ public class Fighting {
                     unit.moveTo(hex);
                     if (unit.formerSuper != null) {
                         unit.formerSuper.attach(unit);
-                        whiteDisordered -= unit.strength;
                     }
+                    else {
+                        Force force = getRandomForce(WHITE);
+                        force.attach(unit);
+                    }
+                    whiteDisordered -= unit.strength;
                 }
             }
         }
@@ -761,8 +765,12 @@ public class Fighting {
                     unit.moveTo(hex);
                     if (unit.formerSuper != null) {
                         unit.formerSuper.attach(unit);
-                        blackDisordered -= unit.strength;
                     }
+                    else {
+                        Force force = getRandomForce(BLACK);
+                        force.attach(unit);
+                    }
+                    blackDisordered -= unit.strength;
                 }
             }
         }

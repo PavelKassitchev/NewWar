@@ -23,7 +23,7 @@ public class LogisticTest {
         System.out.println("Lunch!");
         System.out.println("Food Need = " + corps.foodNeed + " Food Stock = " + corps.foodStock);
 
-        Array<Integer> numbers = new Array<Integer>();
+        /*Array<Integer> numbers = new Array<Integer>();
         numbers.add(0);
         numbers.add(1);
         System.out.println(numbers.size);
@@ -31,7 +31,7 @@ public class LogisticTest {
         System.out.println(numbers.get(1));
         System.out.println("RANDOM");
         Random r = new Random();
-        System.out.println(r.nextDouble());
+        System.out.println(r.nextDouble());*/
 
     }
 }

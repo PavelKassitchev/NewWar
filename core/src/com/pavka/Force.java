@@ -103,9 +103,13 @@ public class Force extends Image {
             if (message instanceof Order) order = (Order) message;
         }
         eat();
-
+        System.out.println("EAT");
+        Test.list(this);
         forage();
-        move();
+        System.out.println("FORAGE");
+        Test.list(this);
+        //move();
+        doOrders();
         trace.add(hex);
         //This is for delays
         if (general != null && general instanceof Commander) {
@@ -515,7 +519,7 @@ public class Force extends Image {
         double free = ammo + unloadAmmo();
         if (free > ammoLimit) {
 
-            free -= loadAmmo(SUPPLY, INFANTRY, CAVALRY, ARTILLERY);
+            free -= loadAmmo(ALL_TYPES);
 
             while (free > 0) {
                 Wagon wagon = new Wagon(nation, hex);
@@ -532,34 +536,52 @@ public class Force extends Image {
             }
         } else if (free >= ammoLimit - wagons.size() * Wagon.AMMO_LIMIT) {
 
-            free -= loadAmmo(INFANTRY, CAVALRY, ARTILLERY);
+            free -= loadAmmo(COMBAT_TYPES_BY_AMMO);
             free -= loadAmmoToWagons(free);
-        } else if (free < ammoNeed * Battery.AMMO_LIMIT / Battery.AMMO_NEED) {
-
-            double ratio = free / ammoNeed;
-            free -= loadAmmo(ratio, INFANTRY, CAVALRY, ARTILLERY);
-        } else if (free >= ammoNeed * Battalion.AMMO_LIMIT / Battalion.AMMO_NEED) {
-
-            free -= loadAmmo(INFANTRY, ARTILLERY);
-            System.out.println("FREE= " + free);
-            double ratio = free / ((ammoLimit - wagons.size() * Wagon.AMMO_LIMIT - ammoStock) * Squadron.AMMO_NEED / Squadron.AMMO_LIMIT);
-            free -= loadAmmo(ratio, CAVALRY);
         } else {
+            int min = 0;
+            double need = ammoNeed;
 
-            double distributed = loadAmmo(ARTILLERY);
-
-            free -= distributed;
-            double ratio = free / (ammoNeed - distributed * Battery.AMMO_NEED / Battery.AMMO_LIMIT);
-            if (ratio < Battalion.AMMO_LIMIT / Battalion.AMMO_NEED) {
-
-                free -= loadAmmo(ratio, CAVALRY, INFANTRY);
-            } else {
-
-                free -= loadAmmo(ratio, INFANTRY);
-                ratio = free / ((ammoLimit - wagons.size() * Wagon.AMMO_LIMIT - ammoStock) * Squadron.AMMO_NEED / Squadron.AMMO_LIMIT);
-                free -= loadAmmo(ratio, CAVALRY);
+            while(free / need > Unit.getAmmoRatio(COMBAT_TYPES_BY_AMMO[min])) {
+                for(Unit u: getUnits(COMBAT_TYPES_BY_AMMO[min])) {
+                    need -= u.ammoNeed;
+                    //System.out.println();
+                }
+                free -= loadAmmo(COMBAT_TYPES_BY_AMMO[min++]);
+            }
+            double ratio = free / need;
+            System.out.println("min = " + min + " ratio = " + ratio + " free = " + free + " ammoNeed = " + need);
+            for(int i = min; i < COMBAT_TYPES_BY_AMMO.length; i++) {
+                free -= loadAmmo(ratio, COMBAT_TYPES_BY_AMMO[i]);
             }
         }
+        /*if (free < ammoNeed * Battery.AMMO_LIMIT / Battery.AMMO_NEED) {
+
+                double ratio = free / ammoNeed;
+                free -= loadAmmo(ratio, INFANTRY, CAVALRY, ARTILLERY);
+            } else if (free >= ammoNeed * Battalion.AMMO_LIMIT / Battalion.AMMO_NEED) {
+
+                free -= loadAmmo(INFANTRY, ARTILLERY);
+                System.out.println("FREE= " + free);
+                double ratio = free / ((ammoLimit - wagons.size() * Wagon.AMMO_LIMIT - ammoStock) * Squadron.AMMO_NEED / Squadron.AMMO_LIMIT);
+                free -= loadAmmo(ratio, CAVALRY);
+            } else {
+
+                double distributed = loadAmmo(ARTILLERY);
+
+                free -= distributed;
+                double ratio = free / (ammoNeed - distributed * Battery.AMMO_NEED / Battery.AMMO_LIMIT);
+                if (ratio < Battalion.AMMO_LIMIT / Battalion.AMMO_NEED) {
+
+                    free -= loadAmmo(ratio, CAVALRY, INFANTRY);
+                } else {
+
+                    free -= loadAmmo(ratio, INFANTRY);
+                    ratio = free / ((ammoLimit - wagons.size() * Wagon.AMMO_LIMIT - ammoStock) * Squadron.AMMO_NEED / Squadron.AMMO_LIMIT);
+                    free -= loadAmmo(ratio, CAVALRY);
+                }
+            }
+        }*/
 
         return free;
     }
@@ -689,10 +711,10 @@ public class Force extends Image {
     //
     public double distributeFood(double food) {
         double free = food + unloadFood();
+
         if (free > foodLimit) {
 
-            free -= loadFood(SUPPLY, INFANTRY, CAVALRY, ARTILLERY);
-
+            free -= loadFood(ALL_TYPES);
             while (free > 0) {
                 Wagon wagon = new Wagon(nation, hex);
                 wagon.name = "Extra Wagon";
@@ -707,33 +729,64 @@ public class Force extends Image {
                 attach(wagon);
             }
         } else if (free >= foodLimit - wagons.size() * Wagon.FOOD_LIMIT) {
-
-            free -= loadFood(INFANTRY, CAVALRY, ARTILLERY);
+            free -= loadFood(COMBAT_TYPES_BY_FOOD);
             free -= loadFoodToWagons(free);
-        } else if (free < foodNeed * Battalion.FOOD_LIMIT / Battalion.FOOD_NEED) {
 
-            double ratio = free / foodNeed;
-            free -= loadFood(ratio, INFANTRY, CAVALRY, ARTILLERY);
-        } else if (free > foodNeed * Squadron.FOOD_LIMIT / Squadron.FOOD_NEED) {
-
-            free -= loadFood(INFANTRY, CAVALRY);
-            double ratio = free / ((foodLimit - wagons.size() * Wagon.FOOD_LIMIT - foodStock) * Battery.FOOD_NEED / Battery.FOOD_LIMIT);
-            free -= loadFood(ratio, ARTILLERY);
         } else {
 
-            double distributed = loadFood(INFANTRY);
+            int min = 0;
+            double need = foodNeed;
 
-            free -= distributed;
-            double ratio = free / (foodNeed - distributed * Battalion.FOOD_NEED / Battalion.FOOD_LIMIT);
-            if (ratio < Squadron.FOOD_LIMIT / Squadron.FOOD_NEED) {
-
-                free -= loadFood(ratio, CAVALRY, ARTILLERY);
-            } else {
-
-                free -= loadFood(ratio, CAVALRY);
-                ratio = free / ((foodLimit - wagons.size() * Wagon.FOOD_LIMIT - foodStock) * Battery.FOOD_NEED / Battery.FOOD_LIMIT);
-                free -= loadFood(ratio, ARTILLERY);
+            while(free / need > Unit.getFoodRatio(COMBAT_TYPES_BY_FOOD[min])) {
+                for(Unit u: getUnits(COMBAT_TYPES_BY_FOOD[min])) {
+                    need -= u.foodNeed;
+                    //System.out.println();
+                }
+                free -= loadFood(COMBAT_TYPES_BY_FOOD[min++]);
             }
+            double ratio = free / need;
+            System.out.println("min = " + min + " ratio = " + ratio + " free = " + free + " foodNeed = " + need);
+            for(int i = min; i < COMBAT_TYPES_BY_FOOD.length; i++) {
+                free -= loadFood(ratio, COMBAT_TYPES_BY_FOOD[i]);
+            }
+            /*for (int i = 0; i < COMBAT_TYPES_BY_FOOD.length; i++) {
+                if(free / foodNeed < getFoodRatio(COMBAT_TYPES_BY_FOOD[i])){
+                    min = i;
+                    break;
+                }
+            }
+
+            for (int i = 0; i < min; i++) {
+                free -= loadFood(COMBAT_TYPES_BY_FOOD[i]);
+                }
+            }*/
+
+
+            /*if (free < foodNeed * Battalion.FOOD_LIMIT / Battalion.FOOD_NEED) {
+
+                double ratio = free / foodNeed;
+                free -= loadFood(ratio, INFANTRY, CAVALRY, ARTILLERY);
+            } else if (free > foodNeed * Squadron.FOOD_LIMIT / Squadron.FOOD_NEED) {
+
+                free -= loadFood(INFANTRY, CAVALRY);
+                double ratio = free / ((foodLimit - wagons.size() * Wagon.FOOD_LIMIT - foodStock) * Battery.FOOD_NEED / Battery.FOOD_LIMIT);
+                free -= loadFood(ratio, ARTILLERY);
+            } else {
+                System.out.println("FREE TO DISTRIBUTE: " + free);
+                double distributed = loadFood(INFANTRY);
+                free -= distributed;
+                double ratio = free / (foodNeed - distributed * Battalion.FOOD_NEED / Battalion.FOOD_LIMIT);
+                System.out.println(ratio);
+                if (ratio < Squadron.FOOD_LIMIT / Squadron.FOOD_NEED) {
+
+                    free -= loadFood(ratio, CAVALRY, ARTILLERY);
+                } else {
+
+                    free -= loadFood(ratio, CAVALRY);
+                    ratio = free / ((foodLimit - wagons.size() * Wagon.FOOD_LIMIT - foodStock) * Battery.FOOD_NEED / Battery.FOOD_LIMIT);
+                    free -= loadFood(ratio, ARTILLERY);
+                }
+            }*/
         }
 
         return free;
@@ -893,6 +946,7 @@ public class Force extends Image {
     public double forage() {
         double food = 0;
         double space = foodLimit - foodStock;
+        hex.getNeighbours();
         if ((foodStock - foodNeed) / (foodLimit - foodNeed) >= order.isForaging) {
             return 0;
         }
@@ -904,6 +958,7 @@ public class Force extends Image {
         }
         food = hex.currentHarvest;
         hex.currentHarvest = 0;
+        System.out.println("Zero here!");
         space -= food;
         for (Hex h : hex.getNeighbours()) {
             if (space <= h.currentHarvest) {
@@ -915,11 +970,15 @@ public class Force extends Image {
             } else {
                 food += h.currentHarvest;
                 space -= h.currentHarvest;
+                System.out.println("Current Harvest = " + h.currentHarvest + " MAX:" + h.maxHarvest);
                 h.currentHarvest = 0;
-                //System.out.println("ZERO");
+                System.out.println("ZERO = " + h.currentHarvest + " Max: " + h.maxHarvest);
             }
         }
+        System.out.println("Current food stock: " + foodStock);
+        System.out.println("Food to distribute: " + food);
         distributeFood(food);
+        System.out.println("Food after fouraging: " + foodStock);
         return food;
     }
 
@@ -962,14 +1021,69 @@ public class Force extends Image {
         return;
     }
 
+    public void doOrders() {
+
+        if(order.target != null) {
+            switch (order.target.action) {
+                case Target.FIGHT:
+                    break;
+                case Target.FOLLOW:
+                    follow(order.target.force);
+                    break;
+                case Target.JOIN:
+                    join(order.target.force);
+                    break;
+                case Target.TAKE:
+                    take(order.target.force);
+                    break;
+            }
+        }
+        move();
+    }
+
     public int surrender() {
         int prisoners = strength;
         disappear();
         return prisoners;
     }
 
+    public void follow(Force force) {
+        /*if(hex.isNeighbour(force.hex) || hex == force.hex) {
+            moveTo(force.hex);
+        }
+        else {*/
+            order.setPathsOrder(play.navigate(hex, force.hex));
+        //}
+    }
 
+    public void join(Force force) {
+        follow(force);
+        if(hex == force.hex) {
+            force.attach(this);
+            System.out.println("Wagon Train Arrived!");
+        }
+    }
+    public void take(Force force) {
+        follow(force);
+        if (hex == force.hex) attach(force);
+    }
+    public void askForSupplies(Base base, double food, double ammo) {
+        base.sendSupplies(this, food, ammo);
+    }
 
+    public List<? extends Unit> getUnits(int type) {
+        switch(type) {
+            case 1:
+                return battalions;
 
+            case 2:
+                return squadrons;
+
+            case 3:
+                return batteries;
+
+        }
+        return null;
+    }
 
 }

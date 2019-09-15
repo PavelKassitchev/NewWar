@@ -6,10 +6,11 @@ public class Order extends Message {
     public boolean seekBattle;
     public double retreatLevel;
     public double isForaging;
-    public Array<Path> pathsOrder = new Array<Path>();
+    public Array<Path> pathsOrder;
     public MileStone mileStone;
     public Direction frontDirection;
     public Direction retreatDirection;
+    public Target target;
 
 
     public Order() {

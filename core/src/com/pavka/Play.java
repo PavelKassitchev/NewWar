@@ -60,6 +60,11 @@ public class Play extends Stage implements Screen {
 
     private Control control;
 
+    //TODO exclude this variables
+
+    private Force austria;
+    private Base a;
+
     {
         Hex hex;
         hexGraph = new HexGraph();
@@ -194,7 +199,7 @@ public class Play extends Stage implements Screen {
             force.name = "2.Squadron";
             blackTroops.add(force);
             addActor(force);*/
-            Force austria = Test.force2;
+            austria = Test.force2;
             austria.setPlay(this);
             //austria.hex = hexGraph.getHex(18, 18);
             austria.order.seekBattle = true;
@@ -203,6 +208,19 @@ public class Play extends Stage implements Screen {
             blackTroops.add(austria);
             addActor(austria);
         }
+
+        if(keycode == Input.Keys.B) {
+
+            a = new Base(this, Nation.AUSTRIA, hexGraph.getHex(28, 28));
+            addActor(a);
+        }
+        if(keycode == Input.Keys.P) {
+
+            Force train = a.sendSupplies(austria, 50, 50);
+            //System.out.println(train.order.pathsOrder);
+        }
+
+
 
 
         if (keycode == Input.Keys.T) {
@@ -239,24 +257,8 @@ public class Play extends Stage implements Screen {
                 fighting.resolve();
             }
 
-            //Battle check
-            /*for (Force w: whiteTroops) {
-                w.order.seekBattle = true;
-                System.out.println("White: strength - " + w.strength + " morale - " + w.morale + " Hex: " + w.hex.getRelX() + " " + w.hex.getRelY());
-                for (Force b: blackTroops) {
-                    b.order.seekBattle = true;
-                    System.out.println("Black: strength - " + b.strength + " morale - " + b.morale + " Hex: " + b.hex.getRelX() + " " + b.hex.getRelY());
-                    if (w.hex == b.hex) {
-                        System.out.println("Battle!");
-                        //new Battle(w, b).resolve();
-                        Fighting fighting = w.hex.startFighting();
-                        fighting.resolve();
-                    }
-                }
-            }*/
-            //for (Force w: whiteTroops) w.order.retreatDirection = null;
-            //for (Force b: blackTroops) b.order.retreatDirection = null;
         }
+
         if (keycode == Input.Keys.S) {
             Test.main(null);
         }
@@ -342,6 +344,7 @@ public class Play extends Stage implements Screen {
                 if (actor instanceof Hex) System.out.println("Hex! " + ((Hex)actor).getRelX() + " " + ((Hex)actor).getRelY() + " Column: " + ((Hex)actor).col + " Row: " + ((Hex)actor).row);
                 if (actor instanceof Force) System.out.println("Force!");
                 if (actor instanceof Label) System.out.println("Label!");
+                if (actor instanceof Base) System.out.println("Base!");
                 startHex = null;
                 endHex = null;
                 selectedForce = null;
@@ -363,6 +366,10 @@ public class Play extends Stage implements Screen {
                 }
                 else if(actor instanceof Force) {
                     control = new Control(((Force)actor).hex);
+                    addActor(control);
+                }
+                else if(actor instanceof Base) {
+                    control = new Control(((Base)actor).hex);
                     addActor(control);
                 }
                 secondClick = false;
