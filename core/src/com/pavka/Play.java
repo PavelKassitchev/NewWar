@@ -432,7 +432,7 @@ public class Play extends Stage implements Screen {
                 selectedHex = null;
                 //first touch
                 if (startHex == null && endHex == null) {
-                    //hec touched
+                    //hex touched
                     if (actor instanceof Hex) {
                         startHex = (Hex) actor;
                     }
@@ -463,6 +463,7 @@ public class Play extends Stage implements Screen {
                         }
                         //first force was touched
                         if (selectedForce != null) {
+                            selectedForce.order.target = null;
                             navigate(selectedForce.speed);
                             selectedForce.order.setPathsOrder(paths);
                             selectedForce.order.mileStone = mileStone;

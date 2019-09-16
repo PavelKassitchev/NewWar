@@ -1053,6 +1053,8 @@ public class Force extends Image {
         }
         else {*/
             order.setPathsOrder(play.navigate(hex, force.hex));
+            order.mileStone = new MileStone(force.hex);
+            order.mileStone.days = Path.getDaysToGo(order.pathsOrder, speed);
         //}
     }
 
