@@ -3,8 +3,10 @@ package com.pavka;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Array;
 
-import static com.pavka.Nation.FRANCE;
+import static com.pavka.Nation.*;
+
 
 public class Base extends Image implements Supplier {
 
@@ -26,11 +28,15 @@ public class Base extends Image implements Supplier {
         this.play = play;
         this.nation = nation;
         this.hex = hex;
-        hex.locate(this);
+
+        if(nation.color == WHITE) play.whiteBases.add(this);
+        if(nation.color == BLACK) play.blackBases.add(this);
+
         play.addActor(this);
         foodStock = 1000;
         ammoStock = 1000;
     }
+
 
     @Override
     public String toString() {

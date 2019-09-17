@@ -755,6 +755,18 @@ public class Fighting {
                     }
                     whiteDisordered -= unit.strength;
                 }
+                else{
+                    Base base = Play.selectRandomBase(WHITE);
+                    unit.order.setPathsOrder(unit.play.navigate(unit.hex, base.hex));
+                    unit.order.mileStone = new MileStone(base.hex);
+                    unit.order.mileStone.days = Path.getDaysToGo(unit.order.pathsOrder, unit.speed);
+                }
+            }
+            for (Unit unit: blackRouted) {
+                Base base = Play.selectRandomBase(BLACK);
+                unit.order.setPathsOrder(unit.play.navigate(unit.hex, base.hex));
+                unit.order.mileStone = new MileStone(base.hex);
+                unit.order.mileStone.days = Path.getDaysToGo(unit.order.pathsOrder, unit.speed);
             }
         }
         if (winner == -1) {
@@ -772,6 +784,18 @@ public class Fighting {
                     }
                     blackDisordered -= unit.strength;
                 }
+                else{
+                    Base base = Play.selectRandomBase(BLACK);
+                    unit.order.setPathsOrder(unit.play.navigate(unit.hex, base.hex));
+                    unit.order.mileStone = new MileStone(base.hex);
+                    unit.order.mileStone.days = Path.getDaysToGo(unit.order.pathsOrder, unit.speed);
+                }
+            }
+            for (Unit unit: whiteRouted) {
+                Base base = Play.selectRandomBase(WHITE);
+                unit.order.setPathsOrder(unit.play.navigate(unit.hex, base.hex));
+                unit.order.mileStone = new MileStone(base.hex);
+                unit.order.mileStone.days = Path.getDaysToGo(unit.order.pathsOrder, unit.speed);
             }
         }
     }

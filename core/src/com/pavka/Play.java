@@ -22,6 +22,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.Iterator;
+import java.util.Random;
+
+import static com.pavka.Nation.*;
 
 public class Play extends Stage implements Screen {
 
@@ -46,6 +49,8 @@ public class Play extends Stage implements Screen {
     Array<Path> paths;
     static Array<Force> blackTroops = new Array<Force>();
     static Array<Force> whiteTroops = new Array<Force>();
+    static Array<Base> blackBases = new Array<Base>();
+    static Array<Base> whiteBases = new Array<Base>();
     public static Commander blackCommander;
     public static Commander whiteCommander;
     private HexagonalTiledMapRenderer renderer;
@@ -214,6 +219,10 @@ public class Play extends Stage implements Screen {
             a = new Base(this, Nation.AUSTRIA, hexGraph.getHex(28, 28));
             addActor(a);
         }
+        if(keycode == Input.Keys.R) {
+            a = new Base(this, Nation.FRANCE, hexGraph.getHex(2, 2));
+            addActor(a);
+        }
         if(keycode == Input.Keys.P) {
 
             Force train = a.sendSupplies(austria, 50, 50);
@@ -283,6 +292,21 @@ public class Play extends Stage implements Screen {
     @Override
     public boolean keyTyped(char character) {
         return false;
+    }
+
+    public static Base selectRandomBase(int color) {
+        Array<Base> bases = null;
+        switch(color) {
+            case WHITE:
+                bases = whiteBases;
+                break;
+            case BLACK:
+                bases= blackBases;
+                break;
+        }
+        Random random = new Random();
+        int index = random.nextInt(bases.size);
+        return bases.get(index);
     }
 
     public static Array<Path> navigate(Hex start, Hex finish) {
