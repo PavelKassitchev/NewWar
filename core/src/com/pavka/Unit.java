@@ -18,6 +18,8 @@ public abstract class Unit extends Force {
     public static final double CHARGE_ON_CAVALRY = 0.75;
     public static final double LACK_OF_AMMO_PENALTY = - 0.1;
     public static final double OUT_OF_AMMO_PENALTY = - 0.3;
+    public static final double OUT_OF_FOOD_PENALTY = - 0.2;
+
 
     int type;
     int maxStrength;
@@ -156,6 +158,14 @@ public abstract class Unit extends Force {
         morale += change;
         if (isSub) superForce.updateMorale(strength, change);
         return this;
+    }
+
+    public void changeMorale(double change, boolean nonCombat) {
+        if(!nonCombat) changeMorale(change);
+        else {
+            morale += change;
+            if (isSub) superForce.updateMorale(strength, change);
+        }
     }
 
     public double fire(double ratio) {

@@ -102,6 +102,7 @@ public class Force extends Image {
         if (message != null && message.turn == Play.turn) {
             if (message instanceof Order) order = (Order) message;
         }
+        checkHunger();
         eat();
         System.out.println("EAT");
         Test.list(this);
@@ -157,13 +158,14 @@ public class Force extends Image {
     @Override
     public String toString() {
         String type = "";
-        if(isUnit) type += ", Type" +((Unit)this).type;
-        return nation + ": " + strength + " mrl: " + ((int)(morale*100)/100.0) + " food: " + ((int)(foodStock*100)/100.0)
-                + " ammo: " + ((int)(ammoStock*100)/100.0) + type;
+        if (isUnit) type += ", Type" + ((Unit) this).type;
+        return nation + ": " + strength + " mrl: " + ((int) (morale * 100) / 100.0) + " food: " + ((int) (foodStock * 100) / 100.0)
+                + " ammo: " + ((int) (ammoStock * 100) / 100.0) + type;
     }
+
     public void retreat() {
         Hex hx = hex.getNeighbour(order.retreatDirection);
-        if(hx == null) surrender();
+        if (hx == null) surrender();
         else moveTo(hx);
 
     }
@@ -185,20 +187,17 @@ public class Force extends Image {
 
             moveTo(back);
             trace.add(back);
-        }
-        else disappear();
+        } else disappear();
     }
 
     public void setRetreatDirection(Force enemy) {
         if (enemy.getForwardHex() != null) {
             order.retreatDirection = hex.getDirection(enemy.getForwardHex());
             System.out.println("Forward is not null");
-        }
-        else if (getBackHex() != null) {
+        } else if (getBackHex() != null) {
             order.retreatDirection = hex.getDirection(getBackHex());
             System.out.println("Back is not null");
-        }
-        else {
+        } else {
             order.retreatDirection = Direction.getRandom();
             System.out.println("ELSE");
         }
@@ -254,7 +253,7 @@ public class Force extends Image {
     public void setPlay(Play play) {
         this.play = play;
         if (!isUnit) {
-            for (Force force: forces) force.setPlay(play);
+            for (Force force : forces) force.setPlay(play);
         }
     }
 
@@ -542,8 +541,8 @@ public class Force extends Image {
             int min = 0;
             double need = ammoNeed;
 
-            while(free / need > Unit.getAmmoRatio(COMBAT_TYPES_BY_AMMO[min])) {
-                for(Unit u: getUnits(COMBAT_TYPES_BY_AMMO[min])) {
+            while (free / need > Unit.getAmmoRatio(COMBAT_TYPES_BY_AMMO[min])) {
+                for (Unit u : getUnits(COMBAT_TYPES_BY_AMMO[min])) {
                     need -= u.ammoNeed;
                     //System.out.println();
                 }
@@ -551,7 +550,7 @@ public class Force extends Image {
             }
             double ratio = free / need;
             System.out.println("min = " + min + " ratio = " + ratio + " free = " + free + " ammoNeed = " + need);
-            for(int i = min; i < COMBAT_TYPES_BY_AMMO.length; i++) {
+            for (int i = min; i < COMBAT_TYPES_BY_AMMO.length; i++) {
                 free -= loadAmmo(ratio, COMBAT_TYPES_BY_AMMO[i]);
             }
         }
@@ -737,8 +736,8 @@ public class Force extends Image {
             int min = 0;
             double need = foodNeed;
 
-            while(free / need > Unit.getFoodRatio(COMBAT_TYPES_BY_FOOD[min])) {
-                for(Unit u: getUnits(COMBAT_TYPES_BY_FOOD[min])) {
+            while (free / need > Unit.getFoodRatio(COMBAT_TYPES_BY_FOOD[min])) {
+                for (Unit u : getUnits(COMBAT_TYPES_BY_FOOD[min])) {
                     need -= u.foodNeed;
                     //System.out.println();
                 }
@@ -746,7 +745,7 @@ public class Force extends Image {
             }
             double ratio = free / need;
             System.out.println("min = " + min + " ratio = " + ratio + " free = " + free + " foodNeed = " + need);
-            for(int i = min; i < COMBAT_TYPES_BY_FOOD.length; i++) {
+            for (int i = min; i < COMBAT_TYPES_BY_FOOD.length; i++) {
                 free -= loadFood(ratio, COMBAT_TYPES_BY_FOOD[i]);
             }
             /*for (int i = 0; i < COMBAT_TYPES_BY_FOOD.length; i++) {
@@ -890,7 +889,7 @@ public class Force extends Image {
     public void setHex(Hex hex) {
         this.hex = hex;
         if (!isUnit) {
-            for (Force force: forces) {
+            for (Force force : forces) {
                 force.setHex(hex);
             }
         }
@@ -996,20 +995,21 @@ public class Force extends Image {
         }
         strength = 0;
     }
+
     public void setRetreatDirection(Set<Force> enemies, boolean dispersed) {
         Set<Direction> directions = new HashSet<Direction>();
-        for(Force f: enemies) {
+        for (Force f : enemies) {
             directions.add(f.order.frontDirection);
         }
         Direction d = hex.getDirection(getBackHex());
-        if(!directions.contains(d) && !dispersed) {
+        if (!directions.contains(d) && !dispersed) {
             order.retreatDirection = d;
             return;
         }
 
         Set<Direction> allDirections = Direction.asSet();
         allDirections.removeAll(directions);
-        if(allDirections.isEmpty()) {
+        if (allDirections.isEmpty()) {
             order.retreatDirection = null;
             return;
         }
@@ -1023,7 +1023,7 @@ public class Force extends Image {
 
     public void doOrders() {
 
-        if(order.target != null) {
+        if (order.target != null) {
             switch (order.target.action) {
                 case Target.FIGHT:
                     break;
@@ -1047,34 +1047,54 @@ public class Force extends Image {
         return prisoners;
     }
 
+    public void checkHunger() {
+        if (foodStock < foodNeed) {
+            System.out.println("WE ARE HUNGRY!!!");
+            if (isUnit) {
+                ((Unit) this).changeMorale(-OUT_OF_FOOD_PENALTY * (foodStock / foodNeed - 1), true);
+            } else {
+                for (int i : COMBAT_TYPES_BY_FOOD) {
+                    //System.out.println("UNIT TYPE = " + i);
+                    for (Unit u : getUnits(i)) {
+                        if (u.foodStock < u.foodNeed) {
+                            u.changeMorale(-OUT_OF_FOOD_PENALTY * (u.foodStock / u.foodNeed - 1), true);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void follow(Force force) {
         /*if(hex.isNeighbour(force.hex) || hex == force.hex) {
             moveTo(force.hex);
         }
         else {*/
-            order.setPathsOrder(play.navigate(hex, force.hex));
-            order.mileStone = new MileStone(force.hex);
-            order.mileStone.days = Path.getDaysToGo(order.pathsOrder, speed);
+        order.setPathsOrder(play.navigate(hex, force.hex));
+        order.mileStone = new MileStone(force.hex);
+        order.mileStone.days = Path.getDaysToGo(order.pathsOrder, speed);
         //}
     }
 
     public void join(Force force) {
         follow(force);
-        if(hex == force.hex) {
+        if (hex == force.hex) {
             force.attach(this);
             System.out.println("Wagon Train Arrived!");
         }
     }
+
     public void take(Force force) {
         follow(force);
         if (hex == force.hex) attach(force);
     }
+
     public void askForSupplies(Base base, double food, double ammo) {
         base.sendSupplies(this, food, ammo);
     }
 
     public List<? extends Unit> getUnits(int type) {
-        switch(type) {
+        switch (type) {
             case 1:
                 return battalions;
 
