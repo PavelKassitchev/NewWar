@@ -104,6 +104,7 @@ public class Force extends Image {
         }
         checkHunger();
         eat();
+        levelMorale();
         System.out.println("EAT");
         Test.list(this);
         forage();
@@ -1060,6 +1061,17 @@ public class Force extends Image {
                             u.changeMorale(-OUT_OF_FOOD_PENALTY * (u.foodStock / u.foodNeed - 1), true);
                         }
                     }
+                }
+            }
+        }
+    }
+
+    public void levelMorale() {
+        if(isUnit && morale != nation.getNationalMorale()) ((Unit)this).levelUnitMorale();
+        else {
+            for (int i: COMBAT_TYPES_BY_FOOD) {
+                for (Unit u: getUnits(i)) {
+                    if(morale != u.nation.getNationalMorale()) u.levelUnitMorale();
                 }
             }
         }

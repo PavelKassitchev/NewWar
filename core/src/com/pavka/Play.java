@@ -69,6 +69,7 @@ public class Play extends Stage implements Screen {
 
     private Force austria;
     private Base a;
+    private Base b;
 
     {
         Hex hex;
@@ -220,7 +221,7 @@ public class Play extends Stage implements Screen {
             addActor(a);
         }
         if(keycode == Input.Keys.R) {
-            a = new Base(this, Nation.FRANCE, hexGraph.getHex(2, 2));
+            b = new Base(this, Nation.FRANCE, hexGraph.getHex(2, 2));
             addActor(a);
         }
         if(keycode == Input.Keys.P) {

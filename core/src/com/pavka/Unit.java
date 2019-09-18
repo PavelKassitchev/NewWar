@@ -19,6 +19,7 @@ public abstract class Unit extends Force {
     public static final double LACK_OF_AMMO_PENALTY = - 0.1;
     public static final double OUT_OF_AMMO_PENALTY = - 0.3;
     public static final double OUT_OF_FOOD_PENALTY = - 0.2;
+    public static final double MORALE_RESTORE = 0.1;
 
 
     int type;
@@ -166,6 +167,13 @@ public abstract class Unit extends Force {
             morale += change;
             if (isSub) superForce.updateMorale(strength, change);
         }
+    }
+
+    public void levelUnitMorale() {
+        double xpon = Math.abs((nation.getNationalMorale() - morale) / nation.getNationalMorale());
+        double change = morale < nation.getNationalMorale()? MORALE_RESTORE * (Math.exp(xpon) - 1) : MORALE_RESTORE * (1 - Math.exp(xpon));
+        if(change < MORALE_RESTORE) change = nation.getNationalMorale() - morale;
+        changeMorale(change, true);
     }
 
     public double fire(double ratio) {
