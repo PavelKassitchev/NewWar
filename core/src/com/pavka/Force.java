@@ -1057,11 +1057,11 @@ public class Force extends Image {
         if (fatigue > 0) {
             Random random = new Random();
             if (isUnit) {
-                casualties += ((Unit) this).bearLoss((random.nextDouble() + 0.5) * fatigue / 100);
+                casualties += ((Unit) this).bearLoss((random.nextDouble() + 0.5) * fatigue / 500);
             } else {
                 for (int i : COMBAT_TYPES_BY_FOOD) {
                     for (Unit u : getUnits(COMBAT_TYPES_BY_FOOD[i])) {
-                        casualties += u.bearLoss((random.nextDouble() + 0.5) * u.fatigue / 100);
+                        casualties += u.bearLoss((random.nextDouble() + 0.5) * u.fatigue / 500);
                     }
                 }
             }
