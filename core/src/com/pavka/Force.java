@@ -1048,6 +1048,34 @@ public class Force extends Image {
         return prisoners;
     }
 
+    public double getForceSpeed() {
+        return speed;
+    }
+
+    public int suffer() {
+        int casualties = 0;
+        if (fatigue > 0) {
+            Random random = new Random();
+            if (isUnit) {
+                casualties += ((Unit) this).bearLoss((random.nextDouble() + 0.5) * fatigue / 100);
+            } else {
+                for (int i : COMBAT_TYPES_BY_FOOD) {
+                    for (Unit u : getUnits(COMBAT_TYPES_BY_FOOD[i])) {
+                        casualties += u.bearLoss((random.nextDouble() + 0.5) * u.fatigue / 100);
+                    }
+                }
+            }
+        }
+        return casualties;
+    }
+
+    public void updateFatigue(int s, double f) {
+        double sF = f * s / strength;
+        fatigue += sF;
+        if (isSub) superForce.updateFatigue(strength, sF);
+
+    }
+
     public void checkHunger() {
         if (foodStock < foodNeed) {
             System.out.println("WE ARE HUNGRY!!!");
@@ -1055,10 +1083,10 @@ public class Force extends Image {
                 ((Unit) this).changeMorale(-OUT_OF_FOOD_PENALTY * (foodStock / foodNeed - 1), true);
             } else {
                 for (int i : COMBAT_TYPES_BY_FOOD) {
-                    //System.out.println("UNIT TYPE = " + i);
                     for (Unit u : getUnits(i)) {
                         if (u.foodStock < u.foodNeed) {
                             u.changeMorale(-OUT_OF_FOOD_PENALTY * (u.foodStock / u.foodNeed - 1), true);
+                            System.out.println(-OUT_OF_FOOD_PENALTY * (u.foodStock / u.foodNeed - 1));
                         }
                     }
                 }
@@ -1067,11 +1095,11 @@ public class Force extends Image {
     }
 
     public void levelMorale() {
-        if(isUnit && morale != nation.getNationalMorale()) ((Unit)this).levelUnitMorale();
+        if (isUnit && morale != nation.getNationalMorale()) ((Unit) this).levelUnitMorale();
         else {
-            for (int i: COMBAT_TYPES_BY_FOOD) {
-                for (Unit u: getUnits(i)) {
-                    if(morale != u.nation.getNationalMorale()) u.levelUnitMorale();
+            for (int i : COMBAT_TYPES_BY_FOOD) {
+                for (Unit u : getUnits(i)) {
+                    if (morale != u.nation.getNationalMorale()) u.levelUnitMorale();
                 }
             }
         }
