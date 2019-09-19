@@ -447,6 +447,7 @@ public class Force extends Image {
             } else {
                 eatenFood = foodStock;
                 foodStock = 0;
+                ((Unit)this).changeFatigue(FATIGUE_DROP * (foodStock / foodNeed - 1));
             }
         } else {
             for (Force force : forces) {
@@ -459,6 +460,7 @@ public class Force extends Image {
                         foodStock -= force.foodStock;
                         eatenFood += force.foodStock;
                         force.foodStock = 0;
+                        ((Unit)force).changeFatigue(FATIGUE_DROP * (force.foodStock / force.foodNeed - 1));
                     }
                 } else {
                     double f = force.eat();
