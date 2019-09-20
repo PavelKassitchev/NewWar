@@ -111,6 +111,7 @@ public class Force extends Image {
         System.out.println("FORAGE");
         Test.list(this);
         //move();
+        suffer();
         doOrders();
         trace.add(hex);
         //This is for delays
@@ -160,7 +161,8 @@ public class Force extends Image {
     public String toString() {
         String type = "";
         if (isUnit) type += ", Type" + ((Unit) this).type;
-        return nation + ": " + strength + " mrl: " + ((int) (morale * 100) / 100.0) + " food: " + ((int) (foodStock * 100) / 100.0)
+        return nation + ": " + strength + " mrl: " + ((int) (morale * 100) / 100.0) + " ftg: " + ((int)(fatigue * 100) / 100.0) +
+                " food: " + ((int) (foodStock * 100) / 100.0)
                 + " ammo: " + ((int) (ammoStock * 100) / 100.0) + type;
     }
 
@@ -436,6 +438,23 @@ public class Force extends Image {
         }
 
     }
+     public void fatigue(double f)
+     {
+         if(isUnit) ((Unit)this).changeFatigue(f);
+         else {
+             for(int i: COMBAT_TYPES_BY_FOOD) {
+                 System.out.println("COMBAT TYPE IS " + i);
+                 for(Unit u: getUnits(i)) {
+                     System.out.println("INIT STR = " + u.strength);
+                     u.changeFatigue(f);
+                     System.out.println("END FATIGUE = " + u.fatigue);
+                 }
+             }
+         }
+     }
+     public void rest() {
+        fatigue(FATIGUE_RECOVER);
+     }
 
     public double eat() {
 
@@ -901,7 +920,7 @@ public class Force extends Image {
     public boolean move() {
         double movePoints = speed;
         float movementCost;
-
+        Hex start = hex;
         while (order.pathsOrder.size > 0 && movePoints > 0) {
             movementCost = Hex.SIZE * (Float) hex.cell.getTile().getProperties().get("cost");
             if (movePoints / movementCost < 1) {
@@ -927,6 +946,8 @@ public class Force extends Image {
                 movePoints -= movementCost;
 
             }
+            if(hex != start) fatigue(-FATIGUE_DROP);
+            else rest();
 
         }
         order.mileStone.days = Path.getDaysToGo(order.pathsOrder, speed);
@@ -943,6 +964,7 @@ public class Force extends Image {
         setHex(hex);
         setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
         //trace.add(hex);
+        if(backHex != hex) fatigue(-FATIGUE_DROP);
     }
 
     public double forage() {
@@ -1062,7 +1084,7 @@ public class Force extends Image {
                 casualties += ((Unit) this).bearLoss((random.nextDouble() + 0.5) * fatigue / 500);
             } else {
                 for (int i : COMBAT_TYPES_BY_FOOD) {
-                    for (Unit u : getUnits(COMBAT_TYPES_BY_FOOD[i])) {
+                    for (Unit u : getUnits(i)) {
                         casualties += u.bearLoss((random.nextDouble() + 0.5) * u.fatigue / 500);
                     }
                 }
