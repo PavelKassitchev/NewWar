@@ -917,7 +917,7 @@ public class Force extends Image {
     }
 
     public boolean move() {
-        double movePoints = speed;
+        double movePoints = getForceSpeed();
         float movementCost;
         Hex start = hex;
         while (order.pathsOrder.size > 0 && movePoints > 0) {
@@ -952,7 +952,7 @@ public class Force extends Image {
         else {
             rest();
         }
-        order.mileStone.days = Path.getDaysToGo(order.pathsOrder, speed);
+        order.mileStone.days = Path.getDaysToGo(order.pathsOrder, getForceSpeed());
         //if (order.pathsOrder.SIZE == 0) order.mileStone = new MileStone();
 
         return true;
@@ -1138,7 +1138,7 @@ public class Force extends Image {
         else {*/
         order.setPathsOrder(play.navigate(hex, force.hex));
         order.mileStone = new MileStone(force.hex);
-        order.mileStone.days = Path.getDaysToGo(order.pathsOrder, speed);
+        order.mileStone.days = Path.getDaysToGo(order.pathsOrder, getForceSpeed());
         //}
     }
 

@@ -141,7 +141,7 @@ public class Test {
 
     static void list(Force force) {
         System.out.println(force.name);
-        System.out.println("Totally soldiers: " + force.strength + ", Morale level: " + force.morale + ", Fatigue: " + force.fatigue + " speed: " + force.speed +
+        System.out.println("Totally soldiers: " + force.strength + ", Morale level: " + force.morale + ", Fatigue: " + force.fatigue + " speed: " + force.getForceSpeed() +
                 " AMMO: " + force.ammoStock + " FOOD: " + force.foodStock +" foodNeed: "+ force.foodNeed + " foodLimit " + force.foodLimit + " fire : " + force.fire + " charge: " +
                 force.charge);
         System.out.println("Including: ");

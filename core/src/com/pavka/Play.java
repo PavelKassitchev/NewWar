@@ -444,7 +444,7 @@ public class Play extends Stage implements Screen {
                 mileStone = new MileStone(endHex);
                 if (selectedForce != null) {
                     System.out.println("FORCE SELECTED");
-                    speed = selectedForce.speed;
+                    speed = selectedForce.getForceSpeed();
                     selectedForce.order.setPathsOrder(paths);
                     selectedForce.order.mileStone = mileStone;
                 }
@@ -489,7 +489,7 @@ public class Play extends Stage implements Screen {
                         //first force was touched
                         if (selectedForce != null) {
                             selectedForce.order.target = null;
-                            navigate(selectedForce.speed);
+                            navigate(selectedForce.getForceSpeed());
                             selectedForce.order.setPathsOrder(paths);
                             selectedForce.order.mileStone = mileStone;
                             //selectedForce.isSelected = false;
@@ -509,7 +509,7 @@ public class Play extends Stage implements Screen {
 
                         //first force was touched
                         if (selectedForce != null) {
-                            navigate(selectedForce.speed);
+                            navigate(selectedForce.getForceSpeed());
                             selectedForce.order.setPathsOrder(paths);
                             selectedForce.order.mileStone = mileStone;
                             //TODO attach?
@@ -597,7 +597,7 @@ public class Play extends Stage implements Screen {
                 currentHex = hex;
                 Array<Path> trace = navigate(startHex, currentHex);
                 double speed = Battalion.SPEED;
-                if (selectedForce != null) speed = selectedForce.speed;
+                if (selectedForce != null) speed = selectedForce.getForceSpeed();
                 currentStone.days = Path.getDaysToGo(trace, speed);
             }
         } else {
