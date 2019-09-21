@@ -102,7 +102,7 @@ public class Force extends Image {
         if (message != null && message.turn == Play.turn) {
             if (message instanceof Order) order = (Order) message;
         }
-        checkHunger();
+        //checkHunger();
         eat();
         levelMorale();
         System.out.println("EAT");
@@ -443,17 +443,14 @@ public class Force extends Image {
          if(isUnit) ((Unit)this).changeFatigue(f);
          else {
              for(int i: COMBAT_TYPES_BY_FOOD) {
-                 System.out.println("COMBAT TYPE IS " + i);
                  for(Unit u: getUnits(i)) {
-                     System.out.println("INIT STR = " + u.strength);
                      u.changeFatigue(f);
-                     System.out.println("END FATIGUE = " + u.fatigue);
                  }
              }
          }
      }
      public void rest() {
-        fatigue(FATIGUE_RECOVER);
+        fatigue(-FATIGUE_RECOVER);
      }
 
     public double eat() {
@@ -466,7 +463,8 @@ public class Force extends Image {
             } else {
                 eatenFood = foodStock;
                 foodStock = 0;
-                ((Unit)this).changeFatigue(FATIGUE_DROP * (foodStock / foodNeed - 1));
+                ((Unit)this).changeFatigue(-FATIGUE_DROP * (foodStock / foodNeed - 1));
+                ((Unit)this).changeMorale(-OUT_OF_FOOD_PENALTY * (foodStock / foodNeed - 1), true);
             }
         } else {
             for (Force force : forces) {
@@ -479,7 +477,8 @@ public class Force extends Image {
                         foodStock -= force.foodStock;
                         eatenFood += force.foodStock;
                         force.foodStock = 0;
-                        ((Unit)force).changeFatigue(FATIGUE_DROP * (force.foodStock / force.foodNeed - 1));
+                        ((Unit)force).changeFatigue(-FATIGUE_DROP * (force.foodStock / force.foodNeed - 1));
+                        ((Unit)force).changeMorale(-OUT_OF_FOOD_PENALTY * (force.foodStock / force.foodNeed - 1), true);
                     }
                 } else {
                     double f = force.eat();
@@ -946,9 +945,12 @@ public class Force extends Image {
                 movePoints -= movementCost;
 
             }
-            if(hex != start) fatigue(-FATIGUE_DROP);
-            else rest();
-
+        }
+        if(hex != start) {
+            fatigue(FATIGUE_DROP);
+        }
+        else {
+            rest();
         }
         order.mileStone.days = Path.getDaysToGo(order.pathsOrder, speed);
         //if (order.pathsOrder.SIZE == 0) order.mileStone = new MileStone();

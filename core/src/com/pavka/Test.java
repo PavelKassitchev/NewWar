@@ -141,14 +141,14 @@ public class Test {
 
     static void list(Force force) {
         System.out.println(force.name);
-        System.out.println("Totally soldiers: " + force.strength + ", Morale level: " + force.morale + " speed: " + force.speed +
+        System.out.println("Totally soldiers: " + force.strength + ", Morale level: " + force.morale + ", Fatigue: " + force.fatigue + " speed: " + force.speed +
                 " AMMO: " + force.ammoStock + " FOOD: " + force.foodStock +" foodNeed: "+ force.foodNeed + " foodLimit " + force.foodLimit + " fire : " + force.fire + " charge: " +
                 force.charge);
         System.out.println("Including: ");
         System.out.println();
         for (Force f: force.forces) {
             if (f.isUnit) {
-                System.out.println("    " + f.name + ": " + f.strength + " soldiers, Morale level: " + f.morale + " speed: " + f.speed +
+                System.out.println("    " + f.name + ": " + f.strength + " soldiers, Morale level: " + f.morale + ". Fatigue: " + f.fatigue + " speed: " + f.speed +
                         " AMMO: " + f.ammoStock + " FOOD: " + f.foodStock + " Food Need " + f.foodNeed + " foodlimit " + f.foodLimit + " fire: " + f.fire + " charge: " + f.charge);
             }
             else {
