@@ -23,7 +23,7 @@ public class Squadron extends Unit {
     public Squadron(Nation nation, Hex hex, int strength) {
         super(nation, hex);
         //isUnit = true;
-        type = CAVALRY;
+        type = UnitType.CAVALRY;
         imprisoned = 0.7;
         maxStrength = MAX_STRENGTH;
         maxFire = FIRE;

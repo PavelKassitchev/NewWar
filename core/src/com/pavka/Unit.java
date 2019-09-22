@@ -24,7 +24,7 @@ public abstract class Unit extends Force {
     public static final double FATIGUE_RECOVER = 0.03;
 
 
-    int type;
+    UnitType type;
     int maxStrength;
     double maxFire;
     double maxCharge;
@@ -123,7 +123,7 @@ public abstract class Unit extends Force {
 
     public boolean belongsToTypes(int... types) {
         for (int i = 0; i < types.length; i++) {
-            if (type == types[i]) return true;
+            if (type.num == types[i]) return true;
         }
         return false;
     }
@@ -164,8 +164,8 @@ public abstract class Unit extends Force {
     }
 
     public Unit changeMorale(double change) {
-        if (type == CAVALRY) change *= CHARGE_ON_CAVALRY;
-        if (type == ARTILLERY) change *= CHARGE_ON_ARTILLERY;
+        if (type == UnitType.CAVALRY) change *= CHARGE_ON_CAVALRY;
+        if (type == UnitType.ARTILLERY) change *= CHARGE_ON_ARTILLERY;
         morale += change;
         if (isSub) superForce.updateMorale(strength, change);
         return this;

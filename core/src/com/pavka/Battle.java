@@ -245,7 +245,7 @@ public class Battle {
             int initStrength = unit.strength;
             double ratio = (double) initStrength / attackerInit;
 
-            if (defender.isUnit && ((Unit) defender).type == Unit.ARTILLERY) {
+            if (defender.isUnit && ((Unit) defender).type == UnitType.ARTILLERY) {
                 Battery b = (Battery) defender;
                 b.fire(ratio);
                 double fireEffect = LONG_DISTANCE_FIRE * ((0.7 + 0.6 * random.nextDouble() * b.fire * FIRE_ON_UNIT) / attackerInit);

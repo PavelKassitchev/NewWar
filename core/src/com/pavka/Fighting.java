@@ -956,8 +956,8 @@ public class Fighting {
         //double circlingFactor = whiteDirectionBonus - blackDirectionBonus;
         if (unit.nation.color == WHITE) {
             catching = (int) (PURSUIT_CHARGE * blackCharge * (1 + blackDirectionBonus) * unit.strength / whiteStrength);
-            if (unit.type == ARTILLERY) catching *= PURSUIT_ARTILLERY_FACTOR;
-            if (unit.type == CAVALRY) catching *= PURSUIT_CAVALRY_FACTOR;
+            if (unit.type == UnitType.ARTILLERY) catching *= PURSUIT_ARTILLERY_FACTOR;
+            if (unit.type == UnitType.CAVALRY) catching *= PURSUIT_CAVALRY_FACTOR;
             if (catching >= unit.strength) {
                 prisoners += unit.surrender();
                 System.out.println("Unit surrended:" + unit.strength);
@@ -970,8 +970,8 @@ public class Fighting {
         }
         if (unit.nation.color == BLACK) {
             catching = (int) (PURSUIT_CHARGE * whiteCharge * (1 + whiteDirectionBonus) * unit.strength / blackStrength);
-            if (unit.type == ARTILLERY) catching *= PURSUIT_ARTILLERY_FACTOR;
-            if (unit.type == CAVALRY) catching *= PURSUIT_CAVALRY_FACTOR;
+            if (unit.type == UnitType.ARTILLERY) catching *= PURSUIT_ARTILLERY_FACTOR;
+            if (unit.type == UnitType.CAVALRY) catching *= PURSUIT_CAVALRY_FACTOR;
             if (catching >= unit.strength) {
                 prisoners += unit.surrender();
             } else {
@@ -1034,7 +1034,7 @@ public class Fighting {
         if (fire > 0) {
             int in = unit.strength;
             double f = fire;
-            if (unit.type == ARTILLERY) {
+            if (unit.type == UnitType.ARTILLERY) {
                 f *= FIRE_ON_ARTILLERY;
             }
             unit.bearLoss(f);
@@ -1050,8 +1050,8 @@ public class Fighting {
 
     private void charging(Unit unit, double charge) {
         double c = charge;
-        if (unit.type == ARTILLERY) c *= CHARGE_ON_ARTILLERY;
-        if (unit.type == CAVALRY) c *= CHARGE_ON_CAVALRY;
+        if (unit.type == UnitType.ARTILLERY) c *= CHARGE_ON_ARTILLERY;
+        if (unit.type == UnitType.CAVALRY) c *= CHARGE_ON_CAVALRY;
         unit.changeMorale(c);
     }
 

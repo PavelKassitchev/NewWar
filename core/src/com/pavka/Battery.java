@@ -22,7 +22,7 @@ public class Battery extends Unit {
     public Battery(Nation nation, Hex hex, int strength) {
         super(nation, hex);
         //isUnit = true;
-        type = ARTILLERY;
+        type = UnitType.ARTILLERY;
         imprisoned = 1.1;
         maxStrength = MAX_STRENGTH;
         maxFire = FIRE;

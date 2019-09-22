@@ -325,11 +325,11 @@ public class Force extends Image {
         double f = fatigue * strength;
 
         if (force.isUnit) {
-            int type = ((Unit) force).type;
-            if (type == SUPPLY) wagons.add((Wagon) force);
-            if (type == INFANTRY) battalions.add((Battalion) force);
-            if (type == CAVALRY) squadrons.add((Squadron) force);
-            if (type == ARTILLERY) batteries.add((Battery) force);
+            UnitType type = ((Unit) force).type;
+            if (type == UnitType.SUPPLY) wagons.add((Wagon) force);
+            if (type == UnitType.INFANTRY) battalions.add((Battalion) force);
+            if (type == UnitType.CAVALRY) squadrons.add((Squadron) force);
+            if (type == UnitType.ARTILLERY) batteries.add((Battery) force);
         } else {
             battalions.addAll(force.battalions);
             squadrons.addAll(force.squadrons);
@@ -418,11 +418,11 @@ public class Force extends Image {
         }
 
         if (force.isUnit) {
-            int type = ((Unit) force).type;
-            if (type == SUPPLY) wagons.remove(force);
-            if (type == INFANTRY) battalions.remove(force);
-            if (type == CAVALRY) squadrons.remove(force);
-            if (type == ARTILLERY) batteries.remove(force);
+            UnitType type = ((Unit) force).type;
+            if (type == UnitType.SUPPLY) wagons.remove(force);
+            if (type == UnitType.INFANTRY) battalions.remove(force);
+            if (type == UnitType.CAVALRY) squadrons.remove(force);
+            if (type == UnitType.ARTILLERY) batteries.remove(force);
         } else {
             wagons.removeAll(force.wagons);
             battalions.removeAll(force.battalions);
@@ -644,7 +644,7 @@ public class Force extends Image {
     }
 
     public double loadAmmoToWagons(double ammo) {
-        if (isUnit && ((Unit) this).type == SUPPLY) {
+        if (isUnit && ((Unit) this).type == UnitType.SUPPLY) {
             if (ammo <= ammoLimit) {
                 ammoStock = ammo;
                 ammo = 0;
@@ -839,7 +839,7 @@ public class Force extends Image {
     }
 
     public double loadFoodToWagons(double food) {
-        if (isUnit && ((Unit) this).type == SUPPLY) {
+        if (isUnit && ((Unit) this).type == UnitType.SUPPLY) {
             if (food <= foodLimit) {
                 foodStock = food;
                 food = 0;
@@ -1082,13 +1082,17 @@ public class Force extends Image {
         int casualties = 0;
         if (fatigue > 0) {
             Random random = new Random();
+            double ratio = (0.5 + random.nextDouble()) * fatigue / 500;
             if (isUnit) {
-                casualties += ((Unit) this).bearLoss((random.nextDouble() + 0.5) * fatigue / 500);
+                casualties += ((Unit) this).bearLoss(ratio);
             } else {
-                for (int i : COMBAT_TYPES_BY_FOOD) {
-                    for (Unit u : getUnits(i)) {
-                        casualties += u.bearLoss((random.nextDouble() + 0.5) * u.fatigue / 500);
-                    }
+                int loss = (int)(ratio * strength);
+                System.out.println("LOST: " + loss);
+                while(loss > 0) {
+                    Unit u = selectRandomUnit();
+                    casualties += u.bearLoss(1.0 / u.strength);
+                    loss--;
+
                 }
             }
         }

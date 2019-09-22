@@ -13,7 +13,7 @@ public class Wagon extends Unit {
     public Wagon(Nation nation, Hex hex) {
         super(nation, hex);
         isUnit = true;
-        type = SUPPLY;
+        type = UnitType.SUPPLY;
         maxStrength = MAX_STRENGTH;
         strength = MAX_STRENGTH;
         speed = SPEED;

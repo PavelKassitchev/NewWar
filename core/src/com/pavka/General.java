@@ -7,6 +7,6 @@ public class General extends Unit {
     public General(Nation nation, Hex hex) {
         super(nation, hex);
         isUnit = true;
-        type = HEADQUATERS;
+        type = UnitType.HEADQUARTERS;
     }
 }
