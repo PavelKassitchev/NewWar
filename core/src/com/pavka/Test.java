@@ -1,6 +1,9 @@
 package com.pavka;
 
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 import static com.pavka.Nation.*;
 
 
@@ -110,7 +113,9 @@ public class Test {
         /*Battle battle = new Battle(force1, force2);
         battle.resolve();
         getStat(force1, force2);*/
-        getStat(france, austria);
+        //getStat(france, austria);
+        //UnitType.combatByAmmo();
+        System.out.println(Unit.UNITS_BY_SPEED[0]);
     }
 
     public static void getStat(Force attacker, Force defender) {

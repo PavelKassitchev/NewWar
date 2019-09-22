@@ -2,17 +2,12 @@ package com.pavka;
 
 
 
-public abstract class Unit extends Force {
+public class Unit extends Force {
 
-    public static final int SUPPLY = 0;
-    public static final int INFANTRY = 1;
-    public static final int CAVALRY = 2;
-    public static final int ARTILLERY = 3;
-    public static final int HEADQUATERS = 4;
-
-    public static final int[] ALL_TYPES = {SUPPLY, INFANTRY, CAVALRY, ARTILLERY};
-    public static final int[] COMBAT_TYPES_BY_FOOD = {INFANTRY, CAVALRY, ARTILLERY};
-    public static final int[] COMBAT_TYPES_BY_AMMO = {ARTILLERY, INFANTRY, CAVALRY};
+    public static final UnitType[] ALL_TYPES = UnitType.values();
+    public static final UnitType[] COMBAT_TYPES_BY_FOOD = UnitType.combatByFood();
+    public static final UnitType[] COMBAT_TYPES_BY_AMMO = UnitType.combatByAmmo();
+    public static final UnitType[] UNITS_BY_SPEED = UnitType.unitsBySpeed();
 
     public static final double CHARGE_ON_ARTILLERY = 1.25;
     public static final double CHARGE_ON_CAVALRY = 0.75;
@@ -37,57 +32,54 @@ public abstract class Unit extends Force {
         super(nation, hex);
         isUnit = true;
     }
+    public Unit(Nation nation, UnitType type, Hex hex, int strength) {
+        super(nation, hex);
+        isUnit = true;
+        this.type = type;
+        maxStrength = type.STRENGTH;
+        maxFire = type.FIRE;
+        maxCharge = type.CHARGE;
+        imprisoned = type.imrisoned;
+        speed = type.SPEED;
+        this.strength = strength;
+        foodNeed = type.FOOD_NEED * strength / maxStrength;
+        ammoNeed = type.AMMO_NEED * strength / maxStrength;
+        foodLimit = type.FOOD_LIMIT * strength / maxStrength;
+        ammoLimit = type.AMMO_LIMIT * strength / maxStrength;
+        foodStock = type.FOOD_LIMIT * strength / maxStrength;
+        ammoStock = type.AMMO_LIMIT * strength / maxStrength;
+        fire = type.FIRE  * strength / maxStrength;
+        charge = type.CHARGE * strength / maxStrength;
+        xp = 0;
+        fatigue = 0;
+        morale = nation.getNationalMorale();
+    }
+    public Unit(Nation nation, UnitType type, Hex hex) {
+        this(nation, type, hex, type.STRENGTH);
+    }
+    public Unit(Play play, Nation nation, UnitType type, Hex hex) {
+        this(nation, type, hex);
+        this.play = play;
+    }
     public Unit(Play play, Nation nation, Hex hex) {
         this(nation, hex);
         this.play = play;
     }
 
-    public static double getFoodRatio(int type) {
-        switch(type) {
-            case 1:
-                return (Battalion.FOOD_LIMIT / Battalion.FOOD_NEED);
-            case 2:
-                return (Squadron.FOOD_LIMIT / Squadron.FOOD_NEED);
-            case 3:
-                return (Battery.FOOD_LIMIT / Battery.FOOD_NEED);
-        }
-        return 0;
+    public static double getFoodRatio(UnitType type) {
+        return  type.FOOD_LIMIT /type.FOOD_NEED;
     }
 
-    public static double getUnitFoodNeed(int type) {
-        switch(type) {
-            case 1:
-                return Battalion.FOOD_NEED;
-            case 2:
-                return Squadron.FOOD_NEED;
-            case 3:
-                return Battery.FOOD_NEED;
-        }
-        return 0;
+    public static double getUnitFoodNeed(UnitType type) {
+        return type.FOOD_NEED;
     }
 
-    public static double getAmmoRatio(int type) {
-        switch(type) {
-            case 1:
-                return (Battalion.AMMO_LIMIT / Battalion.AMMO_NEED);
-            case 2:
-                return (Squadron.AMMO_LIMIT / Squadron.AMMO_NEED);
-            case 3:
-                return (Battery.AMMO_LIMIT / Battery.AMMO_NEED);
-        }
-        return 0;
+    public static double getAmmoRatio(UnitType type) {
+        return type.AMMO_LIMIT / type.AMMO_NEED;
     }
 
-    public static double getUnitAmmoNeed(int type) {
-        switch(type) {
-            case 1:
-                return Battalion.AMMO_NEED;
-            case 2:
-                return Squadron.AMMO_NEED;
-            case 3:
-                return Battery.AMMO_NEED;
-        }
-        return 0;
+    public static double getUnitAmmoNeed(UnitType type) {
+        return type.AMMO_NEED;
     }
 
 
@@ -121,9 +113,9 @@ public abstract class Unit extends Force {
         return unit;
     }
 
-    public boolean belongsToTypes(int... types) {
+    public boolean belongsToTypes(UnitType... types) {
         for (int i = 0; i < types.length; i++) {
-            if (type.num == types[i]) return true;
+            if (type == types[i]) return true;
         }
         return false;
     }

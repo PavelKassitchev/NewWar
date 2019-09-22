@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.Random;
 
 import static com.pavka.Nation.*;
+import static com.pavka.UnitType.INFANTRY;
 
 public class Play extends Stage implements Screen {
 
@@ -222,7 +223,7 @@ public class Play extends Stage implements Screen {
         }
         if(keycode == Input.Keys.R) {
             b = new Base(this, Nation.FRANCE, hexGraph.getHex(2, 2));
-            addActor(a);
+            addActor(b);
         }
         if(keycode == Input.Keys.P) {
 
@@ -439,7 +440,7 @@ public class Play extends Stage implements Screen {
 
 
                 mileStone.remove();
-                double speed = Battalion.SPEED;
+                double speed = INFANTRY.SPEED;
                 //mileStone = new MileStone(end);
                 mileStone = new MileStone(endHex);
                 if (selectedForce != null) {
@@ -484,7 +485,7 @@ public class Play extends Stage implements Screen {
 
                         //first hex was touched
                         if (selectedForce == null) {
-                            navigate(Battalion.SPEED);
+                            navigate(INFANTRY.SPEED);
                         }
                         //first force was touched
                         if (selectedForce != null) {
@@ -504,7 +505,7 @@ public class Play extends Stage implements Screen {
 
                         //first hex was touched
                         if (selectedForce == null) {
-                            navigate(Battalion.SPEED);
+                            navigate(INFANTRY.SPEED);
                         }
 
                         //first force was touched
@@ -596,7 +597,7 @@ public class Play extends Stage implements Screen {
                 addActor(currentStone);
                 currentHex = hex;
                 Array<Path> trace = navigate(startHex, currentHex);
-                double speed = Battalion.SPEED;
+                double speed = INFANTRY.SPEED;
                 if (selectedForce != null) speed = selectedForce.getForceSpeed();
                 currentStone.days = Path.getDaysToGo(trace, speed);
             }

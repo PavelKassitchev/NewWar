@@ -17,6 +17,7 @@ import java.util.HashSet;
 import static com.pavka.Direction.*;
 import static com.pavka.Nation.FRANCE;
 import static com.pavka.Unit.*;
+import static com.pavka.UnitType.*;
 
 public class Force extends Image {
 
@@ -288,6 +289,7 @@ public class Force extends Image {
         force.trace = new Trace();
         force.trace.add(hex);
         force.message = null;
+        force.setMinSpeed();
         exclude(force);
 
         //force.setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
@@ -326,7 +328,7 @@ public class Force extends Image {
 
         if (force.isUnit) {
             UnitType type = ((Unit) force).type;
-            if (type == UnitType.SUPPLY) wagons.add((Wagon) force);
+            if (type == SUPPLY) wagons.add((Wagon) force);
             if (type == UnitType.INFANTRY) battalions.add((Battalion) force);
             if (type == UnitType.CAVALRY) squadrons.add((Squadron) force);
             if (type == UnitType.ARTILLERY) batteries.add((Battery) force);
@@ -367,6 +369,20 @@ public class Force extends Image {
 
         if (isSub) {
             superForce.include(force);
+        }
+    }
+    private void setMinSpeed() {
+        if(isUnit) speed = ((Unit)this).type.SPEED;
+        else {
+            for (int i = 0; i < UNITS_BY_SPEED.length; i++) {
+                System.out.println("I = " + i);
+                System.out.println("UNITS_BY_SPEED = " + UNITS_BY_SPEED[i]);
+
+                if(getUnits(UNITS_BY_SPEED[i]).size() > 0) {
+                    speed = UNITS_BY_SPEED[i].SPEED;
+                    break;
+                }
+            }
         }
     }
 
@@ -419,7 +435,7 @@ public class Force extends Image {
 
         if (force.isUnit) {
             UnitType type = ((Unit) force).type;
-            if (type == UnitType.SUPPLY) wagons.remove(force);
+            if (type == SUPPLY) wagons.remove(force);
             if (type == UnitType.INFANTRY) battalions.remove(force);
             if (type == UnitType.CAVALRY) squadrons.remove(force);
             if (type == UnitType.ARTILLERY) batteries.remove(force);
@@ -429,9 +445,16 @@ public class Force extends Image {
             squadrons.removeAll(force.squadrons);
             batteries.removeAll(force.batteries);
         }
-        if (wagons.size() > 0 || batteries.size() > 0) speed = Battery.SPEED;
-        else if (battalions.size() > 0) speed = Battalion.SPEED;
-        else speed = Squadron.SPEED;
+        /*if (wagons.size() > 0 || batteries.size() > 0) speed = ARTILLERY.SPEED;
+        else if (battalions.size() > 0) speed = INFANTRY.SPEED;
+        else speed = CAVALRY.SPEED;*/
+
+        /*for (int i = 0; i < UNITS_BY_SPEED.length; i++) {
+            if(getUnits(UNITS_BY_SPEED[i]).size() > 0) {
+                speed = UNITS_BY_SPEED[i].SPEED;
+            }
+        }*/
+        setMinSpeed();
 
         if (isSub) {
             superForce.exclude(force);
@@ -442,8 +465,8 @@ public class Force extends Image {
      {
          if(isUnit) ((Unit)this).changeFatigue(f);
          else {
-             for(int i: COMBAT_TYPES_BY_FOOD) {
-                 for(Unit u: getUnits(i)) {
+             for(UnitType type: COMBAT_TYPES_BY_FOOD) {
+                 for(Unit u: getUnits(type)) {
                      u.changeFatigue(f);
                  }
              }
@@ -606,7 +629,7 @@ public class Force extends Image {
         return free;
     }
 
-    public double loadAmmo(double ratio, int... types) {
+    public double loadAmmo(double ratio, UnitType... types) {
         double need = 0;
         if (isUnit && !isSub && ((Unit) this).belongsToTypes(types)) {
             ammoStock = ammoNeed * ratio;
@@ -644,7 +667,7 @@ public class Force extends Image {
     }
 
     public double loadAmmoToWagons(double ammo) {
-        if (isUnit && ((Unit) this).type == UnitType.SUPPLY) {
+        if (isUnit && ((Unit) this).type == SUPPLY) {
             if (ammo <= ammoLimit) {
                 ammoStock = ammo;
                 ammo = 0;
@@ -670,7 +693,7 @@ public class Force extends Image {
         return ammo;
     }
 
-    public double loadAmmo(int... types) {
+    public double loadAmmo(UnitType... types) {
         double need = 0;
         if (isUnit && !isSub && ((Unit) this).belongsToTypes(types)) {
             ammoStock = ammoLimit;
@@ -748,7 +771,7 @@ public class Force extends Image {
                 }
                 attach(wagon);
             }
-        } else if (free >= foodLimit - wagons.size() * Wagon.FOOD_LIMIT) {
+        } else if (free >= foodLimit - wagons.size() * SUPPLY.FOOD_LIMIT) {
             free -= loadFood(COMBAT_TYPES_BY_FOOD);
             free -= loadFoodToWagons(free);
 
@@ -812,7 +835,7 @@ public class Force extends Image {
         return free;
     }
 
-    public double loadFood(double ratio, int... types) {
+    public double loadFood(double ratio, UnitType... types) {
         double need = 0;
         if (isUnit && !isSub && ((Unit) this).belongsToTypes(types)) {
 
@@ -839,7 +862,7 @@ public class Force extends Image {
     }
 
     public double loadFoodToWagons(double food) {
-        if (isUnit && ((Unit) this).type == UnitType.SUPPLY) {
+        if (isUnit && ((Unit) this).type == SUPPLY) {
             if (food <= foodLimit) {
                 foodStock = food;
                 food = 0;
@@ -863,7 +886,7 @@ public class Force extends Image {
         return food;
     }
 
-    public double loadFood(int... types) {
+    public double loadFood(UnitType... types) {
         double need = 0;
         if (isUnit && !isSub && ((Unit) this).belongsToTypes(types)) {
 
@@ -1112,8 +1135,8 @@ public class Force extends Image {
             if (isUnit) {
                 ((Unit) this).changeMorale(-OUT_OF_FOOD_PENALTY * (foodStock / foodNeed - 1), true);
             } else {
-                for (int i : COMBAT_TYPES_BY_FOOD) {
-                    for (Unit u : getUnits(i)) {
+                for (UnitType type : COMBAT_TYPES_BY_FOOD) {
+                    for (Unit u : getUnits(type)) {
                         if (u.foodStock < u.foodNeed) {
                             u.changeMorale(-OUT_OF_FOOD_PENALTY * (u.foodStock / u.foodNeed - 1), true);
                             System.out.println(-OUT_OF_FOOD_PENALTY * (u.foodStock / u.foodNeed - 1));
@@ -1127,8 +1150,8 @@ public class Force extends Image {
     public void levelMorale() {
         if (isUnit && morale != nation.getNationalMorale()) ((Unit) this).levelUnitMorale();
         else {
-            for (int i : COMBAT_TYPES_BY_FOOD) {
-                for (Unit u : getUnits(i)) {
+            for (UnitType type : COMBAT_TYPES_BY_FOOD) {
+                for (Unit u : getUnits(type)) {
                     if (morale != u.nation.getNationalMorale()) u.levelUnitMorale();
                 }
             }
@@ -1163,16 +1186,19 @@ public class Force extends Image {
         base.sendSupplies(this, food, ammo);
     }
 
-    public List<? extends Unit> getUnits(int type) {
+    public List<? extends Unit> getUnits(UnitType type) {
         switch (type) {
-            case 1:
+            case INFANTRY:
                 return battalions;
 
-            case 2:
+            case CAVALRY:
                 return squadrons;
 
-            case 3:
+            case ARTILLERY:
                 return batteries;
+
+            case SUPPLY:
+                return wagons;
 
         }
         return null;
