@@ -37,6 +37,7 @@ public class Force extends Image {
     List<Squadron> squadrons;
     List<Battery> batteries;
     List<Wagon> wagons;
+    List<Commander> officers;
     General general;
     Trace trace;
     Force superForce;
@@ -228,6 +229,7 @@ public class Force extends Image {
         squadrons = new ArrayList<Squadron>();
         batteries = new ArrayList<Battery>();
         wagons = new ArrayList<Wagon>();
+        officers = new ArrayList<Commander>();
         trace = new Trace();
         trace.add(hex);
         order = new Order(false, 0, 0);
@@ -1098,7 +1100,14 @@ public class Force extends Image {
     }
 
     public double getForceSpeed() {
-        return speed;
+        if (isUnit) return speed - ((Unit)this).type.LENGTH / 2;
+        double length = 0;
+        for(UnitType ut: UnitType.values()) {
+            for (Unit u: getUnits(ut)) {
+                length += ut.LENGTH * u.strength / ut.STRENGTH;
+            }
+        }
+        return speed - length / 2;
     }
 
     public int suffer() {
@@ -1199,6 +1208,9 @@ public class Force extends Image {
 
             case SUPPLY:
                 return wagons;
+
+            case HEADQUARTERS:
+                return officers;
 
         }
         return null;
