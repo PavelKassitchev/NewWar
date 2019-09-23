@@ -14,7 +14,7 @@ public enum UnitType {
 
     UnitType(int num, int STRENGTH, double SPEED, double FOOD_NEED,
              double AMMO_NEED, double FOOD_LIMIT, double AMMO_LIMIT, double FIRE, double CHARGE, double LENGTH, double imprisoned) {
-        this.num = num;
+        //this.num = num;
         this.STRENGTH = STRENGTH;
         this.SPEED = SPEED;
         this.FOOD_NEED = FOOD_NEED;
