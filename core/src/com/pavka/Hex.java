@@ -21,7 +21,7 @@ public class Hex extends Image {
     public double currentHarvest;
     public int index;
     public TiledMapTileLayer.Cell cell;
-    public final static int SIZE = 10;
+    public final static int SIZE = 6;
     public Array<Force> whiteForces;
     public Array<Force> blackForces;
     public Fighting fighting;

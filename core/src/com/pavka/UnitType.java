@@ -6,12 +6,30 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public enum UnitType {
-    SUPPLY(0, 0, 20, 0, 0, 50, 30, 0, 0, 0.4, 0),
-    INFANTRY(1, 900, 28, 2, 0.5, 12, 4, 1, 1, 0.2, 1),
-    CAVALRY(2, 180, 44, 1.1, 0.1, 7, 2.4, 0.1, 2.4, 0.16, 0.7),
-    ARTILLERY(3, 104, 20, 0.6, 1, 8, 5, 4, 0, 0.1, 1.1),
-    HEADQUARTERS(4, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0);
+    SUPPLY(0, 0, 12, 0, 0, 50, 30, 0, 0, 0.4, 0),
+    INFANTRY(1, 900, 16, 2, 0.5, 12, 4, 1, 1, 0.2, 1),
+    CAVALRY(2, 180, 20, 1.1, 0.1, 7, 2.4, 0.1, 2.4, 0.16, 0.7),
+    ARTILLERY(3, 104, 12, 0.6, 1, 8, 5, 4, 0, 0.1, 1.1),
+    HEADQUARTERS(4, 0, 48, 0, 0, 0, 0, 0, 0, 0, 0);
 
+    /*
+    Ammo:
+    Battalion - 600 Kgs per 4 hours
+    Squadron - 100 Kgs per 4 hours
+    Battery - 1600 Kgs per 4 hours
+    Division 16 hour stock - 55200 Kgs
+
+    Food:
+    Battalion - 1800 Kgs per day
+    Squadron - 1800 Kgs per day
+    Battery - 600 Kgs per day
+    Division 5 days stock - 138000Kgs
+
+    2 horse wagon - 1000 Kgs
+    100 wagons length - 650 m
+
+    or maybe 65 wagon train of 400 m length
+     */
     UnitType(int num, int STRENGTH, double SPEED, double FOOD_NEED,
              double AMMO_NEED, double FOOD_LIMIT, double AMMO_LIMIT, double FIRE, double CHARGE, double LENGTH, double imprisoned) {
         //this.num = num;
