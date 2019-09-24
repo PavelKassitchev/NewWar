@@ -13,12 +13,14 @@ import com.badlogic.gdx.utils.Array;
 public class Control extends Table {
     public Hex hex;
     public Array<Force> forces;
+    public Base base;
 
     public Control(Hex hex) {
         this.hex = hex;
         forces = new Array<Force>();
         forces.addAll(hex.whiteForces);
         forces.addAll(hex.blackForces);
+        if(hex.base != null) base = hex.base;
         BitmapFont font = new BitmapFont();
         font.getData().setScale(0.7f);
         Label costLabel = new Label("Cost: " + hex.cell.getTile().getProperties().get("cost"), new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
@@ -35,7 +37,7 @@ public class Control extends Table {
                 row();
             }
         }
-        if (hex.base != null) {
+        if (base != null) {
             Label baseLabel = new Label(hex.base.toString(), new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
             add(baseLabel);
             row();

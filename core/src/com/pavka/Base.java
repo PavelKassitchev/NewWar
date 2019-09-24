@@ -28,11 +28,14 @@ public class Base extends Image implements Supplier {
         this.play = play;
         this.nation = nation;
         this.hex = hex;
+        hex.locate(this);
 
         if(nation.color == WHITE) play.whiteBases.add(this);
         if(nation.color == BLACK) play.blackBases.add(this);
 
         play.addActor(this);
+
+        setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 15, 15);
         foodStock = 1000;
         ammoStock = 1000;
     }
@@ -40,7 +43,7 @@ public class Base extends Image implements Supplier {
 
     @Override
     public String toString() {
-        return "BASE. Food: " + foodStock + " Ammo: " + ammoStock;
+        return "BASE. Food: " + foodStock + " Ammo: " + ammoStock + " Hex: column: " + hex.col + " row: " + hex.row;
     }
     @Override
     public void draw(Batch batch, float alpha) {

@@ -219,12 +219,12 @@ public class Play extends Stage implements Screen {
         if(keycode == Input.Keys.B) {
 
             a = new Base(this, Nation.AUSTRIA, hexGraph.getHex(28, 28));
-            addActor(a);
+            //addActor(a);
 
         }
         if(keycode == Input.Keys.R) {
             b = new Base(this, Nation.FRANCE, hexGraph.getHex(2, 2));
-            addActor(b);
+            //addActor(b);
         }
         if(keycode == Input.Keys.P) {
 
@@ -288,6 +288,10 @@ public class Play extends Stage implements Screen {
                 force.eat();
                 System.out.println(force.forage());
             }
+        }
+        if(keycode == Input.Keys.U) {
+            System.out.println("White bases: " + whiteBases);
+            for(Base base: blackBases) System.out.println(base);
         }
         return true;
     }
@@ -368,7 +372,8 @@ public class Play extends Stage implements Screen {
             Actor actor = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
             if (!secondClick) {
                 if (actor instanceof Control) System.out.println("Control!");
-                if (actor instanceof Hex) System.out.println("Hex! " + ((Hex)actor).getRelX() + " " + ((Hex)actor).getRelY() + " Column: " + ((Hex)actor).col + " Row: " + ((Hex)actor).row);
+                if (actor instanceof Hex) System.out.println("Hex! " + ((Hex)actor).getRelX() + " " + ((Hex)actor).getRelY()
+                        + " Column: " + ((Hex)actor).col + " Row: " + ((Hex)actor).row + " BASE: " + ((Hex)(actor)).base);
                 if (actor instanceof Force) System.out.println("Force!");
                 if (actor instanceof Label) System.out.println("Label!");
                 if (actor instanceof Base) System.out.println("Base!");

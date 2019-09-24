@@ -72,6 +72,7 @@ public class Force extends Image {
 
     double speed;
 
+    @Override
     public void draw(Batch batch, float alpha) {
         Texture texture = nation == FRANCE ? textureFrance : textureAustria;
 
