@@ -61,26 +61,26 @@ public class Base extends Image implements Supplier {
         play.addActor(train);
         double foodLoad = Math.min(foodStock, food);
         double ammoLoad = Math.min(ammoStock, ammo);
-        int num = (int)Math.ceil(Math.max(foodLoad / Wagon.FOOD_LIMIT, ammoLoad / Wagon.AMMO_LIMIT));
+        int num = (int)Math.ceil(Math.max(foodLoad / UnitType.SUPPLY.FOOD_LIMIT, ammoLoad / UnitType.SUPPLY.AMMO_LIMIT));
         for (int i=0; i<num; i++) {
             Wagon w = new Wagon(nation, hex);
-            if(foodLoad < Wagon.FOOD_LIMIT) {
+            if(foodLoad < UnitType.SUPPLY.FOOD_LIMIT) {
                 foodStock -= foodLoad;
                 w.foodStock = foodLoad;
                 foodLoad = 0;
             }
             else {
-                foodStock -= Wagon.FOOD_LIMIT;
-                foodLoad -= Wagon.FOOD_LIMIT;
+                foodStock -= UnitType.SUPPLY.FOOD_LIMIT;
+                foodLoad -= UnitType.SUPPLY.FOOD_LIMIT;
             }
-            if(ammoLoad < Wagon.AMMO_LIMIT) {
+            if(ammoLoad < UnitType.SUPPLY.AMMO_LIMIT) {
                 ammoStock -= ammoLoad;
                 w.ammoStock = ammoLoad;
                 ammoLoad = 0;
             }
             else {
-                ammoStock -= Wagon.AMMO_LIMIT;
-                ammoLoad -= Wagon.AMMO_LIMIT;
+                ammoStock -= UnitType.SUPPLY.AMMO_LIMIT;
+                ammoLoad -= UnitType.SUPPLY.AMMO_LIMIT;
             }
             train.attach(w);
         }

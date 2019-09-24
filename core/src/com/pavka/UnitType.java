@@ -14,15 +14,18 @@ public enum UnitType {
 
     /*
     Ammo:
-    Battalion - 600 Kgs per 4 hours
-    Squadron - 100 Kgs per 4 hours
+    Battalion - 500 Kgs per 4 hours
+    stock - 1600 Kgs
+    Squadron - 80 Kgs per 4 hours
+    stock - 400 Kgs
     Battery - 1600 Kgs per 4 hours
+    stock - 6000 Kgs
     Division 16 hour stock - 55200 Kgs
 
     Food:
-    Battalion - 1800 Kgs per day
-    Squadron - 1800 Kgs per day
-    Battery - 600 Kgs per day
+    Battalion - 1800 Kgs per day - stock 5 days
+    Squadron - 1800 Kgs per day - stock 5 days
+    Battery - 600 Kgs per day - stock 5 days
     Division 5 days stock - 138000Kgs
 
     2 horse wagon - 1000 Kgs

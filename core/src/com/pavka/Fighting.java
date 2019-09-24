@@ -167,6 +167,8 @@ public class Fighting {
                 case ARTILLERY:
                     whiteBatteries++;
                     break;
+                case SUPPLY:
+                    whiteWagons++;
             }
         } else {
             blackFire += u.fire * hex.getFireFactor(u);
@@ -182,6 +184,8 @@ public class Fighting {
                 case ARTILLERY:
                     blackBatteries++;
                     break;
+                case SUPPLY:
+                    blackWagons++;
             }
         }
     }

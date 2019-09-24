@@ -163,7 +163,7 @@ public class Force extends Image {
     public String toString() {
         String type = "";
         if (isUnit) type += ", Type" + ((Unit) this).type;
-        return nation + ": " + strength + " mrl: " + ((int) (morale * 100) / 100.0) + " ftg: " + ((int)(fatigue * 100) / 100.0) +
+        return nation + ": " + strength + " mrl: " + ((int) (morale * 100) / 100.0) + " ftg: " + ((int) (fatigue * 100) / 100.0) +
                 " food: " + ((int) (foodStock * 100) / 100.0)
                 + " ammo: " + ((int) (ammoStock * 100) / 100.0) + type;
     }
@@ -373,14 +373,15 @@ public class Force extends Image {
             superForce.include(force);
         }
     }
+
     private void setMinSpeed() {
-        if(isUnit) speed = ((Unit)this).type.SPEED;
+        if (isUnit) speed = ((Unit) this).type.SPEED;
         else {
             for (int i = 0; i < UNITS_BY_SPEED.length; i++) {
                 System.out.println("I = " + i);
                 System.out.println("UNITS_BY_SPEED = " + UNITS_BY_SPEED[i]);
 
-                if(getUnits(UNITS_BY_SPEED[i]).size() > 0) {
+                if (getUnits(UNITS_BY_SPEED[i]).size() > 0) {
                     speed = UNITS_BY_SPEED[i].SPEED;
                     break;
                 }
@@ -463,20 +464,21 @@ public class Force extends Image {
         }
 
     }
-     public void fatigue(double f)
-     {
-         if(isUnit) ((Unit)this).changeFatigue(f);
-         else {
-             for(UnitType type: COMBAT_TYPES_BY_FOOD) {
-                 for(Unit u: getUnits(type)) {
-                     u.changeFatigue(f);
-                 }
-             }
-         }
-     }
-     public void rest() {
+
+    public void fatigue(double f) {
+        if (isUnit) ((Unit) this).changeFatigue(f);
+        else {
+            for (UnitType type : COMBAT_TYPES_BY_FOOD) {
+                for (Unit u : getUnits(type)) {
+                    u.changeFatigue(f);
+                }
+            }
+        }
+    }
+
+    public void rest() {
         fatigue(-FATIGUE_RECOVER);
-     }
+    }
 
     public double eat() {
 
@@ -488,8 +490,8 @@ public class Force extends Image {
             } else {
                 eatenFood = foodStock;
                 foodStock = 0;
-                ((Unit)this).changeFatigue(-FATIGUE_DROP * (foodStock / foodNeed - 1));
-                ((Unit)this).changeMorale(-OUT_OF_FOOD_PENALTY * (foodStock / foodNeed - 1), true);
+                ((Unit) this).changeFatigue(-FATIGUE_DROP * (foodStock / foodNeed - 1));
+                ((Unit) this).changeMorale(-OUT_OF_FOOD_PENALTY * (foodStock / foodNeed - 1), true);
             }
         } else {
             for (Force force : forces) {
@@ -502,8 +504,8 @@ public class Force extends Image {
                         foodStock -= force.foodStock;
                         eatenFood += force.foodStock;
                         force.foodStock = 0;
-                        ((Unit)force).changeFatigue(-FATIGUE_DROP * (force.foodStock / force.foodNeed - 1));
-                        ((Unit)force).changeMorale(-OUT_OF_FOOD_PENALTY * (force.foodStock / force.foodNeed - 1), true);
+                        ((Unit) force).changeFatigue(-FATIGUE_DROP * (force.foodStock / force.foodNeed - 1));
+                        ((Unit) force).changeMorale(-OUT_OF_FOOD_PENALTY * (force.foodStock / force.foodNeed - 1), true);
                     }
                 } else {
                     double f = force.eat();
@@ -579,7 +581,7 @@ public class Force extends Image {
                 }
                 attach(wagon);
             }
-        } else if (free >= ammoLimit - wagons.size() * Wagon.AMMO_LIMIT) {
+        } else if (free >= ammoLimit - wagons.size() * UnitType.SUPPLY.AMMO_LIMIT) {
 
             free -= loadAmmo(COMBAT_TYPES_BY_AMMO);
             free -= loadAmmoToWagons(free);
@@ -680,15 +682,15 @@ public class Force extends Image {
 
         } else {
             for (Wagon wagon : wagons) {
-                if (ammo <= Wagon.AMMO_LIMIT) {
+                if (ammo <= UnitType.SUPPLY.AMMO_LIMIT) {
                     wagon.ammoStock = ammo;
                     ammoStock += ammo;
                     ammo = 0;
                     break;
                 } else {
-                    wagon.ammoStock = Wagon.AMMO_LIMIT;
-                    ammoStock += Wagon.AMMO_LIMIT;
-                    ammo -= Wagon.AMMO_LIMIT;
+                    wagon.ammoStock = UnitType.SUPPLY.AMMO_LIMIT;
+                    ammoStock += UnitType.SUPPLY.AMMO_LIMIT;
+                    ammo -= UnitType.SUPPLY.AMMO_LIMIT;
                 }
             }
         }
@@ -874,15 +876,15 @@ public class Force extends Image {
             }
         }
         for (Wagon wagon : wagons) {
-            if (food <= Wagon.FOOD_LIMIT) {
+            if (food <= UnitType.SUPPLY.FOOD_LIMIT) {
                 wagon.foodStock = food;
                 foodStock += food;
                 food = 0;
                 break;
             } else {
-                wagon.foodStock = Wagon.FOOD_LIMIT;
-                foodStock += Wagon.FOOD_LIMIT;
-                food -= Wagon.FOOD_LIMIT;
+                wagon.foodStock = UnitType.SUPPLY.FOOD_LIMIT;
+                foodStock += UnitType.SUPPLY.FOOD_LIMIT;
+                food -= UnitType.SUPPLY.FOOD_LIMIT;
             }
         }
         return food;
@@ -971,10 +973,9 @@ public class Force extends Image {
 
             }
         }
-        if(hex != start) {
+        if (hex != start) {
             fatigue(FATIGUE_DROP);
-        }
-        else {
+        } else {
             rest();
         }
         order.mileStone.days = Path.getDaysToGo(order.pathsOrder, getForceSpeed());
@@ -991,7 +992,7 @@ public class Force extends Image {
         setHex(hex);
         setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
         //trace.add(hex);
-        if(backHex != hex) fatigue(-FATIGUE_DROP);
+        if (backHex != hex) fatigue(-FATIGUE_DROP);
     }
 
     public double forage() {
@@ -1100,11 +1101,15 @@ public class Force extends Image {
     }
 
     public double getForceSpeed() {
-        if (isUnit) return speed - ((Unit)this).type.LENGTH / 2;
+        if (isUnit) return speed - ((Unit) this).type.LENGTH / 2;
         double length = 0;
-        for(UnitType ut: UnitType.values()) {
-            for (Unit u: getUnits(ut)) {
-                length += ut.LENGTH * u.strength / ut.STRENGTH;
+        for (UnitType ut : UnitType.values()) {
+            if (getUnits(ut).size() > 0) {
+                for (Unit u : getUnits(ut)) {
+                    double k = ut.STRENGTH > 0? u.strength / ut.STRENGTH : 1;
+                    length += ut.LENGTH * k;
+                    System.out.println("LENGTH = " + length);
+                }
             }
         }
         return speed - length / 2;
@@ -1118,9 +1123,9 @@ public class Force extends Image {
             if (isUnit) {
                 casualties += ((Unit) this).bearLoss(ratio);
             } else {
-                int loss = (int)(ratio * strength);
+                int loss = (int) (ratio * strength);
                 System.out.println("LOST: " + loss);
-                while(loss > 0) {
+                while (loss > 0) {
                     Unit u = selectRandomUnit();
                     casualties += u.bearLoss(1.0 / u.strength);
                     loss--;

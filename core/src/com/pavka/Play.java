@@ -220,6 +220,7 @@ public class Play extends Stage implements Screen {
 
             a = new Base(this, Nation.AUSTRIA, hexGraph.getHex(28, 28));
             addActor(a);
+
         }
         if(keycode == Input.Keys.R) {
             b = new Base(this, Nation.FRANCE, hexGraph.getHex(2, 2));
