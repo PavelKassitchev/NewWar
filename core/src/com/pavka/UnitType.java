@@ -6,32 +6,32 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public enum UnitType {
-    SUPPLY(0, 0, 12, 0, 0, 50, 30, 0, 0, 0.4, 0),
-    INFANTRY(1, 900, 16, 2, 0.5, 12, 4, 1, 1, 0.2, 1),
-    CAVALRY(2, 180, 20, 1.1, 0.1, 7, 2.4, 0.1, 2.4, 0.16, 0.7),
-    ARTILLERY(3, 104, 12, 0.6, 1, 8, 5, 4, 0, 0.1, 1.1),
+    SUPPLY(0, 0, 12, 0, 0, 40, 25, 0, 0, 0.4, 0),
+    INFANTRY(1, 900, 16, 0.4, 0.4, 1.5, 1.5, 1, 1, 0.2, 1),
+    CAVALRY(2, 180, 20, 0.4, 0.06, 6.5, 0.45, 0.1, 2.4, 0.16, 0.7),
+    ARTILLERY(3, 104, 12, 0.12, 1.6, 3, 6.4, 4, 0, 0.1, 1.1),
     HEADQUARTERS(4, 0, 48, 0, 0, 0, 0, 0, 0, 0, 0);
 
     /*
     Ammo:
-    Battalion - 500 Kgs per 4 hours
+    Battalion - 500 Kgs per 4 hours; 400, stock 1500  0.5 and 4
     stock - 1600 Kgs
-    Squadron - 80 Kgs per 4 hours
+    Squadron - 80 Kgs per 4 hours; 60, stock 450   former 0.1 and 2.4
     stock - 400 Kgs
-    Battery - 1600 Kgs per 4 hours
+    Battery - 1600 Kgs per 4 hours; 1600, stock 6400 former 1 and 2.4
     stock - 6000 Kgs
-    Division 16 hour stock - 55200 Kgs
+    Division 16 hour stock - 55200 Kgs  4 hour consumption 11320
 
     Food:
-    Battalion - 1800 Kgs per day - stock 5 days
-    Squadron - 1800 Kgs per day - stock 5 days
-    Battery - 600 Kgs per day - stock 5 days
-    Division 5 days stock - 138000Kgs
+    Battalion - 1800 Kgs per day - stock 5 days  1600 : 4, stock 8000   former 2 and 12
+    Squadron - 1800 Kgs per day - stock 5 days   1600 : 4, stock 6500   former 1.1 and 7
+    Battery - 600 Kgs per day - stock 5 days 500 : 4, stock 3000  former 0.6 and 8
+    Division 5 days stock - 138000Kgs 1 day consumption 24400
 
     2 horse wagon - 1000 Kgs
     100 wagons length - 650 m
 
-    or maybe 65 wagon train of 400 m length
+    or maybe 65 wagon train of 400 m length stock  25000 + 40000?  former 50 and 30
      */
     UnitType(int num, int STRENGTH, double SPEED, double FOOD_NEED,
              double AMMO_NEED, double FOOD_LIMIT, double AMMO_LIMIT, double FIRE, double CHARGE, double LENGTH, double imprisoned) {

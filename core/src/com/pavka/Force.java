@@ -975,7 +975,7 @@ public class Force extends Image {
             }
         }
         if (hex != start) {
-            fatigue(FATIGUE_DROP);
+            fatigue(FATIGUE_DROP / 2);
         } else {
             rest();
         }
@@ -993,7 +993,7 @@ public class Force extends Image {
         setHex(hex);
         setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
         //trace.add(hex);
-        if (backHex != hex) fatigue(-FATIGUE_DROP);
+        if (backHex != hex) fatigue(FATIGUE_DROP / 2);
     }
 
     public double forage() {
