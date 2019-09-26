@@ -13,8 +13,8 @@ public class Unit extends Force {
     public static final double CHARGE_ON_CAVALRY = 0.75;
     public static final double LACK_OF_AMMO_PENALTY = - 0.1;
     public static final double OUT_OF_AMMO_PENALTY = - 0.3;
-    public static final double OUT_OF_FOOD_PENALTY = - 0.2;
-    public static final double MORALE_RESTORE = 0.1;
+    public static final double OUT_OF_FOOD_PENALTY = - 0.2 / 4;
+    public static final double MORALE_RESTORE = 0.1 / 4;
     public static final double FATIGUE_DROP = 0.05;
     public static final double FATIGUE_RECOVER = 0.03;
 

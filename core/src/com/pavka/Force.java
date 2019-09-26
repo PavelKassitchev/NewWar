@@ -102,7 +102,7 @@ public class Force extends Image {
     public void act(float delta) {
         super.act(delta);
         //This is for delays
-        if (message != null && message.turn == Play.turn) {
+        /*if (message != null && message.turn == Play.turn) {
             if (message instanceof Order) order = (Order) message;
         }
         //checkHunger();
@@ -129,8 +129,8 @@ public class Force extends Image {
                     " in Views: " + commander.receivedReports.size + " Element: " +
                     commander.receivedReports.get(0).force.name + " turn: " + commander.receivedReports.get(0).turn);
 
-        }
-
+        }*/
+        act1Day(true);
     }
 
     public Hex getBackHex() {
@@ -379,8 +379,6 @@ public class Force extends Image {
         if (isUnit) speed = ((Unit) this).type.SPEED;
         else {
             for (int i = 0; i < UNITS_BY_SPEED.length; i++) {
-                System.out.println("I = " + i);
-                System.out.println("UNITS_BY_SPEED = " + UNITS_BY_SPEED[i]);
 
                 if (getUnits(UNITS_BY_SPEED[i]).size() > 0) {
                     speed = UNITS_BY_SPEED[i].SPEED;
@@ -957,7 +955,7 @@ public class Force extends Image {
             }
             if (movePoints / movementCost >= 1) {
                 backHex = hex;
-                forage();
+                //forage();
                 hex.eliminate(this);
                 Hex newHex = order.pathsOrder.get(0).toHex;
                 //trace.add(newHex);
@@ -1109,7 +1107,6 @@ public class Force extends Image {
                 for (Unit u : getUnits(ut)) {
                     double k = ut.STRENGTH > 0? u.strength / ut.STRENGTH : 1;
                     length += ut.LENGTH * k;
-                    System.out.println("LENGTH = " + length);
                 }
             }
         }
@@ -1154,7 +1151,6 @@ public class Force extends Image {
                     for (Unit u : getUnits(type)) {
                         if (u.foodStock < u.foodNeed) {
                             u.changeMorale(-OUT_OF_FOOD_PENALTY * (u.foodStock / u.foodNeed - 1), true);
-                            System.out.println(-OUT_OF_FOOD_PENALTY * (u.foodStock / u.foodNeed - 1));
                         }
                     }
                 }
@@ -1220,6 +1216,46 @@ public class Force extends Image {
 
         }
         return null;
+    }
+
+    public int act1Day(boolean forcedMarch) {
+        int casualties = 0;
+        casualties += actMorning();
+        casualties += actMidday(forcedMarch);
+        casualties += actEvening();
+        casualties += actNight();
+        System.out.println("Force: " + this + ", casualties = " + casualties);
+        return casualties;
+    }
+
+    private int actMorning() {
+        int casualties = routine();
+        doOrders();
+        return casualties;
+    }
+    private int actMidday(boolean forcedMarch) {
+        int casualties = routine();
+        if(forcedMarch) doOrders();
+        else rest();
+        return casualties;
+    }
+    private int actEvening() {
+        int casualties = routine();
+        doOrders();
+        return casualties;
+    }
+    private int actNight() {
+        int casualties = routine();
+        rest();
+        return casualties;
+    }
+    private int routine() {
+        int casualties =0;
+        eat();
+        levelMorale();
+        forage();
+        casualties += suffer();
+        return casualties;
     }
 
 }
