@@ -783,7 +783,7 @@ public class Force extends Image {
             int min = 0;
             double need = foodNeed;
 
-            while (free / need > Unit.getFoodRatio(COMBAT_TYPES_BY_FOOD[min])) {
+            while ((min < COMBAT_TYPES_BY_FOOD.length) && (free / need > Unit.getFoodRatio(COMBAT_TYPES_BY_FOOD[min]))) {
                 for (Unit u : getUnits(COMBAT_TYPES_BY_FOOD[min])) {
                     need -= u.foodNeed;
                     //System.out.println();
