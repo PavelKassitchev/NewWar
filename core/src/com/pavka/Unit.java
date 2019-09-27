@@ -148,12 +148,31 @@ public class Unit extends Force {
         return s;
     }
 
-    public int bearLoss(int c) {
-        int s = 0;
+    public int bearLoss(int cas) {
         if(strength > 0) {
+            double ratio = (double)(cas) / strength;
+            double fS = foodStock * ratio;
+            double aS = ammoStock * ratio;
+            double fN = foodNeed * ratio;
+            double aN = ammoNeed * ratio;
+            double fL = foodLimit * ratio;
+            double aL = ammoLimit * ratio;
+            double f = fire * ratio;
+            double c = charge * ratio;
+            strength -= cas;
+            foodStock -= fS;
+            ammoStock -= aS;
+            foodNeed -= fN;
+            ammoNeed -= aN;
+            foodLimit -= fL;
+            ammoLimit -= aL;
+            fire -= f;
+            charge -= c;
 
+            if (isSub)
+                superForce.getReinforced(-cas, this.xp, this.morale, this.fatigue, -fS, -aS, -fN, -aN, -fL, -aL, -f, -c);
         }
-        return s;
+        return cas;
     }
 
     public void changeFatigue(double t){

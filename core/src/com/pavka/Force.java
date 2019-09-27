@@ -784,9 +784,9 @@ public class Force extends Image {
             double need = foodNeed;
 
             while (/*(min < COMBAT_TYPES_BY_FOOD.length) && */(free / need > Unit.getFoodRatio(COMBAT_TYPES_BY_FOOD[min]))) {
-                System.out.println("Food: " + foodStock + " Free: " + free + " Need: " + need + " Food need: " + foodNeed);
-                System.out.println("min = " +min + " " + COMBAT_TYPES_BY_FOOD[min] + Unit.getFoodRatio(COMBAT_TYPES_BY_FOOD[min]) +
-                        " " + "Current free/need ratio = " + free/need);
+                //System.out.println("Food: " + foodStock + " Free: " + free + " Need: " + need + " Food need: " + foodNeed);
+                //System.out.println("min = " +min + " " + COMBAT_TYPES_BY_FOOD[min] + Unit.getFoodRatio(COMBAT_TYPES_BY_FOOD[min]) +
+                        // + "Current free/need ratio = " + free/need);
                 for (Unit u : getUnits(COMBAT_TYPES_BY_FOOD[min])) {
                     need -= u.foodNeed;
                     //System.out.println();
@@ -794,7 +794,7 @@ public class Force extends Image {
                 free -= loadFood(COMBAT_TYPES_BY_FOOD[min++]);
             }
             double ratio = free / need;
-            System.out.println("min = " + min + " ratio = " + ratio + " free = " + free + " foodNeed = " + need);
+            //System.out.println("min = " + min + " ratio = " + ratio + " free = " + free + " foodNeed = " + need);
             for (int i = min; i < COMBAT_TYPES_BY_FOOD.length; i++) {
                 free -= loadFood(ratio, COMBAT_TYPES_BY_FOOD[i]);
             }
@@ -1125,7 +1125,7 @@ public class Force extends Image {
                 while (loss > 0) {
                     Unit u = selectRandomUnit();
                     System.out.println("SELECTED UNIT: " + u);
-                    casualties += u.bearLoss(1.0 / u.strength);
+                    casualties += u.bearLoss(1);
                     System.out.println("AFTER: " + u);
                     loss--;
                     System.out.println("IN CYCLE LOSS = " + loss + " CASUALTIES = " + casualties);
