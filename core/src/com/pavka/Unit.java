@@ -148,6 +148,14 @@ public class Unit extends Force {
         return s;
     }
 
+    public int bearLoss(int c) {
+        int s = 0;
+        if(strength > 0) {
+
+        }
+        return s;
+    }
+
     public void changeFatigue(double t){
         if(fatigue + t < 0) {
             t = -fatigue;

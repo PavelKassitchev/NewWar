@@ -567,7 +567,7 @@ public class Force extends Image {
 
             free -= loadAmmo(ALL_TYPES);
 
-            while (free > 0) {
+            while (free > SUPPLY.AMMO_LIMIT / 1000) {
                 Wagon wagon = new Wagon(nation, hex);
                 wagon.name = "Extra Wagon";
                 wagon.foodStock = 0;
@@ -761,7 +761,7 @@ public class Force extends Image {
         if (free > foodLimit) {
 
             free -= loadFood(ALL_TYPES);
-            while (free > 0) {
+            while (free > SUPPLY.FOOD_LIMIT / 1000) {
                 Wagon wagon = new Wagon(nation, hex);
                 wagon.name = "Extra Wagon";
                 wagon.ammoStock = 0;
@@ -783,7 +783,10 @@ public class Force extends Image {
             int min = 0;
             double need = foodNeed;
 
-            while ((min < COMBAT_TYPES_BY_FOOD.length) && (free / need > Unit.getFoodRatio(COMBAT_TYPES_BY_FOOD[min]))) {
+            while (/*(min < COMBAT_TYPES_BY_FOOD.length) && */(free / need > Unit.getFoodRatio(COMBAT_TYPES_BY_FOOD[min]))) {
+                System.out.println("Food: " + foodStock + " Free: " + free + " Need: " + need + " Food need: " + foodNeed);
+                System.out.println("min = " +min + " " + COMBAT_TYPES_BY_FOOD[min] + Unit.getFoodRatio(COMBAT_TYPES_BY_FOOD[min]) +
+                        " " + "Current free/need ratio = " + free/need);
                 for (Unit u : getUnits(COMBAT_TYPES_BY_FOOD[min])) {
                     need -= u.foodNeed;
                     //System.out.println();
@@ -1009,27 +1012,23 @@ public class Force extends Image {
         }
         food = hex.currentHarvest;
         hex.currentHarvest = 0;
-        System.out.println("Zero here!");
+
         space -= food;
         for (Hex h : hex.getNeighbours()) {
             if (space <= h.currentHarvest) {
                 h.currentHarvest -= space;
-                System.out.println("neighbour: " + h.currentHarvest);
-                System.out.println(h.col + " " + h.row);
                 food += space;
                 break;
             } else {
                 food += h.currentHarvest;
                 space -= h.currentHarvest;
-                System.out.println("Current Harvest = " + h.currentHarvest + " MAX:" + h.maxHarvest);
                 h.currentHarvest = 0;
-                System.out.println("ZERO = " + h.currentHarvest + " Max: " + h.maxHarvest);
             }
         }
         System.out.println("Current food stock: " + foodStock);
-        System.out.println("Food to distribute: " + food);
+        System.out.println("Foraged food to distribute: " + food);
         distributeFood(food);
-        System.out.println("Food after fouraging: " + foodStock);
+        System.out.println("Food after foraging: " + foodStock);
         return food;
     }
 
@@ -1125,12 +1124,16 @@ public class Force extends Image {
                 System.out.println("LOST: " + loss);
                 while (loss > 0) {
                     Unit u = selectRandomUnit();
+                    System.out.println("SELECTED UNIT: " + u);
                     casualties += u.bearLoss(1.0 / u.strength);
+                    System.out.println("AFTER: " + u);
                     loss--;
+                    System.out.println("IN CYCLE LOSS = " + loss + " CASUALTIES = " + casualties);
 
                 }
             }
         }
+        System.out.println("SUFFER: " + casualties);
         return casualties;
     }
 
@@ -1224,37 +1227,44 @@ public class Force extends Image {
         casualties += actMidday(forcedMarch);
         casualties += actEvening();
         casualties += actNight();
-        System.out.println("Force: " + this + ", casualties = " + casualties);
+        System.out.println("Force: " + this + ", 1 day casualties = " + casualties);
         return casualties;
     }
 
     private int actMorning() {
         int casualties = routine();
         doOrders();
+        System.out.println("Morning food: " + foodStock + " Morning strength: " + strength);
         return casualties;
     }
     private int actMidday(boolean forcedMarch) {
         int casualties = routine();
         if(forcedMarch) doOrders();
         else rest();
+        System.out.println("Midday food: " + foodStock + " Midday strength: " + strength);
         return casualties;
     }
     private int actEvening() {
         int casualties = routine();
         doOrders();
+        System.out.println("Evening food: " + foodStock + " Evening strength: " + strength);
         return casualties;
     }
     private int actNight() {
         int casualties = routine();
         rest();
+        System.out.println("Night food: " + foodStock + " Night strength: " + strength);
         return casualties;
     }
     private int routine() {
-        int casualties =0;
+        int casualties = 0;
         eat();
+        System.out.println("Food after eat() " + foodStock);
         levelMorale();
         forage();
-        casualties += suffer();
+        System.out.println("Food after forage() " + foodStock);
+        casualties = suffer();
+        System.out.println("In the forth Routine casualties: " + casualties);
         return casualties;
     }
 
