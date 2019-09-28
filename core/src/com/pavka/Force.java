@@ -588,7 +588,7 @@ public class Force extends Image {
             int min = 0;
             double need = ammoNeed;
 
-            while (free / need > Unit.getAmmoRatio(COMBAT_TYPES_BY_AMMO[min])) {
+            while (min < COMBAT_TYPES_BY_AMMO.length && free / need > Unit.getAmmoRatio(COMBAT_TYPES_BY_AMMO[min])) {
                 for (Unit u : getUnits(COMBAT_TYPES_BY_AMMO[min])) {
                     need -= u.ammoNeed;
                     //System.out.println();
@@ -783,7 +783,7 @@ public class Force extends Image {
             int min = 0;
             double need = foodNeed;
 
-            while (/*(min < COMBAT_TYPES_BY_FOOD.length) && */(free / need > Unit.getFoodRatio(COMBAT_TYPES_BY_FOOD[min]))) {
+            while (min < COMBAT_TYPES_BY_FOOD.length && free / need > Unit.getFoodRatio(COMBAT_TYPES_BY_FOOD[min])) {
                 //System.out.println("Food: " + foodStock + " Free: " + free + " Need: " + need + " Food need: " + foodNeed);
                 //System.out.println("min = " +min + " " + COMBAT_TYPES_BY_FOOD[min] + Unit.getFoodRatio(COMBAT_TYPES_BY_FOOD[min]) +
                         // + "Current free/need ratio = " + free/need);
