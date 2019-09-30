@@ -58,6 +58,9 @@ public class Test {
         Force artillery2 = new Force(new Battery(AUSTRIA, hex2), new Battery(AUSTRIA, hex2), new Battery(AUSTRIA, hex2), new Battery(AUSTRIA, hex2));
         artillery2.name = "Austrian Artillery";
         force2.attach(artillery2);
+        Force wagons = new Force(new Wagon(AUSTRIA, hex2), new Wagon(AUSTRIA, hex2), new Wagon(AUSTRIA, hex2));
+        wagons.name = "Supply Train";
+        force2.attach(wagons);
         force2.name = "Austrian Division";
         force2.order.seekBattle = true;
         force2.order.retreatLevel = 0.7;

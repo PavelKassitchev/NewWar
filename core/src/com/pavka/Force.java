@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +13,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.HashSet;
 
-import static com.pavka.Direction.*;
 import static com.pavka.Nation.FRANCE;
 import static com.pavka.Unit.*;
 import static com.pavka.UnitType.*;
@@ -544,7 +542,7 @@ public class Force extends Image {
         return units.get(index);
     }
 
-    public void throwWagons(double caught) {
+    public void getRidOfWagons(double caught) {
         List<Wagon> toThrow = new ArrayList<Wagon>(wagons);
         Random random = new Random();
 
@@ -554,8 +552,8 @@ public class Force extends Image {
         }
     }
 
-    public void throwWagons() {
-        throwWagons(0);
+    public void getRidOfWagons() {
+        getRidOfWagons(0);
     }
 
     //This method distributs all ammo of the force plus extra ammo (argument double ammo) between all the units and sub-forces

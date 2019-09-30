@@ -293,7 +293,11 @@ public class Play extends Stage implements Screen {
             System.out.println("White bases: " + whiteBases);
             for(Base base: blackBases) System.out.println(base);
         }
+        if(keycode == Input.Keys.Z) {
+            if(selectedForce != null) Test.list(selectedForce);
+        }
         return true;
+
     }
 
     @Override
