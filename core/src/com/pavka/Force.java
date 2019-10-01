@@ -128,7 +128,7 @@ public class Force extends Image {
                     commander.receivedReports.get(0).force.name + " turn: " + commander.receivedReports.get(0).turn);
 
         }*/
-        act1Day(true);
+        act1Day(false);
     }
 
     public Hex getBackHex() {

@@ -36,6 +36,9 @@ public class Test {
         Force artillery1 = new Force(new Battery(FRANCE, hex), new Battery(FRANCE, hex), new Battery(FRANCE, hex), new Battery(FRANCE, hex));
         artillery1.name = "Artillery Division";
         force1.attach(artillery1);
+        force1.attach(new Wagon(FRANCE, hex));
+        force1.attach(new Wagon(FRANCE, hex));
+        force1.attach(new Wagon(FRANCE, hex));
         force1.name = "French division";
         force1.order.seekBattle = true;
         force1.order.retreatLevel = 0.7;

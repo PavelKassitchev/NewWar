@@ -526,11 +526,17 @@ public class Fighting {
 
             for (Force force : hex.whiteForces) {
                 if (force.strength == 0) white.remove(force);
-                else whiteStrength += force.strength;
+                else {
+                    whiteStrength += force.strength;
+                    force.distributeAmmo(0);
+                }
             }
             for (Force force : hex.blackForces) {
                 if (force.strength == 0) black.remove(force);
-                else blackStrength += force.strength;
+                else {
+                    blackStrength += force.strength;
+                   force.distributeAmmo(0);
+                }
             }
 
             if (whiteUnits.isEmpty() && !blackUnits.isEmpty()) {

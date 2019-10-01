@@ -325,7 +325,8 @@ public class Play extends Stage implements Screen {
         if (start != finish) {
             graphPath = hexGraph.findPath(start, finish);
             Iterator<Hex> iterator = graphPath.iterator();
-            Hex sHex = iterator.next();
+            Hex sHex = null;
+            if(iterator.hasNext()) sHex = iterator.next();
             Hex eHex;
             while (iterator.hasNext()) {
                 eHex = iterator.next();
