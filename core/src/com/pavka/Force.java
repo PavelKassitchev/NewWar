@@ -388,9 +388,11 @@ public class Force extends Image {
 
     public void getReinforced(int s, double x, double m, double f, double fStock, double aStock,
                               double fNeed, double aNeed, double fLimit, double aLimit, double fi, double c) {
-        xp = (xp * strength + x * s) / (strength + s);
-        morale = (morale * strength + m * s) / (strength + s);
-        fatigue = (fatigue * strength + f * s) / (strength + s);
+        if (strength + s > 0) {
+            xp = (xp * strength + x * s) / (strength + s);
+            morale = (morale * strength + m * s) / (strength + s);
+            fatigue = (fatigue * strength + f * s) / (strength + s);
+        }
 
         strength += s;
         foodStock += fStock;
@@ -555,6 +557,40 @@ public class Force extends Image {
     public void getRidOfWagons() {
         getRidOfWagons(0);
     }
+    private double loadFoodToWagons() {
+        double load = 0;
+        if (isUnit && !isSub && (((Unit)this).type == SUPPLY)) {
+            load += (foodLimit - foodStock);
+            foodStock = foodLimit;
+        } else {
+            for (Wagon wagon : wagons) {
+                double l = (wagon.foodLimit - wagon.foodStock);
+                load += l;
+                wagon.foodStock = wagon.foodLimit;
+                wagon.superForce.getReinforced(0, 0 , 0, 0, l, 0,0, 0, 0, 0, 0, 0);
+            }
+        }
+
+        return load;
+
+    }
+
+    private double loadAmmoToWagons() {
+        double load = 0;
+        if (isUnit && !isSub && (((Unit)this).type == SUPPLY)) {
+            load += (ammoLimit - ammoStock);
+            ammoStock = ammoLimit;
+        } else {
+            for (Wagon wagon : wagons) {
+                double l = (wagon.ammoLimit - wagon.ammoStock);
+                load += l;
+                wagon.ammoStock = wagon.ammoLimit;
+                wagon.superForce.getReinforced(0, 0 , 0, 0, 0, l,0, 0, 0, 0, 0, 0);
+            }
+        }
+
+        return load;
+    }
 
     //This method distributs all ammo of the force plus extra ammo (argument double ammo) between all the units and sub-forces
     //Also below are auxillary methods
@@ -563,8 +599,8 @@ public class Force extends Image {
         double free = ammo + unloadAmmo();
         if (free > ammoLimit) {
 
-            free -= loadAmmo(ALL_TYPES);
-
+            free -= loadAmmo(COMBAT_TYPES_BY_AMMO);
+            free -= loadAmmoToWagons();
             while (free > SUPPLY.AMMO_LIMIT / 1000) {
                 Wagon wagon = new Wagon(nation, hex);
                 wagon.name = "Extra Wagon";
@@ -681,12 +717,14 @@ public class Force extends Image {
             for (Wagon wagon : wagons) {
                 if (ammo <= UnitType.SUPPLY.AMMO_LIMIT) {
                     wagon.ammoStock = ammo;
-                    ammoStock += ammo;
+                    //ammoStock += ammo;
+                    wagon.superForce.getReinforced(0, 0, 0, 0, 0, ammo, 0, 0, 0, 0, 0, 0);
                     ammo = 0;
                     break;
                 } else {
                     wagon.ammoStock = UnitType.SUPPLY.AMMO_LIMIT;
-                    ammoStock += UnitType.SUPPLY.AMMO_LIMIT;
+                    //ammoStock += UnitType.SUPPLY.AMMO_LIMIT;
+                    wagon.superForce.getReinforced(0, 0, 0, 0, 0, SUPPLY.AMMO_LIMIT, 0, 0, 0, 0, 0, 0);
                     ammo -= UnitType.SUPPLY.AMMO_LIMIT;
                 }
             }
@@ -758,7 +796,8 @@ public class Force extends Image {
 
         if (free > foodLimit) {
 
-            free -= loadFood(ALL_TYPES);
+            free -= loadFood(COMBAT_TYPES_BY_FOOD);
+            free -= loadFoodToWagons();
             while (free > SUPPLY.FOOD_LIMIT / 1000) {
                 Wagon wagon = new Wagon(nation, hex);
                 wagon.name = "Extra Wagon";
@@ -784,7 +823,7 @@ public class Force extends Image {
             while (min < COMBAT_TYPES_BY_FOOD.length && free / need > Unit.getFoodRatio(COMBAT_TYPES_BY_FOOD[min])) {
                 //System.out.println("Food: " + foodStock + " Free: " + free + " Need: " + need + " Food need: " + foodNeed);
                 //System.out.println("min = " +min + " " + COMBAT_TYPES_BY_FOOD[min] + Unit.getFoodRatio(COMBAT_TYPES_BY_FOOD[min]) +
-                        // + "Current free/need ratio = " + free/need);
+                // + "Current free/need ratio = " + free/need);
                 for (Unit u : getUnits(COMBAT_TYPES_BY_FOOD[min])) {
                     need -= u.foodNeed;
                     //System.out.println();
@@ -878,12 +917,14 @@ public class Force extends Image {
         for (Wagon wagon : wagons) {
             if (food <= UnitType.SUPPLY.FOOD_LIMIT) {
                 wagon.foodStock = food;
-                foodStock += food;
+                //foodStock += food;
+                wagon.superForce.getReinforced(0,0,0, 0, food, 0, 0, 0, 0, 0, 0, 0);
                 food = 0;
                 break;
             } else {
                 wagon.foodStock = UnitType.SUPPLY.FOOD_LIMIT;
-                foodStock += UnitType.SUPPLY.FOOD_LIMIT;
+                //foodStock += UnitType.SUPPLY.FOOD_LIMIT;
+                wagon.superForce.getReinforced(0, 0, 0, 0, SUPPLY.FOOD_LIMIT, 0, 0, 0, 0, 0, 0, 0);
                 food -= UnitType.SUPPLY.FOOD_LIMIT;
             }
         }
@@ -1102,7 +1143,7 @@ public class Force extends Image {
         for (UnitType ut : UnitType.values()) {
             if (getUnits(ut).size() > 0) {
                 for (Unit u : getUnits(ut)) {
-                    double k = ut.STRENGTH > 0? u.strength / ut.STRENGTH : 1;
+                    double k = ut.STRENGTH > 0 ? u.strength / ut.STRENGTH : 1;
                     length += ut.LENGTH * k;
                 }
             }
@@ -1235,25 +1276,29 @@ public class Force extends Image {
         System.out.println("Morning food: " + foodStock + " Morning strength: " + strength);
         return casualties;
     }
+
     private int actMidday(boolean forcedMarch) {
         int casualties = routine();
-        if(forcedMarch) doOrders();
+        if (forcedMarch) doOrders();
         else rest();
         System.out.println("Midday food: " + foodStock + " Midday strength: " + strength);
         return casualties;
     }
+
     private int actEvening() {
         int casualties = routine();
         doOrders();
         System.out.println("Evening food: " + foodStock + " Evening strength: " + strength);
         return casualties;
     }
+
     private int actNight() {
         int casualties = routine();
         rest();
         System.out.println("Night food: " + foodStock + " Night strength: " + strength);
         return casualties;
     }
+
     private int routine() {
         int casualties = 0;
         eat();
