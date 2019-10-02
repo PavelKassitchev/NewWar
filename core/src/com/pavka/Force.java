@@ -6,12 +6,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Array;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 import static com.pavka.Nation.FRANCE;
 import static com.pavka.Unit.*;
@@ -259,6 +256,32 @@ public class Force extends Image {
         this.play = play;
         if (!isUnit) {
             for (Force force : forces) force.setPlay(play);
+        }
+        if(nation == FRANCE) play.whiteTroops.add(this);
+        else play.blackTroops.add(this);
+    }
+
+    public void surrenderWagons(double probab) {
+        Random random = new Random();
+        if(isUnit){
+            if(((Unit)this).type == SUPPLY) {
+                if(random.nextDouble() < probab) ((Unit)this).changeNation();
+            }
+        }
+        else {
+            Iterator<Wagon> it = wagons.iterator();
+            Array<Wagon> surrenders = new Array<Wagon>();
+            Wagon w = null;
+            while(it.hasNext()) {
+                w = it.next();
+                if(random.nextDouble() < probab) {
+                    surrenders.add(w);
+                }
+            }
+            for(Wagon wagon: surrenders) {
+                wagon.superForce.detach(wagon);
+                wagon.changeNation();
+            }
         }
     }
 

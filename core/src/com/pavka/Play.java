@@ -195,7 +195,7 @@ public class Play extends Stage implements Screen {
             france.order.seekBattle = true;
             france.order.isForaging = 0.8;
             france.name = "France";
-            whiteTroops.add(france);
+            //whiteTroops.add(france);
             addActor(france);
         }
 
@@ -212,7 +212,7 @@ public class Play extends Stage implements Screen {
             austria.order.seekBattle = true;
             austria.order.isForaging = 0.8;
             austria.name = "Austria";
-            blackTroops.add(austria);
+            //blackTroops.add(austria);
             addActor(austria);
         }
 

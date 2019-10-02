@@ -1,6 +1,8 @@
 package com.pavka;
 
 
+import static com.pavka.Nation.AUSTRIA;
+import static com.pavka.Nation.FRANCE;
 
 public class Unit extends Force {
 
@@ -65,6 +67,20 @@ public class Unit extends Force {
     public Unit(Play play, Nation nation, Hex hex) {
         this(nation, hex);
         this.play = play;
+    }
+
+    public void changeNation() {
+
+        if(nation == FRANCE) {
+            play.whiteTroops.removeValue(this,true);
+            nation = AUSTRIA;
+            play.blackTroops.add(this);
+        }
+        else {
+            play.blackTroops.removeValue(this, true);
+            nation = FRANCE;
+            play.whiteTroops.add(this);
+        }
     }
 
     public static double getFoodRatio(UnitType type) {

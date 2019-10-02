@@ -535,7 +535,7 @@ public class Fighting {
                 if (force.strength == 0) black.remove(force);
                 else {
                     blackStrength += force.strength;
-                   force.distributeAmmo(0);
+                    force.distributeAmmo(0);
                 }
             }
 
@@ -714,6 +714,7 @@ public class Fighting {
 
         if (winner == 1) {
             for (Force f : blackRetreaters) {
+                f.surrenderWagons(1);
                 f.setRetreatDirection(white.keySet(), false);
                 f.retreat();
             }
@@ -725,13 +726,12 @@ public class Fighting {
         }
         if (winner == -1) {
             for (Force f : whiteRetreaters) {
+                f.surrenderWagons(1);
                 f.setRetreatDirection(black.keySet(), false);
                 f.retreat();
             }
             for (Unit u : whiteRouted) {
                 whiteImprisoned += pursuit(u);
-                System.out.println("White routed and pursuited: " + u.strength);
-                System.out.println("Before: " + whiteDisordered + " imprisoned: " + whiteImprisoned);
                 whiteDisordered += u.strength;
             }
             for (Unit u : blackRouted) blackDisordered += u.strength;
