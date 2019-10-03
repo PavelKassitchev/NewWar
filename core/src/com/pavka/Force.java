@@ -266,14 +266,11 @@ public class Force extends Image {
         if(isUnit){
             if(((Unit)this).type == SUPPLY) {
                 if(random.nextDouble() < probab) ((Unit)this).changeNation();
-            }
-        }
+            }}
+
         else {
-            Iterator<Wagon> it = wagons.iterator();
             Array<Wagon> surrenders = new Array<Wagon>();
-            Wagon w = null;
-            while(it.hasNext()) {
-                w = it.next();
+            for(Wagon w: wagons){
                 if(random.nextDouble() < probab) {
                     surrenders.add(w);
                 }
@@ -281,6 +278,32 @@ public class Force extends Image {
             for(Wagon wagon: surrenders) {
                 wagon.superForce.detach(wagon);
                 wagon.changeNation();
+            }
+        }
+    }
+
+    public void surrenderWagons(double probab, double burn) {
+        Random random = new Random();
+        if(isUnit){
+            if(((Unit)this).type == SUPPLY) {
+                if(random.nextDouble() < probab) ((Unit)this).changeNation();
+            }}
+
+        else {
+            Array<Wagon> surrenders = new Array<Wagon>();
+            for(Wagon w: wagons){
+                if(random.nextDouble() < probab) {
+                    surrenders.add(w);
+                }
+            }
+            for(Wagon wagon: surrenders) {
+                wagon.superForce.detach(wagon);
+                if(random.nextDouble() < burn) {
+                    wagon.disappear();
+                }
+                else {
+                    wagon.changeNation();
+                }
             }
         }
     }

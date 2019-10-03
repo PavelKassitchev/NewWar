@@ -1,4 +1,5 @@
 package com.pavka;
+
 import com.badlogic.gdx.utils.Array;
 
 import java.util.*;
@@ -6,6 +7,7 @@ import java.util.*;
 import static com.pavka.Nation.BLACK;
 import static com.pavka.Nation.WHITE;
 import static com.pavka.Unit.*;
+import static com.pavka.UnitType.SUPPLY;
 
 
 public class Fighting {
@@ -661,7 +663,7 @@ public class Fighting {
                     /*whiteImprisoned += pursuit(u);
                     whiteDisordered += u.strength;*/
 
-                    if(f != null) f.surrender();
+                    if (f != null) f.surrender();
                     white.remove(f);
 
                 }
@@ -682,7 +684,7 @@ public class Fighting {
                     /*blackImprisoned += pursuit(u);
                     blackDisordered += u.strength;*/
 
-                    if(f != null) f.surrender();
+                    if (f != null) f.surrender();
                     black.remove(f);
                 }
             }
@@ -714,7 +716,7 @@ public class Fighting {
 
         if (winner == 1) {
             for (Force f : blackRetreaters) {
-                f.surrenderWagons(1);
+                //f.surrenderWagons(1);
                 f.setRetreatDirection(white.keySet(), false);
                 f.retreat();
             }
@@ -726,7 +728,7 @@ public class Fighting {
         }
         if (winner == -1) {
             for (Force f : whiteRetreaters) {
-                f.surrenderWagons(1);
+                //f.surrenderWagons(1);
                 f.setRetreatDirection(black.keySet(), false);
                 f.retreat();
             }
@@ -758,21 +760,19 @@ public class Fighting {
                     unit.moveTo(hex);
                     if (unit.formerSuper != null) {
                         unit.formerSuper.attach(unit);
-                    }
-                    else {
+                    } else {
                         Force force = getRandomForce(WHITE);
                         force.attach(unit);
                     }
                     whiteDisordered -= unit.strength;
-                }
-                else{
+                } else {
                     Base base = Play.selectRandomBase(WHITE);
                     unit.order.setPathsOrder(unit.play.navigate(unit.hex, base.hex));
                     unit.order.mileStone = new MileStone(base.hex);
                     unit.order.mileStone.days = Path.getDaysToGo(unit.order.pathsOrder, unit.speed);
                 }
             }
-            for (Unit unit: blackRouted) {
+            for (Unit unit : blackRouted) {
                 Base base = Play.selectRandomBase(BLACK);
                 unit.order.setPathsOrder(unit.play.navigate(unit.hex, base.hex));
                 unit.order.mileStone = new MileStone(base.hex);
@@ -787,21 +787,19 @@ public class Fighting {
                     unit.moveTo(hex);
                     if (unit.formerSuper != null) {
                         unit.formerSuper.attach(unit);
-                    }
-                    else {
+                    } else {
                         Force force = getRandomForce(BLACK);
                         force.attach(unit);
                     }
                     blackDisordered -= unit.strength;
-                }
-                else{
+                } else {
                     Base base = Play.selectRandomBase(BLACK);
                     unit.order.setPathsOrder(unit.play.navigate(unit.hex, base.hex));
                     unit.order.mileStone = new MileStone(base.hex);
                     unit.order.mileStone.days = Path.getDaysToGo(unit.order.pathsOrder, unit.speed);
                 }
             }
-            for (Unit unit: whiteRouted) {
+            for (Unit unit : whiteRouted) {
                 Base base = Play.selectRandomBase(WHITE);
                 unit.order.setPathsOrder(unit.play.navigate(unit.hex, base.hex));
                 unit.order.mileStone = new MileStone(base.hex);
@@ -877,19 +875,30 @@ public class Fighting {
                         for (Unit u : force.batteries) {
                             units.add(u);
                         }
+                        for (Unit u : force.wagons) {
+                            units.add(u);
+                        }
                     }
                     for (Unit u : units) {
                         whiteUnits.remove(u);
-                        imprisoned += u.surrender();
+                        if (u.type == SUPPLY) {
+                            double b = (double) units.size / blackUnits.size();
+                            u.surrenderWagons(1, b);
+                        } else imprisoned += u.surrender();
                     }
                 } else {
                     //imprisoned = prisoners;
                     double ratio = (double) prisoners / force.strength;
-                    System.out.println("RATIO FOR RETREATERS: " + ratio);
+                    double b = (double) whiteUnits.size() / blackUnits.size();
+                    force.surrenderWagons(ratio * 30, b);
                     if (force.isUnit) {
-                        imprisoned += ((Unit) force).bearLoss(ratio);
-                        ((Unit) force).changeMorale(-MORALE_PURSUIT * ratio / 2);
-                        System.out.println("Morale DROP: " + (MORALE_PURSUIT * ratio / 2));
+                        if (((Unit) force).type == SUPPLY) {
+                            force.surrenderWagons(ratio, b);
+                        } else {
+                            imprisoned += ((Unit) force).bearLoss(ratio);
+                            ((Unit) force).changeMorale(-MORALE_PURSUIT * ratio / 2);
+                            System.out.println("Morale DROP: " + (MORALE_PURSUIT * ratio / 2));
+                        }
                     } else {
                         for (Unit u : force.battalions) {
                             imprisoned += u.bearLoss(ratio);
@@ -928,17 +937,29 @@ public class Fighting {
                         for (Unit u : force.batteries) {
                             units.add(u);
                         }
+                        for (Unit u : force.wagons) {
+                            units.add(u);
+                        }
                     }
                     for (Unit u : units) {
                         blackUnits.remove(u);
-                        imprisoned += u.surrender();
+                        if (u.type == SUPPLY) {
+                            double b = (double) units.size / whiteUnits.size();
+                            u.surrenderWagons(1, b);
+                        } else imprisoned += u.surrender();
                     }
                 } else {
                     //imprisoned = prisoners;
                     double ratio = (double) prisoners / force.strength;
+                    double b = (double) blackUnits.size() / whiteUnits.size();
+                    force.surrenderWagons(ratio * 30, b);
                     if (force.isUnit) {
-                        blackImprisoned += ((Unit) force).bearLoss(ratio);
-                        ((Unit) force).changeMorale(-MORALE_PURSUIT * ratio / 2);
+                        if (((Unit) force).type == SUPPLY) {
+                            force.surrenderWagons(ratio, b);
+                        } else {
+                            blackImprisoned += ((Unit) force).bearLoss(ratio);
+                            ((Unit) force).changeMorale(-MORALE_PURSUIT * ratio / 2);
+                        }
                     }
                     for (Unit u : force.battalions) {
                         imprisoned += u.bearLoss(ratio);
