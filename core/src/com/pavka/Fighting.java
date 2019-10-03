@@ -890,7 +890,8 @@ public class Fighting {
                     //imprisoned = prisoners;
                     double ratio = (double) prisoners / force.strength;
                     double b = (double) whiteUnits.size() / blackUnits.size();
-                    force.surrenderWagons(ratio * 30, b);
+                    System.out.println("RATIO FOR WAGONS: " + ratio + " BURN: " + b);
+                    force.surrenderWagons(ratio * 100, b);
                     if (force.isUnit) {
                         if (((Unit) force).type == SUPPLY) {
                             force.surrenderWagons(ratio, b);
@@ -952,7 +953,8 @@ public class Fighting {
                     //imprisoned = prisoners;
                     double ratio = (double) prisoners / force.strength;
                     double b = (double) blackUnits.size() / whiteUnits.size();
-                    force.surrenderWagons(ratio * 30, b);
+                    System.out.println("RATIO FOR WAGONS: " + ratio + " BURN: " + b);
+                    force.surrenderWagons(ratio * 100, b);
                     if (force.isUnit) {
                         if (((Unit) force).type == SUPPLY) {
                             force.surrenderWagons(ratio, b);
