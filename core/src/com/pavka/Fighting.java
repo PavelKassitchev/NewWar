@@ -312,6 +312,13 @@ public class Fighting {
             for (Force force : black.keySet()) blackRetreaters.add(force);
             isOver = true;
         }
+        if (onlyWagons()) {
+            for (Force force : white.keySet()) whiteRetreaters.add(force);
+            for (Force force : black.keySet()) blackRetreaters.add(force);
+            isOver = true;
+        }
+        if(onlyWhiteWagons() || onlyBlackWagons()) isOver = true;
+
         if (onlyWhiteBatteries()) {
             System.out.println("White Artillery retreats!");
             for (Force force : white.keySet()) whiteRetreaters.add(force);
@@ -1061,6 +1068,15 @@ public class Fighting {
 
     private boolean onlyBatteries() {
         return (whiteBatteries > 0 && whiteBattalions == 0 && whiteSquadrons == 0 && blackBatteries > 0 && blackBattalions == 0 && blackSquadrons == 0);
+    }
+    private boolean onlyWhiteWagons() {
+        return (whiteStrength == 0 && whiteWagons > 0);
+    }
+    private boolean onlyBlackWagons() {
+        return (blackStrength == 0 && blackWagons > 0);
+    }
+    private boolean onlyWagons() {
+        return onlyWhiteWagons() && onlyBlackWagons();
     }
 
     private int firing(Unit unit, double fire) {
