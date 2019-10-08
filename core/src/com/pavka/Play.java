@@ -69,6 +69,7 @@ public class Play extends Stage implements Screen {
     //TODO exclude this variables
 
     private Force austria;
+    private Force france;
     private Base a;
     private Base b;
 
@@ -189,7 +190,7 @@ public class Play extends Stage implements Screen {
             whiteTroops.add(force);
             addActor(force);*/
 
-            Force france = Test.force1;
+            france = Test.force1;
             france.setPlay(this);
             //france.hex = hexGraph.getHex(8, 4);
             france.order.seekBattle = true;
@@ -228,7 +229,12 @@ public class Play extends Stage implements Screen {
         }
         if(keycode == Input.Keys.P) {
 
-            Force train = a.sendSupplies(austria, 50, 50);
+            Force train = a.sendSupplies(austria, 250, 50);
+            //System.out.println(train.order.pathsOrder);
+        }
+        if(keycode == Input.Keys.L) {
+
+            Force train = b.sendSupplies(france, 250, 50);
             //System.out.println(train.order.pathsOrder);
         }
 
