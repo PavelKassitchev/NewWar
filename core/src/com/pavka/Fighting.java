@@ -120,15 +120,19 @@ public class Fighting {
                 else composition = whiteSquadrons / 4.0;
                 if (whiteBatteries > (whiteBattalions + whiteSquadrons))
                     screen = whiteBatteries - whiteBattalions - whiteSquadrons;
+                if (whiteBattalions + whiteSquadrons == 0) screen += whiteBatteries;
                 break;
             case BLACK:
                 if (blackSquadrons / 4.0 > blackBatteries) composition = blackBatteries;
                 else composition = blackSquadrons / 4.0;
                 if (blackBatteries > (blackBattalions + blackSquadrons))
                     screen = blackBatteries - blackBattalions - blackSquadrons;
+                if (blackBattalions + blackSquadrons == 0) screen += blackBatteries;
                 break;
         }
-        return composition * FIRE_COMPOSITION_BONUS - screen * NO_SCREEN_PENALTY;
+        double bonus = composition * FIRE_COMPOSITION_BONUS - screen * NO_SCREEN_PENALTY;
+        return bonus;
+
     }
 
     private void clear() {
@@ -246,6 +250,9 @@ public class Fighting {
                     for (Unit u : f.batteries) {
                         addUnitToFight(u);
                     }
+                    for (Unit u: f.wagons) {
+                        addUnitToFight(u);
+                    }
                 }
             }
         }
@@ -286,6 +293,9 @@ public class Fighting {
                     for (Unit u : f.batteries) {
                         addUnitToFight(u);
                     }
+                    for (Unit u: f.wagons) {
+                        addUnitToFight(u);
+                    }
                 }
             }
         }
@@ -307,9 +317,17 @@ public class Fighting {
         }
 
         if (onlyBatteries()) {
-            System.out.println("Artilleries retreat!");
-            for (Force force : white.keySet()) whiteRetreaters.add(force);
-            for (Force force : black.keySet()) blackRetreaters.add(force);
+            if (whiteStrength < blackStrength) {
+                for (Force force : white.keySet()) whiteRetreaters.add(force);
+                winner = -1;
+            } else if (whiteStrength > blackStrength) {
+                for (Force force : black.keySet()) blackRetreaters.add(force);
+                winner = 1;
+            }
+            else {
+                for (Force force : white.keySet()) whiteRetreaters.add(force);
+                for (Force force : black.keySet()) blackRetreaters.add(force);
+            }
             isOver = true;
         }
         if (onlyWagons()) {
@@ -317,9 +335,20 @@ public class Fighting {
             for (Force force : black.keySet()) blackRetreaters.add(force);
             isOver = true;
         }
-        if(onlyWhiteWagons() || onlyBlackWagons()) isOver = true;
+        if (onlyWhiteWagons() || onlyBlackWagons()) {
+            System.out.println("WAGONS ONLY!");
+            isOver = true;
+        }
+        if (onlyWhiteWagons()) {
+            System.out.println("WHITE WAGONS");
+            for (Force force : white.keySet()) whiteRetreaters.add(force);
+        }
+        if (onlyBlackWagons()) {
+            System.out.println("BLACK WAGONS");
+            for (Force force : black.keySet()) blackRetreaters.add(force);
+        }
 
-        if (onlyWhiteBatteries()) {
+        /*if (onlyWhiteBatteries()) {
             System.out.println("White Artillery retreats!");
             for (Force force : white.keySet()) whiteRetreaters.add(force);
             isOver = true;
@@ -330,7 +359,7 @@ public class Fighting {
             for (Force force : black.keySet()) blackRetreaters.add(force);
             isOver = true;
             winner = 1;
-        }
+        }*/
         System.out.println("INIT. NUMBER OF STAGE: " + stage);
         System.out.println();
         System.out.println("WHITE: current strength - " + whiteStrength + " killed - " + whiteCasualties + " imprisoned - " + whiteImprisoned);
@@ -357,9 +386,13 @@ public class Fighting {
 
             double circlingFactor = whiteDirectionBonus - blackDirectionBonus;
             //System.out.println("Circling: " + circlingFactor + " Stage: " + stage);
-            double fireOnBlack = FIRE_ON_UNIT * (whiteFire + getCompositionBonus(WHITE)) / blackStrength;
+            double wShoout = whiteFire + getCompositionBonus(WHITE);
+            if (wShoout < 0) wShoout = 0;
+            double fireOnBlack = FIRE_ON_UNIT * wShoout / blackStrength;
             //System.out.println("Fire on black " + fireOnBlack);
-            double fireOnWhite = FIRE_ON_UNIT * (blackFire + getCompositionBonus(BLACK)) / whiteStrength;
+            double bShoot = blackFire + getCompositionBonus(BLACK);
+            if (bShoot < 0) bShoot = 0;
+            double fireOnWhite = FIRE_ON_UNIT * bShoot / whiteStrength;
             //System.out.println("Fire on white " + fireOnWhite);
             double chargeOnBlack = -(CHARGE_ON_ENEMY * whiteCharge / blackStrength);
             //System.out.println("Charge on black " + chargeOnBlack);
@@ -1069,12 +1102,15 @@ public class Fighting {
     private boolean onlyBatteries() {
         return (whiteBatteries > 0 && whiteBattalions == 0 && whiteSquadrons == 0 && blackBatteries > 0 && blackBattalions == 0 && blackSquadrons == 0);
     }
+
     private boolean onlyWhiteWagons() {
         return (whiteStrength == 0 && whiteWagons > 0);
     }
+
     private boolean onlyBlackWagons() {
         return (blackStrength == 0 && blackWagons > 0);
     }
+
     private boolean onlyWagons() {
         return onlyWhiteWagons() && onlyBlackWagons();
     }

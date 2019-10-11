@@ -200,8 +200,8 @@ public class Unit extends Force {
     }
 
     public Unit changeMorale(double change) {
-        if (type == UnitType.CAVALRY) change *= CHARGE_ON_CAVALRY;
-        if (type == UnitType.ARTILLERY) change *= CHARGE_ON_ARTILLERY;
+        if (type == UnitType.CAVALRY && change < 0) change *= CHARGE_ON_CAVALRY;
+        if (type == UnitType.ARTILLERY && change < 0) change *= CHARGE_ON_ARTILLERY;
         morale += change;
         if (isSub) superForce.updateMorale(strength, change);
         return this;
