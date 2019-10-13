@@ -49,6 +49,8 @@ public class Fighting {
     HashSet<Unit> blackRouted;
     HashSet<Force> whiteRetreaters;
     HashSet<Force> blackRetreaters;
+    Force whiteTrophy;
+    Force blackTrophy;
 
     int whiteInitStrength;
     int blackInitStrength;
@@ -955,6 +957,7 @@ public class Fighting {
     private int pursuitRetreaters(Force force) {
         int imprisoned = 0;
         double pursuitCharge = 0;
+        Array<Unit> surrendedWagons = new Array<Unit>();
         if (force.nation.color == WHITE) {
 
             pursuitCharge = (blackCharge * force.strength / whiteStrength - force.charge) * (1 + blackDirectionBonus);
@@ -977,32 +980,22 @@ public class Fighting {
                         for (Unit u : force.batteries) {
                             units.add(u);
                         }
-                        for (Unit u : force.wagons) {
-                            units.add(u);
-                        }
+
                     }
                     for (Unit u : units) {
                         whiteUnits.remove(u);
-                        if (u.type == SUPPLY) {
-                            double b = (double) units.size / blackUnits.size();
-                            u.surrenderWagons(1, b);
-                        } else imprisoned += u.surrender();
+                        imprisoned += u.surrender();
                     }
                 } else {
                     //imprisoned = prisoners;
                     double ratio = (double) prisoners / force.strength;
-                    double b = (double) whiteUnits.size() / blackUnits.size();
-                    System.out.println("RATIO FOR WAGONS: " + ratio + " BURN: " + b);
-                    force.surrenderWagons(ratio * 100, b);
                     if (force.isUnit) {
-                        if (((Unit) force).type == SUPPLY) {
-                            force.surrenderWagons(ratio, b);
-                        } else {
+
                             imprisoned += ((Unit) force).bearLoss(ratio);
                             ((Unit) force).changeMorale(-MORALE_PURSUIT * ratio / 2);
                             System.out.println("Morale DROP: " + (MORALE_PURSUIT * ratio / 2));
-                        }
-                    } else {
+                    }
+                    else {
                         for (Unit u : force.battalions) {
                             imprisoned += u.bearLoss(ratio);
                             u.changeMorale(-MORALE_PURSUIT * ratio / 2);
@@ -1020,6 +1013,7 @@ public class Fighting {
 
                 }
             }
+
         }
         if (force.nation.color == BLACK) {
             pursuitCharge = (whiteCharge * force.strength / blackStrength - force.charge) * (1 + whiteDirectionBonus);
@@ -1041,30 +1035,19 @@ public class Fighting {
                         for (Unit u : force.batteries) {
                             units.add(u);
                         }
-                        for (Unit u : force.wagons) {
-                            units.add(u);
-                        }
                     }
                     for (Unit u : units) {
                         blackUnits.remove(u);
-                        if (u.type == SUPPLY) {
-                            double b = (double) units.size / whiteUnits.size();
-                            u.surrenderWagons(1, b);
-                        } else imprisoned += u.surrender();
+                       imprisoned += u.surrender();
                     }
-                } else {
+                }
+                else {
                     //imprisoned = prisoners;
                     double ratio = (double) prisoners / force.strength;
-                    double b = (double) blackUnits.size() / whiteUnits.size();
-                    System.out.println("RATIO FOR WAGONS: " + ratio + " BURN: " + b);
-                    force.surrenderWagons(ratio * 100, b);
                     if (force.isUnit) {
-                        if (((Unit) force).type == SUPPLY) {
-                            force.surrenderWagons(ratio, b);
-                        } else {
                             blackImprisoned += ((Unit) force).bearLoss(ratio);
                             ((Unit) force).changeMorale(-MORALE_PURSUIT * ratio / 2);
-                        }
+
                     }
                     for (Unit u : force.battalions) {
                         imprisoned += u.bearLoss(ratio);
