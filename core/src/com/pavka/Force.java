@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Array;
 
 import java.util.*;
 
+import static com.pavka.Nation.AUSTRIA;
 import static com.pavka.Nation.FRANCE;
 import static com.pavka.Unit.*;
 import static com.pavka.UnitType.*;
@@ -257,55 +258,65 @@ public class Force extends Image {
         if (!isUnit) {
             for (Force force : forces) force.setPlay(play);
         }
-        if(nation == FRANCE) play.whiteTroops.add(this);
+        if (nation == FRANCE) play.whiteTroops.add(this);
         else play.blackTroops.add(this);
     }
 
-    public void surrenderWagons(double probab) {
+    public Array<Unit> surrenderWagons(double probab) {
+        Array<Unit> surrendedWagons = new Array<Unit>();
         Random random = new Random();
-        if(isUnit){
-            if(((Unit)this).type == SUPPLY) {
-                if(random.nextDouble() < probab) ((Unit)this).changeNation();
-            }}
-
-        else {
-            Array<Wagon> surrenders = new Array<Wagon>();
-            for(Wagon w: wagons){
-                if(random.nextDouble() < probab) {
-                    surrenders.add(w);
+        if (isUnit) {
+            if (((Unit) this).type == SUPPLY) {
+                if (random.nextDouble() < probab) {
+                    surrendedWagons.add((Unit)this);
                 }
             }
-            for(Wagon wagon: surrenders) {
-                wagon.superForce.detach(wagon);
+        }
+        else {
+            for (Wagon w : wagons) {
+                if (random.nextDouble() < probab) {
+                    surrendedWagons.add(w);
+                }
+            }
+            for (Unit wagon : surrendedWagons) {
+                if (wagon.isSub) wagon.superForce.detach(wagon);
                 wagon.changeNation();
             }
         }
+        return surrendedWagons;
     }
 
-    public void surrenderWagons(double probab, double burn) {
+    public Array<Unit> surrenderWagons(double probab, double burn) {
+        Array<Unit> surrendedWagons = new Array<Unit>();
         Random random = new Random();
-        if(isUnit){
-            if(((Unit)this).type == SUPPLY) {
-                if(random.nextDouble() < probab) ((Unit)this).changeNation();
-            }}
-
-        else {
-            Array<Wagon> surrenders = new Array<Wagon>();
-            for(Wagon w: wagons){
-                if(random.nextDouble() < probab) {
-                    surrenders.add(w);
+        if (isUnit) {
+            if (((Unit) this).type == SUPPLY) {
+                if (random.nextDouble() < probab) {
+                    surrendedWagons.add((Unit)this);
                 }
             }
-            for(Wagon wagon: surrenders) {
-                wagon.superForce.detach(wagon);
-                if(random.nextDouble() < burn) {
-                    wagon.disappear();
+        } else {
+            for (Wagon w : wagons) {
+                if (random.nextDouble() < probab) {
+                    surrendedWagons.add(w);
+                }
+            }
+            Array<Unit> burnedWagons = new Array<Unit>();
+            for (Unit wagon : surrendedWagons) {
+                if(wagon.isSub) wagon.superForce.detach(wagon);
+                if (random.nextDouble() < burn) {
+                    burnedWagons.add(wagon);
                 }
                 else {
                     wagon.changeNation();
                 }
+                for (Unit w: burnedWagons) {
+                    surrendedWagons.removeValue(w, true);
+                    w.disappear();;
+                }
             }
         }
+        return surrendedWagons;
     }
 
     public Force attach(Force force) {
@@ -313,6 +324,7 @@ public class Force extends Image {
         hex.eliminate(force);
         force.isSub = true;
         force.superForce = this;
+        force.order = new Order();
         forces.add(force);
         include(force);
         if (play != null) {
@@ -565,9 +577,12 @@ public class Force extends Image {
     //this methods shows morale change dependency on inside Unit morale change
 
     public void updateMorale(int strength, double change) {
-        double sChange = change * strength / this.strength;
-        morale += sChange;
-        if (isSub) superForce.updateMorale(this.strength, sChange);
+        double sChange;
+        if (strength > 0) {
+            sChange = change * strength / this.strength;
+            morale += sChange;
+            if (isSub) superForce.updateMorale(this.strength, sChange);
+        }
     }
 
     public double doFire(double stockDrop, double fireDrop) {
@@ -603,9 +618,10 @@ public class Force extends Image {
     public void getRidOfWagons() {
         getRidOfWagons(0);
     }
+
     private double loadFoodToWagons() {
         double load = 0;
-        if (isUnit && !isSub && (((Unit)this).type == SUPPLY)) {
+        if (isUnit && !isSub && (((Unit) this).type == SUPPLY)) {
             load += (foodLimit - foodStock);
             foodStock = foodLimit;
         } else {
@@ -613,7 +629,7 @@ public class Force extends Image {
                 double l = (wagon.foodLimit - wagon.foodStock);
                 load += l;
                 wagon.foodStock = wagon.foodLimit;
-                wagon.superForce.getReinforced(0, 0 , 0, 0, l, 0,0, 0, 0, 0, 0, 0);
+                wagon.superForce.getReinforced(0, 0, 0, 0, l, 0, 0, 0, 0, 0, 0, 0);
             }
         }
 
@@ -623,7 +639,7 @@ public class Force extends Image {
 
     private double loadAmmoToWagons() {
         double load = 0;
-        if (isUnit && !isSub && (((Unit)this).type == SUPPLY)) {
+        if (isUnit && !isSub && (((Unit) this).type == SUPPLY)) {
             load += (ammoLimit - ammoStock);
             ammoStock = ammoLimit;
         } else {
@@ -631,7 +647,7 @@ public class Force extends Image {
                 double l = (wagon.ammoLimit - wagon.ammoStock);
                 load += l;
                 wagon.ammoStock = wagon.ammoLimit;
-                wagon.superForce.getReinforced(0, 0 , 0, 0, 0, l,0, 0, 0, 0, 0, 0);
+                wagon.superForce.getReinforced(0, 0, 0, 0, 0, l, 0, 0, 0, 0, 0, 0);
             }
         }
 
@@ -964,7 +980,7 @@ public class Force extends Image {
             if (food <= UnitType.SUPPLY.FOOD_LIMIT) {
                 wagon.foodStock = food;
                 //foodStock += food;
-                wagon.superForce.getReinforced(0,0,0, 0, food, 0, 0, 0, 0, 0, 0, 0);
+                wagon.superForce.getReinforced(0, 0, 0, 0, food, 0, 0, 0, 0, 0, 0, 0);
                 food = 0;
                 break;
             } else {
@@ -1110,10 +1126,10 @@ public class Force extends Image {
                 h.currentHarvest = 0;
             }
         }
-        System.out.println("Current food stock: " + foodStock);
-        System.out.println("Foraged food to distribute: " + food);
+        //System.out.println("Current food stock: " + foodStock);
+        //System.out.println("Foraged food to distribute: " + food);
         distributeFood(food);
-        System.out.println("Food after foraging: " + foodStock);
+        //System.out.println("Food after foraging: " + foodStock);
         return food;
     }
 
@@ -1194,7 +1210,9 @@ public class Force extends Image {
                 }
             }
         }
-        return speed - length / 2;
+        double forceSpeed = speed - length / 2;
+        if(forceSpeed < Hex.SIZE / 3) forceSpeed = Hex.SIZE / 3;
+        return forceSpeed;
     }
 
     public int suffer() {
@@ -1218,7 +1236,7 @@ public class Force extends Image {
                 }
             }
         }
-        System.out.println("SUFFER: " + casualties);
+        //System.out.println("SUFFER: " + casualties);
         return casualties;
     }
 
@@ -1312,14 +1330,14 @@ public class Force extends Image {
         casualties += actMidday(forcedMarch);
         casualties += actEvening();
         casualties += actNight();
-        System.out.println("Force: " + this + ", 1 day casualties = " + casualties);
+        //System.out.println("Force: " + this + ", 1 day casualties = " + casualties);
         return casualties;
     }
 
     private int actMorning() {
         int casualties = routine();
         doOrders();
-        System.out.println("Morning food: " + foodStock + " Morning strength: " + strength);
+        //System.out.println("Morning food: " + foodStock + " Morning strength: " + strength);
         return casualties;
     }
 
@@ -1327,33 +1345,33 @@ public class Force extends Image {
         int casualties = routine();
         if (forcedMarch) doOrders();
         else rest();
-        System.out.println("Midday food: " + foodStock + " Midday strength: " + strength);
+        //System.out.println("Midday food: " + foodStock + " Midday strength: " + strength);
         return casualties;
     }
 
     private int actEvening() {
         int casualties = routine();
         doOrders();
-        System.out.println("Evening food: " + foodStock + " Evening strength: " + strength);
+        //System.out.println("Evening food: " + foodStock + " Evening strength: " + strength);
         return casualties;
     }
 
     private int actNight() {
         int casualties = routine();
         rest();
-        System.out.println("Night food: " + foodStock + " Night strength: " + strength);
+        //System.out.println("Night food: " + foodStock + " Night strength: " + strength);
         return casualties;
     }
 
     private int routine() {
         int casualties = 0;
         eat();
-        System.out.println("Food after eat() " + foodStock);
+        //System.out.println("Food after eat() " + foodStock);
         levelMorale();
         forage();
-        System.out.println("Food after forage() " + foodStock);
+        //System.out.println("Food after forage() " + foodStock);
         casualties = suffer();
-        System.out.println("In the forth Routine casualties: " + casualties);
+        //System.out.println("In the forth Routine casualties: " + casualties);
         return casualties;
     }
 

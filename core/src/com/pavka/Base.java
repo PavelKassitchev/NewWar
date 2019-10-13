@@ -20,6 +20,7 @@ public class Base extends Image implements Supplier {
     double ammoStock;
     Play play;
     boolean isSelected;
+    int num;
 
     public Texture textureFrance = new Texture("symbols/CavBlueDivision.png");
     public Texture textureAustria = new Texture("symbols/CavRedDivision.png");
@@ -55,6 +56,7 @@ public class Base extends Image implements Supplier {
     @Override
     public Force sendSupplies(Force force, double food, double ammo) {
         Force train = createTrain(food, ammo);
+        train.name = "Train " + nation + " " + ++num;
         train.order.target = new Target(force, Target.JOIN);
         return train;
     }

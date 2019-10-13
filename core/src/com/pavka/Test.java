@@ -74,8 +74,8 @@ public class Test {
         Force france = createForce(FRANCE,12, 2, 4);
         Force austria = createForce(AUSTRIA, 12, 2, 4);
         //Force austria = new Squadron(AUSTRIA, hex);
-        france.order = new Order(true, 0.4, 0);
-        austria.order = new Order(true, 0.4, 0);
+        france.order = new Order(true, 0.7, 0);
+        austria.order = new Order(true, 0.7, 0);
         //Force f = new Force(new Battalion(FRANCE, hex), new Battalion(FRANCE, hex));
         //Force w = new Wagon(FRANCE, hex);
         //france.attach(f);
@@ -119,9 +119,9 @@ public class Test {
         /*Battle battle = new Battle(force1, force2);
         battle.resolve();
         getStat(force1, force2);*/
-        //getStat(france, austria);
+        getStat(france, austria);
         //UnitType.combatByAmmo();
-        System.out.println(Unit.UNITS_BY_SPEED[0]);
+        //System.out.println(Unit.UNITS_BY_SPEED[0]);
     }
 
     public static void getStat(Force attacker, Force defender) {

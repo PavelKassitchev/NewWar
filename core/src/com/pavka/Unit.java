@@ -69,18 +69,23 @@ public class Unit extends Force {
         this.play = play;
     }
 
-    public void changeNation() {
+    public Unit changeNation() {
 
         if(nation == FRANCE) {
             play.whiteTroops.removeValue(this,true);
+            hex.whiteForces.removeValue(this, true);
             nation = AUSTRIA;
             play.blackTroops.add(this);
+            hex.blackForces.add(this);
         }
         else {
             play.blackTroops.removeValue(this, true);
+            hex.blackForces.removeValue(this, true);
             nation = FRANCE;
             play.whiteTroops.add(this);
+            hex.whiteForces.add(this);
         }
+        return this;
     }
 
     public static double getFoodRatio(UnitType type) {

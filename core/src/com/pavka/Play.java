@@ -229,12 +229,12 @@ public class Play extends Stage implements Screen {
         }
         if(keycode == Input.Keys.P) {
 
-            Force train = a.sendSupplies(austria, 250, 50);
+            a.sendSupplies(austria, 250, 50);
             //System.out.println(train.order.pathsOrder);
         }
         if(keycode == Input.Keys.L) {
 
-            Force train = b.sendSupplies(france, 250, 50);
+            b.sendSupplies(france, 250, 50);
             //System.out.println(train.order.pathsOrder);
         }
 
@@ -280,9 +280,9 @@ public class Play extends Stage implements Screen {
         if (keycode == Input.Keys.S) {
             Test.main(null);
         }
-        if (keycode == Input.Keys.L) {
+        /*if (keycode == Input.Keys.L) {
             LogisticTest.main(null);
-        }
+        }*/
 
         if (keycode == Input.Keys.M) {
             newMode = !newMode;

@@ -4,8 +4,7 @@ import com.badlogic.gdx.utils.Array;
 
 import java.util.*;
 
-import static com.pavka.Nation.BLACK;
-import static com.pavka.Nation.WHITE;
+import static com.pavka.Nation.*;
 import static com.pavka.Unit.*;
 import static com.pavka.UnitType.SUPPLY;
 
@@ -84,6 +83,10 @@ public class Fighting {
     boolean isOver;
     boolean whiteLosing;
     boolean blackLosing;
+    int whiteLostWagons;
+    int whiteSurrendedWagond;
+    int blackLostWagons;
+    int blackSurrendedWagons;
 
     public Fighting(Hex h) {
         hex = h;
@@ -120,14 +123,14 @@ public class Fighting {
                 else composition = whiteSquadrons / 4.0;
                 if (whiteBatteries > (whiteBattalions + whiteSquadrons))
                     screen = whiteBatteries - whiteBattalions - whiteSquadrons;
-                if (whiteBattalions + whiteSquadrons == 0) screen += whiteBatteries;
+                if (whiteBattalions + whiteSquadrons == 0) screen += whiteBatteries / 2;
                 break;
             case BLACK:
                 if (blackSquadrons / 4.0 > blackBatteries) composition = blackBatteries;
                 else composition = blackSquadrons / 4.0;
                 if (blackBatteries > (blackBattalions + blackSquadrons))
                     screen = blackBatteries - blackBattalions - blackSquadrons;
-                if (blackBattalions + blackSquadrons == 0) screen += blackBatteries;
+                if (blackBattalions + blackSquadrons == 0) screen += blackBatteries / 2;
                 break;
         }
         double bonus = composition * FIRE_COMPOSITION_BONUS - screen * NO_SCREEN_PENALTY;
@@ -162,15 +165,18 @@ public class Fighting {
         if (u.nation.color == WHITE) {
             whiteFire += u.fire * hex.getFireFactor(u);
             whiteCharge += u.charge * hex.getChargeFactor(u);
-            whiteUnits.add(u);
+            //whiteUnits.add(u);
             switch (u.type) {
                 case INFANTRY:
+                    whiteUnits.add(u);
                     whiteBattalions++;
                     break;
                 case CAVALRY:
+                    whiteUnits.add(u);
                     whiteSquadrons++;
                     break;
                 case ARTILLERY:
+                    whiteUnits.add(u);
                     whiteBatteries++;
                     break;
                 case SUPPLY:
@@ -179,15 +185,18 @@ public class Fighting {
         } else {
             blackFire += u.fire * hex.getFireFactor(u);
             blackCharge += u.charge * hex.getChargeFactor(u);
-            blackUnits.add(u);
+            //blackUnits.add(u);
             switch (u.type) {
                 case INFANTRY:
+                    blackUnits.add(u);
                     blackBattalions++;
                     break;
                 case CAVALRY:
+                    blackUnits.add(u);
                     blackSquadrons++;
                     break;
                 case ARTILLERY:
+                    blackUnits.add(u);
                     blackBatteries++;
                     break;
                 case SUPPLY:
@@ -250,7 +259,7 @@ public class Fighting {
                     for (Unit u : f.batteries) {
                         addUnitToFight(u);
                     }
-                    for (Unit u: f.wagons) {
+                    for (Unit u : f.wagons) {
                         addUnitToFight(u);
                     }
                 }
@@ -293,7 +302,7 @@ public class Fighting {
                     for (Unit u : f.batteries) {
                         addUnitToFight(u);
                     }
-                    for (Unit u: f.wagons) {
+                    for (Unit u : f.wagons) {
                         addUnitToFight(u);
                     }
                 }
@@ -318,34 +327,75 @@ public class Fighting {
 
         if (onlyBatteries()) {
             if (whiteStrength < blackStrength) {
-                for (Force force : white.keySet()) whiteRetreaters.add(force);
+                for (Force force : white.keySet()) {
+                    whiteRetreaters.add(force);
+                    //white.remove(force);
+                }
                 winner = -1;
             } else if (whiteStrength > blackStrength) {
-                for (Force force : black.keySet()) blackRetreaters.add(force);
+                for (Force force : black.keySet()) {
+                    blackRetreaters.add(force);
+                    //black.remove(force);
+                }
                 winner = 1;
-            }
-            else {
-                for (Force force : white.keySet()) whiteRetreaters.add(force);
-                for (Force force : black.keySet()) blackRetreaters.add(force);
+            } else {
+                for (Force force : white.keySet()) {
+                    whiteRetreaters.add(force);
+                    //white.remove(force);
+                }
+                for (Force force : black.keySet()) {
+                    blackRetreaters.add(force);
+                    //black.remove(force);
+                }
             }
             isOver = true;
         }
         if (onlyWagons()) {
-            for (Force force : white.keySet()) whiteRetreaters.add(force);
-            for (Force force : black.keySet()) blackRetreaters.add(force);
+            for (Force force : white.keySet()) {
+                whiteRetreaters.add(force);
+                //white.remove(force);
+            }
+
+            for (Force force : black.keySet()) {
+                blackRetreaters.add(force);
+            }
+
             isOver = true;
         }
-        if (onlyWhiteWagons() || onlyBlackWagons()) {
+        else if (onlyWhiteWagons() || onlyBlackWagons()) {
             System.out.println("WAGONS ONLY!");
             isOver = true;
-        }
-        if (onlyWhiteWagons()) {
-            System.out.println("WHITE WAGONS");
-            for (Force force : white.keySet()) whiteRetreaters.add(force);
-        }
-        if (onlyBlackWagons()) {
-            System.out.println("BLACK WAGONS");
-            for (Force force : black.keySet()) blackRetreaters.add(force);
+            /*Array<Unit> surrendedWagons = new Array<Unit>();
+            if (onlyWhiteWagons()) {
+                System.out.println("WHITE WAGONS");
+                for (Force force : white.keySet()) {
+                    whiteRetreaters.add(force);
+                    surrendedWagons.addAll(force.surrenderWagons(3.0 * blackUnits.size() / whiteWagons));
+                    //white.remove(force);
+                }
+            }
+            if (onlyBlackWagons()) {
+                System.out.println("BLACK WAGONS");
+                for (Force force : black.keySet()) {
+                    blackRetreaters.add(force);
+                    force.surrenderWagons(3.0 * whiteUnits.size() / blackWagons);
+                    surrendedWagons.addAll(force.surrenderWagons(3.0 * blackUnits.size() / whiteWagons));
+                    //black.remove(force);
+                }
+            }
+
+            if (surrendedWagons.size > 0) {
+                Play play = surrendedWagons.get(0).play;
+                Nation nation = surrendedWagons.get(0).nation;
+                Force force = new Force(nation, hex);
+                force.setPlay(play);
+                play.addActor(force);
+                force.name = "Trophy Train";
+                for (Unit wagon : surrendedWagons) {
+                    System.out.println("ATTACHING A WAGON...");
+                    force.attach(wagon);
+                }
+            }*/
         }
 
         /*if (onlyWhiteBatteries()) {
@@ -376,6 +426,7 @@ public class Fighting {
     }
 
     public void fight() {
+        if (isOver) System.out.println("The battle is over!");
 
         if (!isOver) {
             int w = 0;
@@ -637,6 +688,7 @@ public class Fighting {
                     white.remove(force);
                     whiteImprisoned += pursuitRetreaters(force);
                     System.out.println("White retreaters imprisoned: " + whiteImprisoned);
+                    System.out.println("White wagons caught: " + whiteSurrendedWagond);
                 }
             }
             if (whiteToRetreat.size() != white.size() && blackToRetreat.size() == black.size()) {
@@ -644,6 +696,8 @@ public class Fighting {
                     blackRetreaters.add(force);
                     black.remove(force);
                     blackImprisoned += pursuitRetreaters(force);
+                    System.out.println("Blackretreaters imprisoned: " + blackImprisoned);
+                    System.out.println("Black wagons caught: " + blackSurrendedWagons);
                 }
             }
             if (whiteToRetreat.size() == white.size() && blackToRetreat.size() == black.size()) {
@@ -659,20 +713,21 @@ public class Fighting {
                     blackMorale += force.morale * force.strength;
                     blacks += force.strength;
                 }
-                if (whiteMorale / whites > blackMorale / blacks) {
+                if (whiteMorale / whites >= blackMorale / blacks) {
                     for (Force force : blackToRetreat) {
                         blackRetreaters.add(force);
                         black.remove(force);
                         blackImprisoned += pursuitRetreaters(force);
                     }
                 }
-                if (whiteMorale / whites < blackMorale / blacks) {
+                else if (whiteMorale / whites < blackMorale / blacks) {
                     for (Force force : whiteToRetreat) {
                         whiteRetreaters.add(force);
                         white.remove(force);
                         whiteImprisoned += pursuitRetreaters(force);
                     }
                 }
+
             }
 
             if (white.isEmpty() && !black.isEmpty()) {
@@ -759,6 +814,7 @@ public class Fighting {
                 //f.surrenderWagons(1);
                 f.setRetreatDirection(white.keySet(), false);
                 f.retreat();
+                if (f.strength == 0 && f.forces.isEmpty()) f.disappear();
             }
             for (Unit u : blackRouted) {
                 blackImprisoned += pursuit(u);
@@ -771,6 +827,7 @@ public class Fighting {
                 //f.surrenderWagons(1);
                 f.setRetreatDirection(black.keySet(), false);
                 f.retreat();
+                if (f.strength == 0 && f.forces.isEmpty()) f.disappear();
             }
             for (Unit u : whiteRouted) {
                 whiteImprisoned += pursuit(u);
@@ -793,9 +850,10 @@ public class Fighting {
 
     public void obtainVictoryBonus() {
         if (winner == 1) {
-            for (Unit unit : whiteUnits) unit.changeMorale(VICTORY_BONUS);
+            double bonusFactor = 0.1 + (0.9 * blackInitStrength) / whiteInitStrength;
+            for (Unit unit : whiteUnits) unit.changeMorale(VICTORY_BONUS * bonusFactor);
             for (Unit unit : whiteRouted) {
-                unit.changeMorale(SMALL_VICTORY_BONUS);
+                unit.changeMorale(SMALL_VICTORY_BONUS * bonusFactor);
                 if (unit.morale >= 0) {
                     unit.moveTo(hex);
                     if (unit.formerSuper != null) {
@@ -818,11 +876,13 @@ public class Fighting {
                 unit.order.mileStone = new MileStone(base.hex);
                 unit.order.mileStone.days = Path.getDaysToGo(unit.order.pathsOrder, unit.speed);
             }
+
         }
         if (winner == -1) {
-            for (Unit unit : blackUnits) unit.changeMorale(VICTORY_BONUS);
+            double bonusFactor = 0.1 + (0.9 * whiteInitStrength) / blackInitStrength;
+            for (Unit unit : blackUnits) unit.changeMorale(VICTORY_BONUS * bonusFactor);
             for (Unit unit : blackRouted) {
-                unit.changeMorale(SMALL_VICTORY_BONUS);
+                unit.changeMorale(SMALL_VICTORY_BONUS * bonusFactor);
                 if (unit.morale >= 0) {
                     unit.moveTo(hex);
                     if (unit.formerSuper != null) {
@@ -830,6 +890,7 @@ public class Fighting {
                     } else {
                         Force force = getRandomForce(BLACK);
                         force.attach(unit);
+
                     }
                     blackDisordered -= unit.strength;
                 } else {
@@ -897,6 +958,7 @@ public class Fighting {
         if (force.nation.color == WHITE) {
 
             pursuitCharge = (blackCharge * force.strength / whiteStrength - force.charge) * (1 + blackDirectionBonus);
+            System.out.println("PURSUIT CHARGE IS:" + pursuitCharge);
             if (pursuitCharge > 0) {
                 int prisoners = (int) (pursuitCharge * PURSUIT_ON_RETREATER);
                 if (prisoners > force.strength) {
@@ -961,6 +1023,7 @@ public class Fighting {
         }
         if (force.nation.color == BLACK) {
             pursuitCharge = (whiteCharge * force.strength / blackStrength - force.charge) * (1 + whiteDirectionBonus);
+            System.out.println("PURSUIT CHARGE on black IS:" + pursuitCharge);
             if (pursuitCharge > 0) {
                 int prisoners = (int) (pursuitCharge * PURSUIT_ON_RETREATER);
                 if (prisoners > force.strength) {
@@ -1082,13 +1145,18 @@ public class Fighting {
     private Force getRandomForce(int color) {
         Set<Force> forces = null;
         forces = color == WHITE ? white.keySet() : black.keySet();
+        Force randomForce = null;
         if (!forces.isEmpty()) {
-            int num = (int) (Math.random() * forces.size());
-            for (Force f : forces) {
-                if (--num < 0) return f;
+            while (randomForce == null) {
+                int num = (int) (Math.random() * forces.size());
+                for (Force f : forces) {
+                    if (--num < 0) {
+                        if(f.strength > 0) randomForce = f;
+                    }
+                }
             }
         }
-        return null;
+        return randomForce;
     }
 
     private boolean onlyWhiteBatteries() {
