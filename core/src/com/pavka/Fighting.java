@@ -51,6 +51,7 @@ public class Fighting {
     HashSet<Force> blackRetreaters;
     Force whiteTrophy;
     Force blackTrophy;
+    Force trophy;
 
     int whiteInitStrength;
     int blackInitStrength;
@@ -959,18 +960,21 @@ public class Fighting {
         double pursuitCharge = 0;
         Array<Unit> surrendedWagons = new Array<Unit>();
         if (force.nation.color == WHITE) {
-
             pursuitCharge = (blackCharge * force.strength / whiteStrength - force.charge) * (1 + blackDirectionBonus);
             System.out.println("PURSUIT CHARGE IS:" + pursuitCharge);
             if (pursuitCharge > 0) {
                 int prisoners = (int) (pursuitCharge * PURSUIT_ON_RETREATER);
                 if (prisoners > force.strength) {
+                    surrendedWagons.addAll(force.surrenderWagons(1, 0));
 
                     Array<Unit> units = new Array<Unit>();
 
                     if (force.isUnit) {
-                        units.add((Unit) force);
-                    } else {
+                        if(((Unit)force).type != SUPPLY) {
+                            units.add((Unit) force);
+                        }
+                    }
+                    else {
                         for (Unit u : force.battalions) {
                             units.add(u);
                         }
@@ -986,14 +990,18 @@ public class Fighting {
                         whiteUnits.remove(u);
                         imprisoned += u.surrender();
                     }
-                } else {
+                }
+                else {
                     //imprisoned = prisoners;
                     double ratio = (double) prisoners / force.strength;
+                    surrendedWagons.addAll(force.surrenderWagons(ratio, 1 - ratio));
                     if (force.isUnit) {
 
+                        if (((Unit)force).type != SUPPLY){
                             imprisoned += ((Unit) force).bearLoss(ratio);
                             ((Unit) force).changeMorale(-MORALE_PURSUIT * ratio / 2);
                             System.out.println("Morale DROP: " + (MORALE_PURSUIT * ratio / 2));
+                        }
                     }
                     else {
                         for (Unit u : force.battalions) {
@@ -1013,6 +1021,13 @@ public class Fighting {
 
                 }
             }
+            else if(force.strength == 0) {
+                if(force.isUnit) surrendedWagons.addAll(force.surrenderWagons(1, 0));
+                else {
+                    double ratio = (3.0 * blackBattalions + 3.0 * blackSquadrons + blackBatteries) / force.wagons.size();
+                    surrendedWagons.addAll(force.surrenderWagons(ratio, 1 - ratio));
+                }
+            }
 
         }
         if (force.nation.color == BLACK) {
@@ -1021,10 +1036,10 @@ public class Fighting {
             if (pursuitCharge > 0) {
                 int prisoners = (int) (pursuitCharge * PURSUIT_ON_RETREATER);
                 if (prisoners > force.strength) {
-
+                    surrendedWagons.addAll(force.surrenderWagons(1, 0));
                     Array<Unit> units = new Array<Unit>();
                     if (force.isUnit) {
-                        units.add((Unit) force);
+                        if (((Unit)force).type != SUPPLY) units.add((Unit) force);
                     } else {
                         for (Unit u : force.battalions) {
                             units.add(u);
@@ -1044,9 +1059,12 @@ public class Fighting {
                 else {
                     //imprisoned = prisoners;
                     double ratio = (double) prisoners / force.strength;
+                    surrendedWagons.addAll(force.surrenderWagons(ratio, 1 - ratio));
                     if (force.isUnit) {
+                        if (((Unit)force).type != SUPPLY){
                             blackImprisoned += ((Unit) force).bearLoss(ratio);
                             ((Unit) force).changeMorale(-MORALE_PURSUIT * ratio / 2);
+                        }
 
                     }
                     for (Unit u : force.battalions) {
@@ -1063,6 +1081,24 @@ public class Fighting {
                     }
 
                 }
+            }
+            else if(force.strength == 0) {
+                if(force.isUnit) surrendedWagons.addAll(force.surrenderWagons(1, 0));
+                else {
+                    double ratio = (3.0 * whiteBattalions + 3.0 * whiteSquadrons + whiteBatteries) / force.wagons.size();
+                    surrendedWagons.addAll(force.surrenderWagons(ratio, 1 - ratio));
+                }
+            }
+        }
+        if(surrendedWagons.size > 0) {
+            Play play = surrendedWagons.get(0).play;
+            Nation nation = surrendedWagons.get(0).nation;
+            trophy = new Force(nation, hex);
+            trophy.name = "Trophy Train of " + nation;
+            trophy.setPlay(play);
+            play.addActor(trophy);
+            for (Unit u: surrendedWagons) {
+                trophy.attach(u);
             }
         }
 
