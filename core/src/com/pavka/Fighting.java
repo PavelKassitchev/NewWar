@@ -664,6 +664,7 @@ public class Fighting {
         HashSet<Force> blackToRetreat = new HashSet<Force>();
 
         if (!whiteLosing && !blackLosing) {
+            System.out.println("CASE !WHITELOSING AND !BLACKLOSING");
 
             for (Map.Entry<Force, Integer> set : white.entrySet()) {
                 Force force = set.getKey();
@@ -682,10 +683,11 @@ public class Fighting {
             }
 
             if (whiteToRetreat.size() != white.size() && blackToRetreat.size() != black.size()) {
-
+                System.out.println("WHITE TO RETREAT ! = WHITE, BLACK TO RETREAT ! = BLACK");
             }
 
             if (whiteToRetreat.size() == white.size() && blackToRetreat.size() != black.size()) {
+                System.out.println("WHITE TO RETREAT  = WHITE, BLACK TO RETREAT ! = BLACK");
                 for (Force force : whiteToRetreat) {
                     whiteRetreaters.add(force);
                     white.remove(force);
@@ -695,15 +697,17 @@ public class Fighting {
                 }
             }
             if (whiteToRetreat.size() != white.size() && blackToRetreat.size() == black.size()) {
+                System.out.println("WHITE TO RETREAT ! = WHITE, BLACK TO RETREAT  = BLACK");
                 for (Force force : blackToRetreat) {
                     blackRetreaters.add(force);
                     black.remove(force);
                     blackImprisoned += pursuitRetreaters(force);
-                    System.out.println("Blackretreaters imprisoned: " + blackImprisoned);
+                    System.out.println("Black retreaters imprisoned: " + blackImprisoned);
                     System.out.println("Black wagons caught: " + blackSurrendedWagons);
                 }
             }
             if (whiteToRetreat.size() == white.size() && blackToRetreat.size() == black.size()) {
+                System.out.println("WHITE TO RETREAT  = WHITE, BLACK TO RETREAT  = BLACK");
                 int whites = 0;
                 int blacks = 0;
                 double whiteMorale = 0;
@@ -1092,6 +1096,7 @@ public class Fighting {
         }
         if(surrendedWagons.size > 0) {
             Play play = surrendedWagons.get(0).play;
+            System.out.println("On detaching a wagon Play is " + play);
             Nation nation = surrendedWagons.get(0).nation;
             trophy = new Force(nation, hex);
             trophy.name = "Trophy Train of " + nation;
