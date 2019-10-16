@@ -319,11 +319,16 @@ public class Force extends Image {
                     wagon.changeNation();
                     System.out.println("Changing nation..." + wagon.play);
                 }
-                for (Unit w: burnedWagons) {
+                /*for (Unit w: burnedWagons) {
                     surrendedWagons.removeValue(w, true);
                     System.out.println("Removing..." + w.play);
                     w.disappear();;
-                }
+                }*/
+            }
+            for (Unit w: burnedWagons) {
+                surrendedWagons.removeValue(w, true);
+                System.out.println("Removing..." + w.play);
+                w.disappear();;
             }
         }
         System.out.println("Length of surrendedWagons is " + surrendedWagons.size);
