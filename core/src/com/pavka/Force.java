@@ -291,30 +291,44 @@ public class Force extends Image {
         Random random = new Random();
         if (isUnit) {
             if (((Unit) this).type == SUPPLY) {
+                System.out.println("In method surrender wagons, Unit");
                 if (random.nextDouble() < probab) {
                     surrendedWagons.add((Unit)this);
                 }
             }
         } else {
             for (Wagon w : wagons) {
+                System.out.println("In method surrender wagons, NOT Unit");
                 if (random.nextDouble() < probab) {
+                    System.out.println("In Method Surrender Wagons, wagon added to surrendedWagons with Play = " + w.play);
                     surrendedWagons.add(w);
                 }
             }
             Array<Unit> burnedWagons = new Array<Unit>();
             for (Unit wagon : surrendedWagons) {
-                if(wagon.isSub) wagon.superForce.detach(wagon);
+                if(wagon.isSub) {
+                    System.out.println("A Wagon from Surrended Wagons is detaching with Play = " + wagon.superForce.play);
+                    wagon.superForce.detach(wagon);
+                    System.out.println("Detached Wagon with Play = " + wagon.play);
+                }
                 if (random.nextDouble() < burn) {
+                    System.out.println("Burning..." + wagon.play);
                     burnedWagons.add(wagon);
                 }
                 else {
                     wagon.changeNation();
+                    System.out.println("Changing nation..." + wagon.play);
                 }
                 for (Unit w: burnedWagons) {
                     surrendedWagons.removeValue(w, true);
+                    System.out.println("Removing..." + w.play);
                     w.disappear();;
                 }
             }
+        }
+        System.out.println("Length of surrendedWagons is " + surrendedWagons.size);
+        for (Unit u: surrendedWagons) {
+            System.out.println("Inside surrenderWagons I am listing Plays. Play is " + u.play);
         }
         return surrendedWagons;
     }
@@ -353,10 +367,11 @@ public class Force extends Image {
 
         //force.setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
         if (play != null) {
+            System.out.println("This is in detach, if play != null but = " + play);
             System.out.println("Detaching from... Strength: " + force.strength + " Hex: " + force.hex.getRelX() + " " + force.hex.getRelY());
             force.setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
             play.addActor(force);
-            force.play = play;
+            force.setPlay(play);
             if (nation == FRANCE) play.whiteTroops.add(force);
             else play.blackTroops.add(force);
         }

@@ -998,6 +998,7 @@ public class Fighting {
                 else {
                     //imprisoned = prisoners;
                     double ratio = (double) prisoners / force.strength;
+                    System.out.println("Inside pursuit retreaters, ratio = " + ratio);
                     surrendedWagons.addAll(force.surrenderWagons(ratio, 1 - ratio));
                     if (force.isUnit) {
 
@@ -1026,9 +1027,13 @@ public class Fighting {
                 }
             }
             else if(force.strength == 0) {
-                if(force.isUnit) surrendedWagons.addAll(force.surrenderWagons(1, 0));
+                if(force.isUnit) {
+                    System.out.println("Surrended Wagons is Unit " + force);
+                    surrendedWagons.addAll(force.surrenderWagons(1, 0));
+                }
                 else {
                     double ratio = (3.0 * blackBattalions + 3.0 * blackSquadrons + blackBatteries) / force.wagons.size();
+                    System.out.println("Surrended Wagons is Not Unit " + force + " ratio is " + ratio);
                     surrendedWagons.addAll(force.surrenderWagons(ratio, 1 - ratio));
                 }
             }
@@ -1063,6 +1068,7 @@ public class Fighting {
                 else {
                     //imprisoned = prisoners;
                     double ratio = (double) prisoners / force.strength;
+                    System.out.println("Inside pursuit retreaters, ratio = " + ratio);
                     surrendedWagons.addAll(force.surrenderWagons(ratio, 1 - ratio));
                     if (force.isUnit) {
                         if (((Unit)force).type != SUPPLY){
@@ -1096,8 +1102,9 @@ public class Fighting {
         }
         if(surrendedWagons.size > 0) {
             Play play = surrendedWagons.get(0).play;
-            System.out.println("On detaching a wagon Play is " + play);
             Nation nation = surrendedWagons.get(0).nation;
+            System.out.println("Zero's element from surrended wagons " + surrendedWagons.get(0));
+            System.out.println("On detaching a wagon Play is " + play + " Nation is " + nation);
             trophy = new Force(nation, hex);
             trophy.name = "Trophy Train of " + nation;
             trophy.setPlay(play);
