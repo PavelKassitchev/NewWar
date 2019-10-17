@@ -720,7 +720,7 @@ public class Fighting {
                     blackMorale += force.morale * force.strength;
                     blacks += force.strength;
                 }
-                if (whiteMorale / whites >= blackMorale / blacks) {
+                if (whiteMorale / whites > blackMorale / blacks) {
                     for (Force force : blackToRetreat) {
                         blackRetreaters.add(force);
                         black.remove(force);
@@ -732,6 +732,15 @@ public class Fighting {
                         whiteRetreaters.add(force);
                         white.remove(force);
                         whiteImprisoned += pursuitRetreaters(force);
+                    }
+                }
+                else {
+                    System.out.println("BOTH SIDES HAVE TO RETREAT");
+                    for (Force w: whiteToRetreat) {
+                        whiteRetreaters.add(w);
+                    }
+                    for (Force b: blackToRetreat) {
+                        blackRetreaters.add(b);
                     }
                 }
 
@@ -841,6 +850,31 @@ public class Fighting {
                 whiteDisordered += u.strength;
             }
             for (Unit u : blackRouted) blackDisordered += u.strength;
+        }
+        if(isOver && winner == 0) {
+            for (Force f : blackRetreaters) {
+                //f.surrenderWagons(1);
+                f.setRetreatDirection(white.keySet(), false);
+                f.retreat();
+                if (f.strength == 0 && f.forces.isEmpty()) f.disappear();
+            }
+            for (Unit u : blackRouted) {
+                blackImprisoned += pursuit(u);
+                blackDisordered += u.strength;
+            }
+            for (Unit u : whiteRouted) whiteDisordered += u.strength;
+            for (Force f : whiteRetreaters) {
+                //f.surrenderWagons(1);
+                f.setRetreatDirection(black.keySet(), false);
+                f.retreat();
+                if (f.strength == 0 && f.forces.isEmpty()) f.disappear();
+            }
+            for (Unit u : whiteRouted) {
+                whiteImprisoned += pursuit(u);
+                whiteDisordered += u.strength;
+            }
+            for (Unit u : blackRouted) blackDisordered += u.strength;
+
         }
         System.out.println("CHECK. STAGE " + stage);
         System.out.println("White Unit Length: " + whiteUnits.size() + " Units: " + whiteUnits);
