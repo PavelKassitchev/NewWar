@@ -980,12 +980,14 @@ public class Fighting {
         System.out.println("NUMBER OF STAGES: " + stage);
         System.out.println();
         System.out.println("WHITE: initial strength - " + whiteInitStrength + " killed - " + whiteCasualties + " imprisoned - " + whiteImprisoned);
+        System.out.println("WHITE: Wagons surrended - " + whiteSurrendedWagond);
         System.out.println("WHITE: final strength - " + whiteFinal + " and " + whiteInHex + " retreated - " + whiteRetreat + " routed - " + whiteDisordered);
         if (!white.isEmpty()) System.out.println("MORALE = " + getAverageMorale(white.keySet()));
         else if (!whiteRetreaters.isEmpty()) System.out.println("MORALE = " + getAverageMorale(whiteRetreaters));
         else System.out.println("Routed morale = " + getAverageMorale(whiteRouted));
         System.out.println();
         System.out.println("BLACK: initial strength - " + blackInitStrength + " killed - " + blackCasualties + " imprisoned - " + blackImprisoned);
+        System.out.println("BLACK: Wagons surrended - " + blackSurrendedWagons);
         System.out.println("BLACK: final strength - " + blackFinal + " and " + blackInHex + " retreated - " + blackRetreat + " routed - " + blackDisordered);
         if (!black.isEmpty()) System.out.println("MORALE = " + getAverageMorale(black.keySet()));
         else if (!blackRetreaters.isEmpty()) System.out.println("MORALE = " + getAverageMorale(blackRetreaters));
@@ -1003,7 +1005,9 @@ public class Fighting {
             if (pursuitCharge > 0) {
                 int prisoners = (int) (pursuitCharge * PURSUIT_ON_RETREATER);
                 if (prisoners > force.strength) {
-                    surrendedWagons.addAll(force.surrenderWagons(1, 0));
+                    Array<Unit> sWagons = force.surrenderWagons(1,0);
+                    whiteSurrendedWagond += sWagons.size;
+                    surrendedWagons.addAll(sWagons);
 
                     Array<Unit> units = new Array<Unit>();
 
@@ -1033,7 +1037,9 @@ public class Fighting {
                     //imprisoned = prisoners;
                     double ratio = (double) prisoners / force.strength;
                     System.out.println("Inside pursuit retreaters, ratio = " + ratio);
-                    surrendedWagons.addAll(force.surrenderWagons(ratio, 1 - ratio));
+                    Array<Unit> sWagons = force.surrenderWagons(ratio, 1 - ratio);
+                    whiteSurrendedWagond += sWagons.size;
+                    surrendedWagons.addAll(sWagons);
                     if (force.isUnit) {
 
                         if (((Unit)force).type != SUPPLY){
@@ -1063,12 +1069,16 @@ public class Fighting {
             else if(force.strength == 0) {
                 if(force.isUnit) {
                     System.out.println("Surrended Wagons is Unit " + force);
-                    surrendedWagons.addAll(force.surrenderWagons(1, 0));
+                    Array<Unit> sWagons = force.surrenderWagons(1, 0);
+                    whiteSurrendedWagond += sWagons.size;
+                    surrendedWagons.addAll(sWagons);
                 }
                 else {
                     double ratio = (3.0 * blackBattalions + 3.0 * blackSquadrons + blackBatteries) / force.wagons.size();
                     System.out.println("Surrended Wagons is Not Unit " + force + " ratio is " + ratio);
-                    surrendedWagons.addAll(force.surrenderWagons(ratio, 1 - ratio));
+                    Array<Unit> sWagons = force.surrenderWagons(ratio, 1 - ratio);
+                    whiteSurrendedWagond += sWagons.size;
+                    surrendedWagons.addAll(sWagons);
                 }
             }
 
@@ -1079,7 +1089,9 @@ public class Fighting {
             if (pursuitCharge > 0) {
                 int prisoners = (int) (pursuitCharge * PURSUIT_ON_RETREATER);
                 if (prisoners > force.strength) {
-                    surrendedWagons.addAll(force.surrenderWagons(1, 0));
+                    Array<Unit> sWagons = force.surrenderWagons(1, 0);
+                    blackSurrendedWagons += sWagons.size;
+                    surrendedWagons.addAll(sWagons);
                     Array<Unit> units = new Array<Unit>();
                     if (force.isUnit) {
                         if (((Unit)force).type != SUPPLY) units.add((Unit) force);
@@ -1103,7 +1115,9 @@ public class Fighting {
                     //imprisoned = prisoners;
                     double ratio = (double) prisoners / force.strength;
                     System.out.println("Inside pursuit retreaters, ratio = " + ratio);
-                    surrendedWagons.addAll(force.surrenderWagons(ratio, 1 - ratio));
+                    Array<Unit> sWagons = force.surrenderWagons(ratio, 1 - ratio);
+                    blackSurrendedWagons += sWagons.size;
+                    surrendedWagons.addAll(sWagons);
                     if (force.isUnit) {
                         if (((Unit)force).type != SUPPLY){
                             blackImprisoned += ((Unit) force).bearLoss(ratio);
@@ -1127,18 +1141,24 @@ public class Fighting {
                 }
             }
             else if(force.strength == 0) {
-                if(force.isUnit) surrendedWagons.addAll(force.surrenderWagons(1, 0));
+                if(force.isUnit) {
+                    Array<Unit> sWagons = force.surrenderWagons(1, 0);
+                    blackSurrendedWagons += sWagons.size;
+                    surrendedWagons.addAll(sWagons);
+                }
                 else {
                     double ratio = (3.0 * whiteBattalions + 3.0 * whiteSquadrons + whiteBatteries) / force.wagons.size();
-                    surrendedWagons.addAll(force.surrenderWagons(ratio, 1 - ratio));
+                    Array<Unit> sWagons = force.surrenderWagons(ratio, 1 - ratio);
+                    blackSurrendedWagons += sWagons.size;
+                    surrendedWagons.addAll(sWagons);
                 }
             }
         }
         if(surrendedWagons.size > 0) {
             Play play = surrendedWagons.get(0).play;
             Nation nation = surrendedWagons.get(0).nation;
-            System.out.println("Zero's element from surrended wagons " + surrendedWagons.get(0));
-            System.out.println("On detaching a wagon Play is " + play + " Nation is " + nation);
+            //System.out.println("Zero's element from surrended wagons " + surrendedWagons.get(0));
+            //System.out.println("On detaching a wagon Play is " + play + " Nation is " + nation);
             trophy = new Force(nation, hex);
             trophy.name = "Trophy Train of " + nation;
             trophy.setPlay(play);
@@ -1191,7 +1211,8 @@ public class Fighting {
             sumStrength += force.strength;
             sumMorale += force.morale * force.strength;
         }
-        return sumMorale / sumStrength;
+        if (sumStrength > 0) return sumMorale / sumStrength;
+        else return 1.0;
     }
 
 
