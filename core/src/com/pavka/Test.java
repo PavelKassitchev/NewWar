@@ -12,8 +12,12 @@ public class Test {
 
     static Hex hex = Play.hexGraph.getHex(4, 8);
     static Hex hex2 = Play.hexGraph.getHex(16, 16);
+    static Hex hex3 = Play.hexGraph.getHex(6, 6);
+    static Hex hex4 = Play.hexGraph.getHex(14, 14);
     static Force force1;
     static Force force2;
+    static Force frenchArt;
+    static Force austrianArt;
 
     static
     {
@@ -67,6 +71,9 @@ public class Test {
         force2.name = "Austrian Division";
         force2.order.seekBattle = true;
         force2.order.retreatLevel = 0.7;
+
+        frenchArt = new Battery(FRANCE,hex3);
+        austrianArt = new Force(new Battery(AUSTRIA, hex4));
     }
 
     public static void main(String[] args) {

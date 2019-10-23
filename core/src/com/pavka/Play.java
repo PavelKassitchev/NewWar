@@ -72,6 +72,8 @@ public class Play extends Stage implements Screen {
     private Force france;
     private Base a;
     private Base b;
+    private Force frenchArtillery;
+    private Force austrianArtillery;
 
     {
         Hex hex;
@@ -242,14 +244,27 @@ public class Play extends Stage implements Screen {
 
 
         if (keycode == Input.Keys.T) {
-            Commander commander = new Commander(Nation.FRANCE, hexGraph.getHex(32, 32));
+            /*Commander commander = new Commander(Nation.FRANCE, hexGraph.getHex(32, 32));
             Force force = new Force(commander);
             force.name = "Headquarters";
             force.general = commander;
             whiteCommander = commander;
             whiteTroops.add(force);
-            addActor(force);
+            addActor(force);*/
             //addActor(commander);
+            austrianArtillery = Test.austrianArt;
+            austrianArtillery.setPlay(this);
+            austrianArtillery.order.seekBattle = true;
+            austrianArtillery.order.isForaging = 0.8;
+            austrianArtillery.name = "Austrian Artillery";
+            addActor(austrianArtillery);
+
+            frenchArtillery = Test.frenchArt;
+            frenchArtillery.setPlay(this);
+            frenchArtillery.order.seekBattle = true;
+            frenchArtillery.order.isForaging = 0.8;
+            frenchArtillery.name = "French Artillery";
+            addActor(frenchArtillery);
 
         }
         if (keycode == Input.Keys.Q) {
