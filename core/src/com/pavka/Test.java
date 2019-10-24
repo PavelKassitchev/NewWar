@@ -14,10 +14,14 @@ public class Test {
     static Hex hex2 = Play.hexGraph.getHex(16, 16);
     static Hex hex3 = Play.hexGraph.getHex(6, 6);
     static Hex hex4 = Play.hexGraph.getHex(14, 14);
+    static Hex hex5 = Play.hexGraph.getHex(4, 4);
+    static Hex hex6 = Play.hexGraph.getHex(14, 16);
     static Force force1;
     static Force force2;
     static Force frenchArt;
     static Force austrianArt;
+    static Force frenchCav;
+    static Force austrianCav;
 
     static
     {
@@ -74,6 +78,8 @@ public class Test {
 
         frenchArt = new Battery(FRANCE,hex3);
         austrianArt = new Force(new Battery(AUSTRIA, hex4));
+        frenchCav = new Force(new Squadron(FRANCE, hex5));
+        austrianCav = new Squadron(AUSTRIA, hex6);
     }
 
     public static void main(String[] args) {

@@ -74,6 +74,8 @@ public class Play extends Stage implements Screen {
     private Base b;
     private Force frenchArtillery;
     private Force austrianArtillery;
+    private Force frenchCavalry;
+    private Force austrianCavalry;
 
     {
         Hex hex;
@@ -265,6 +267,20 @@ public class Play extends Stage implements Screen {
             frenchArtillery.order.isForaging = 0.8;
             frenchArtillery.name = "French Artillery";
             addActor(frenchArtillery);
+
+            austrianCavalry = Test.austrianCav;
+            austrianCavalry.setPlay(this);
+            austrianCavalry.order.seekBattle = true;
+            austrianCavalry.order.isForaging = 0.8;
+            austrianCavalry.name = "Austrian Artillery";
+            addActor(austrianCavalry);
+
+            frenchCavalry = Test.frenchCav;
+            frenchCavalry.setPlay(this);
+            frenchCavalry.order.seekBattle = true;
+            frenchCavalry.order.isForaging = 0.8;
+            frenchCavalry.name = "French Artillery";
+            addActor(frenchCavalry);
 
         }
         if (keycode == Input.Keys.Q) {
