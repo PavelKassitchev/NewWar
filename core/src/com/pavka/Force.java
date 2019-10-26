@@ -1198,6 +1198,7 @@ public class Force extends Image {
         if (order.target != null) {
             switch (order.target.action) {
                 case Target.FIGHT:
+                    //TODO
                     break;
                 case Target.FOLLOW:
                     follow(order.target.force);

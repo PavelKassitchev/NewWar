@@ -297,11 +297,11 @@ public class Play extends Stage implements Screen {
                 mileStone = null;
             }
 
-            Array<Hex> battlfields = new Array<Hex>();
+            Array<Hex> battlefields = new Array<Hex>();
             for(Hex h: hexGraph.hexes){
-                if(!h.whiteForces.isEmpty() && !h.blackForces.isEmpty()) battlfields.add(h);
+                if(!h.whiteForces.isEmpty() && !h.blackForces.isEmpty()) battlefields.add(h);
             }
-            for(Hex hx: battlfields) {
+            for(Hex hx: battlefields) {
                 Fighting fighting = hx.startFighting();
                 fighting.resolve();
             }
