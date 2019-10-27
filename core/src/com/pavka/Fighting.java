@@ -993,6 +993,11 @@ public class Fighting {
         else if (!blackRetreaters.isEmpty()) System.out.println("MORALE = " + getAverageMorale(blackRetreaters));
         else System.out.println("Routed morale = " + getAverageMorale(blackRouted));
         System.out.println();
+        hex.fighting = null;
+    }
+
+    public void join(Force force) {
+
     }
 
     private int pursuitRetreaters(Force force) {

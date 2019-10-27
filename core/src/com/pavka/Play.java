@@ -30,6 +30,7 @@ import static com.pavka.UnitType.INFANTRY;
 public class Play extends Stage implements Screen {
 
     public static int turn;
+    public static int time;
     public static final String MAP = "maps/WarMap.tmx";
 
     public static TiledMap map = new TmxMapLoader().load(MAP);
@@ -284,8 +285,8 @@ public class Play extends Stage implements Screen {
 
         }
         if (keycode == Input.Keys.Q) {
-            turn++;
-            act();
+            /*turn++;
+            act();*/
 
             if (selectedForce != null) selectedForce.isSelected = false;
             selectedForce = null;
@@ -297,14 +298,16 @@ public class Play extends Stage implements Screen {
                 mileStone = null;
             }
 
-            Array<Hex> battlefields = new Array<Hex>();
+            /*Array<Hex> battlefields = new Array<Hex>();
             for(Hex h: hexGraph.hexes){
                 if(!h.whiteForces.isEmpty() && !h.blackForces.isEmpty()) battlefields.add(h);
             }
             for(Hex hx: battlefields) {
                 Fighting fighting = hx.startFighting();
                 fighting.resolve();
-            }
+            }*/
+            for (time = 0; time < 4; time++) act();
+
 
         }
 

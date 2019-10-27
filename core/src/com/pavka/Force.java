@@ -126,7 +126,21 @@ public class Force extends Image {
                     commander.receivedReports.get(0).force.name + " turn: " + commander.receivedReports.get(0).turn);
 
         }*/
-        act1Day(false);
+        //act1Day(false);
+        switch (play.time) {
+            case 0:
+                actMorning();
+                break;
+            case 1:
+                actMidday(false);
+                break;
+            case 2:
+                actEvening();
+                break;
+            case 3:
+                actNight();
+
+        }
     }
 
     public Hex getBackHex() {
@@ -268,11 +282,10 @@ public class Force extends Image {
         if (isUnit) {
             if (((Unit) this).type == SUPPLY) {
                 if (random.nextDouble() < probab) {
-                    surrendedWagons.add((Unit)this);
+                    surrendedWagons.add((Unit) this);
                 }
             }
-        }
-        else {
+        } else {
             for (Wagon w : wagons) {
                 if (random.nextDouble() < probab) {
                     surrendedWagons.add(w);
@@ -293,7 +306,7 @@ public class Force extends Image {
             if (((Unit) this).type == SUPPLY) {
                 System.out.println("In method surrender wagons, Unit");
                 if (random.nextDouble() < probab) {
-                    surrendedWagons.add((Unit)this);
+                    surrendedWagons.add((Unit) this);
                 }
             }
         } else {
@@ -306,7 +319,7 @@ public class Force extends Image {
             }
             Array<Unit> burnedWagons = new Array<Unit>();
             for (Unit wagon : surrendedWagons) {
-                if(wagon.isSub) {
+                if (wagon.isSub) {
                     System.out.println("A Wagon from Surrended Wagons is detaching with Play = " + wagon.superForce.play);
                     wagon.superForce.detach(wagon);
                     System.out.println("Detached Wagon with Play = " + wagon.play);
@@ -314,8 +327,7 @@ public class Force extends Image {
                 if (random.nextDouble() < burn) {
                     System.out.println("Burning..." + wagon.play);
                     burnedWagons.add(wagon);
-                }
-                else {
+                } else {
                     wagon.changeNation();
                     System.out.println("Changing nation..." + wagon.play);
                 }
@@ -325,14 +337,15 @@ public class Force extends Image {
                     w.disappear();;
                 }*/
             }
-            for (Unit w: burnedWagons) {
+            for (Unit w : burnedWagons) {
                 surrendedWagons.removeValue(w, true);
                 System.out.println("Removing..." + w.play);
-                w.disappear();;
+                w.disappear();
+                ;
             }
         }
         System.out.println("Length of surrendedWagons is " + surrendedWagons.size);
-        for (Unit u: surrendedWagons) {
+        for (Unit u : surrendedWagons) {
             System.out.println("Inside surrenderWagons I am listing Plays. Play is " + u.play);
         }
         return surrendedWagons;
@@ -1094,6 +1107,17 @@ public class Force extends Image {
                 //trace.add(hex);
                 movePoints -= movementCost;
 
+                //New Aproach to Fighting
+                if (hex.containsEnemy(this)) {
+                    if (hex.fighting == null) {
+                        Fighting fighting = hex.startFighting();
+                        fighting.resolve();
+                    }
+                    else {
+                        hex.fighting.join(this);
+                    }
+                }
+
             }
         }
         if (hex != start) {
@@ -1232,7 +1256,7 @@ public class Force extends Image {
             }
         }
         double forceSpeed = speed - length / 2;
-        if(forceSpeed < Hex.SIZE / 3) forceSpeed = Hex.SIZE / 3;
+        if (forceSpeed < Hex.SIZE / 3) forceSpeed = Hex.SIZE / 3;
         return forceSpeed;
     }
 
@@ -1245,14 +1269,14 @@ public class Force extends Image {
                 casualties += ((Unit) this).bearLoss(ratio);
             } else {
                 int loss = (int) (ratio * strength);
-                System.out.println("LOST: " + loss);
+                //System.out.println("LOST: " + loss);
                 while (loss > 0) {
                     Unit u = selectRandomUnit();
-                    System.out.println("SELECTED UNIT: " + u);
+                    //System.out.println("SELECTED UNIT: " + u);
                     casualties += u.bearLoss(1);
-                    System.out.println("AFTER: " + u);
+                    //System.out.println("AFTER: " + u);
                     loss--;
-                    System.out.println("IN CYCLE LOSS = " + loss + " CASUALTIES = " + casualties);
+                    //System.out.println("IN CYCLE LOSS = " + loss + " CASUALTIES = " + casualties);
 
                 }
             }
@@ -1262,10 +1286,12 @@ public class Force extends Image {
     }
 
     public void updateFatigue(int s, double f) {
-        double sF = f * s / strength;
-        fatigue += sF;
-        if (isSub) superForce.updateFatigue(strength, sF);
+        if (strength > 0) {
+            double sF = f * s / strength;
+            fatigue += sF;
+            if (isSub) superForce.updateFatigue(strength, sF);
 
+        }
     }
 
     public void checkHunger() {
