@@ -836,7 +836,7 @@ public class Fighting {
                 if (f.strength == 0 && f.forces.isEmpty()) f.disappear();
             }
             for (Unit u : blackRouted) {
-                System.out.println("Black Unit Routes, strength = " + u.strengthb );
+                System.out.println("Black Unit Routes, strength = " + u.strength);
                 blackImprisoned += pursuit(u);
                 blackDisordered += u.strength;
             }
