@@ -725,7 +725,7 @@ public class Force extends Image {
                 free -= loadAmmo(COMBAT_TYPES_BY_AMMO[min++]);
             }
             double ratio = free / need;
-            System.out.println("min = " + min + " ratio = " + ratio + " free = " + free + " ammoNeed = " + need);
+            //System.out.println("min = " + min + " ratio = " + ratio + " free = " + free + " ammoNeed = " + need);
             for (int i = min; i < COMBAT_TYPES_BY_AMMO.length; i++) {
                 free -= loadAmmo(ratio, COMBAT_TYPES_BY_AMMO[i]);
             }

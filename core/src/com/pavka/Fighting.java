@@ -759,6 +759,7 @@ public class Fighting {
             }
         } else {
             if (whiteLosing && !blackLosing) {
+                System.out.println("CASE WHITELOSING AND !BLACKLOSING");
                 winner = -1;
                 isOver = true;
                 //for (Force force: white.keySet()) {
@@ -780,6 +781,7 @@ public class Fighting {
                 }
             }
             if (!whiteLosing && blackLosing) {
+                System.out.println("CASE !WHITELOSING AND BLACKLOSING");
                 winner = 1;
                 isOver = true;
                 //for (Force force: black.keySet()) {
@@ -800,6 +802,7 @@ public class Fighting {
                 }
             }
             if (whiteLosing && blackLosing) {
+                System.out.println("CASE WHITELOSING AND BLACKLOSING");
                 isOver = true;
                 double whiteMorale = 0;
                 double blackMorale = 0;
@@ -833,6 +836,7 @@ public class Fighting {
                 if (f.strength == 0 && f.forces.isEmpty()) f.disappear();
             }
             for (Unit u : blackRouted) {
+                System.out.println("Black Unit Routes, strength = " + u.strengthb );
                 blackImprisoned += pursuit(u);
                 blackDisordered += u.strength;
             }

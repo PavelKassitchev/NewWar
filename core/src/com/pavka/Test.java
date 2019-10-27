@@ -78,7 +78,7 @@ public class Test {
 
         frenchArt = new Battery(FRANCE,hex3);
         austrianArt = new Force(new Battery(AUSTRIA, hex4));
-        frenchCav = new Force(new Squadron(FRANCE, hex5));
+        frenchCav = new Force(new Squadron(FRANCE, hex5), new Squadron(FRANCE, hex5));
         austrianCav = new Squadron(AUSTRIA, hex6);
     }
 

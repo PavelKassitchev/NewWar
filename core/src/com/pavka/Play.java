@@ -273,14 +273,14 @@ public class Play extends Stage implements Screen {
             austrianCavalry.setPlay(this);
             austrianCavalry.order.seekBattle = true;
             austrianCavalry.order.isForaging = 0.8;
-            austrianCavalry.name = "Austrian Artillery";
+            austrianCavalry.name = "Austrian Cavalry";
             addActor(austrianCavalry);
 
             frenchCavalry = Test.frenchCav;
             frenchCavalry.setPlay(this);
             frenchCavalry.order.seekBattle = true;
             frenchCavalry.order.isForaging = 0.8;
-            frenchCavalry.name = "French Artillery";
+            frenchCavalry.name = "French Cavalry";
             addActor(frenchCavalry);
 
         }
