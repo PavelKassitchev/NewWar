@@ -119,7 +119,7 @@ public class Fighting {
 
     private double getCompositionBonus(int color) {
         double composition = 0;
-        int screen = 0;
+        double screen = 0;
         switch (color) {
             case WHITE:
                 if (whiteSquadrons / 4.0 > whiteBatteries) composition = whiteBatteries;
@@ -133,7 +133,10 @@ public class Fighting {
                 else composition = blackSquadrons / 4.0;
                 if (blackBatteries > (blackBattalions + blackSquadrons))
                     screen = blackBatteries - blackBattalions - blackSquadrons;
-                if (blackBattalions + blackSquadrons == 0) screen += blackBatteries / 2;
+                if (blackBattalions + blackSquadrons == 0) {
+                    screen += (0.0 + blackBatteries) / 2;
+                }
+                System.out.println("COMP = " + composition + " SCREEN = " + screen + " " + NO_SCREEN_PENALTY);
                 break;
         }
         double bonus = composition * FIRE_COMPOSITION_BONUS - screen * NO_SCREEN_PENALTY;
@@ -443,11 +446,12 @@ public class Fighting {
             double wShoout = whiteFire + getCompositionBonus(WHITE);
             if (wShoout < 0) wShoout = 0;
             double fireOnBlack = FIRE_ON_UNIT * wShoout / blackStrength;
-            //System.out.println("Fire on black " + fireOnBlack);
+            System.out.println("Fire on black " + fireOnBlack);
             double bShoot = blackFire + getCompositionBonus(BLACK);
+            System.out.println("BLACK FIRE = " + blackFire + " COMP. BONUS = " + getCompositionBonus(BLACK));
             if (bShoot < 0) bShoot = 0;
             double fireOnWhite = FIRE_ON_UNIT * bShoot / whiteStrength;
-            //System.out.println("Fire on white " + fireOnWhite);
+            System.out.println("Fire on white " + fireOnWhite);
             double chargeOnBlack = -(CHARGE_ON_ENEMY * whiteCharge / blackStrength);
             //System.out.println("Charge on black " + chargeOnBlack);
             double chargeOnWhite = -(CHARGE_ON_ENEMY * blackCharge / whiteStrength);
@@ -455,8 +459,16 @@ public class Fighting {
 
             int min = Math.min(whiteUnits.size(), blackUnits.size());
             if (min == 0) min = 1;
+
+
             int whiteStep = whiteUnits.size() / min;
             int blackStep = blackUnits.size() / min;
+
+            double ws = (0.0 + whiteUnits.size()) / min - whiteStep;
+            double bs = (0.0 + blackUnits.size()) / min - blackStep;
+            double r = random.nextDouble();
+            if(r < ws) whiteStep++;
+            if(r < bs) blackStep++;
 
             //for (Unit u : whiteUnits) {
             for (int i = 0; i < whiteStep; i++) {
