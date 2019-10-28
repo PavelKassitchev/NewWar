@@ -136,7 +136,7 @@ public class Fighting {
                 if (blackBattalions + blackSquadrons == 0) {
                     screen += (0.0 + blackBatteries) / 2;
                 }
-                System.out.println("COMP = " + composition + " SCREEN = " + screen + " " + NO_SCREEN_PENALTY);
+                //System.out.println("COMP = " + composition + " SCREEN = " + screen + " " + NO_SCREEN_PENALTY);
                 break;
         }
         double bonus = composition * FIRE_COMPOSITION_BONUS - screen * NO_SCREEN_PENALTY;
