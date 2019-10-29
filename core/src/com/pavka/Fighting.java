@@ -126,7 +126,7 @@ public class Fighting {
                 else composition = whiteSquadrons / 4.0;
                 if (whiteBatteries > (whiteBattalions + whiteSquadrons))
                     screen = whiteBatteries - whiteBattalions - whiteSquadrons;
-                if (whiteBattalions + whiteSquadrons == 0) screen += whiteBatteries / 2;
+                if (whiteBattalions + whiteSquadrons == 0) screen += (0.0 + whiteBatteries) / 2;
                 break;
             case BLACK:
                 if (blackSquadrons / 4.0 > blackBatteries) composition = blackBatteries;
@@ -476,10 +476,10 @@ public class Fighting {
                 u.fire(1 / scale);
                 double randomFactor = 0.65 + 0.7 * random.nextDouble();
                 //double randomFactor = 1;
-                //System.out.println(randomFactor + " random");
+                System.out.println(randomFactor + " random" + " white step = " + whiteStep);
                 int casualties = hitUnit(u, randomFactor * fireOnWhite * hex.getFireDefenseFactor(u) / scale,
                         randomFactor * chargeOnWhite * hex.getChargeDefenseFactor(u) * (1 - circlingFactor) / scale);
-                //System.out.println("White casualties: " + casualties + " morale: " + u.morale);
+                System.out.println("White casualties: " + casualties + " morale: " + u.morale);
                 whiteCasualties += casualties;
                 if (u.morale < MIN_MORALE || u.strength <= MIN_SOLDIERS) {
                     if (whiteShaken.add(u)) {
@@ -523,10 +523,10 @@ public class Fighting {
                 u.fire(1 / scale);
                 double randomFactor = 0.65 + 0.7 * random.nextDouble();
                 //double randomFactor = 1;
-                //System.out.println(randomFactor + " random");
+                System.out.println(randomFactor + " random" + " black step = " + blackStep);
                 int casualties = hitUnit(u, randomFactor * fireOnBlack * hex.getFireDefenseFactor(u) / scale,
                         randomFactor * chargeOnBlack * hex.getChargeDefenseFactor(u) * (1 + circlingFactor) / scale);
-                //System.out.println("Black casualties: " + casualties + " morale: " + u.morale);
+                System.out.println("Black casualties: " + casualties + " morale: " + u.morale);
                 blackCasualties += casualties;
                 if (u.morale < MIN_MORALE || u.strength <= MIN_SOLDIERS) {
                     if (blackShaken.add(u)) {
