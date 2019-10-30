@@ -246,7 +246,7 @@ public class Unit extends Force {
         if (isSub) superForce.detach(this);
         Hex hx = hex.getNeighbour(order.retreatDirection);
         if(hx == null) {
-            surrender();
+            //surrender();
         }
         else moveTo(hx);
 

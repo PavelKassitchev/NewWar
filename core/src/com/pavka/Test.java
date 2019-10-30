@@ -77,7 +77,7 @@ public class Test {
         force2.order.retreatLevel = 0.7;
 
         frenchArt = new Battery(FRANCE,hex3);
-        austrianArt = new Force(new Battery(AUSTRIA, hex4));
+        austrianArt = new Force(new Battery(AUSTRIA, hex4), new Battery(AUSTRIA, hex4));
         frenchCav = new Force(new Squadron(FRANCE, hex5), new Squadron(FRANCE, hex5));
         austrianCav = new Squadron(AUSTRIA, hex6);
     }
