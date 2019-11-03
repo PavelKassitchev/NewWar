@@ -55,6 +55,8 @@ public class Fighting {
 
     int whiteInitStrength;
     int blackInitStrength;
+    int whiteAdditional;
+    int blackAdditional;
     double whiteInitPower;
     double blackInitPower;
     int whiteStrength;
@@ -115,6 +117,8 @@ public class Fighting {
 
         whiteStrength = whiteInitStrength;
         blackStrength = blackInitStrength;
+
+        System.out.println("Fighting started on Hex " + hex.row + " " + hex.col);
     }
 
     private double getCompositionBonus(int color) {
@@ -479,7 +483,7 @@ public class Fighting {
                 System.out.println(randomFactor + " random" + " white step = " + whiteStep);
                 int casualties = hitUnit(u, randomFactor * fireOnWhite * hex.getFireDefenseFactor(u) / scale,
                         randomFactor * chargeOnWhite * hex.getChargeDefenseFactor(u) * (1 - circlingFactor) / scale);
-                System.out.println("White casualties: " + casualties + " morale: " + u.morale);
+                System.out.println("White casualties: " + casualties + " morale: " + u.morale + " final strength: " + u.strength);
                 whiteCasualties += casualties;
                 if (u.morale < MIN_MORALE || u.strength <= MIN_SOLDIERS) {
                     if (whiteShaken.add(u)) {
@@ -526,7 +530,7 @@ public class Fighting {
                 System.out.println(randomFactor + " random" + " black step = " + blackStep);
                 int casualties = hitUnit(u, randomFactor * fireOnBlack * hex.getFireDefenseFactor(u) / scale,
                         randomFactor * chargeOnBlack * hex.getChargeDefenseFactor(u) * (1 + circlingFactor) / scale);
-                System.out.println("Black casualties: " + casualties + " morale: " + u.morale);
+                System.out.println("Black casualties: " + casualties + " morale: " + u.morale + " final strength: " + u.strength);
                 blackCasualties += casualties;
                 if (u.morale < MIN_MORALE || u.strength <= MIN_SOLDIERS) {
                     if (blackShaken.add(u)) {
@@ -680,7 +684,9 @@ public class Fighting {
 
             for (Map.Entry<Force, Integer> set : white.entrySet()) {
                 Force force = set.getKey();
+                System.out.println("White Force Strength is " + force.strength + ", Retreat Level is " + force.order.retreatLevel * set.getValue() + ", Initial strength was " + set.getValue());
                 if (force.strength <= force.order.retreatLevel * set.getValue()) {
+                    //System.out.println("White Force Strength is " + force.strength + ", Retreat Level is " + force.order.retreatLevel * set.getValue());
                     //whiteRetreaters.add(force);
                     whiteToRetreat.add(force);
                 }
@@ -688,7 +694,9 @@ public class Fighting {
 
             for (Map.Entry<Force, Integer> set : black.entrySet()) {
                 Force force = set.getKey();
+                System.out.println("Black Force Strength is " + force.strength + ", Retreat Level is " + force.order.retreatLevel * set.getValue() + ". Initial strength was " + set.getValue());
                 if (force.strength <= force.order.retreatLevel * set.getValue()) {
+                    //System.out.println("White Force Strength is " + force.strength + ", Retreat Level is " + force.order.retreatLevel * set.getValue());
                     //blackRetreaters.add(force);
                     blackToRetreat.add(force);
                 }
@@ -1013,7 +1021,8 @@ public class Fighting {
     }
 
     public void join(Force force) {
-
+        if(force.nation.color == WHITE) whiteAdditional += force.strength;
+        if(force.nation.color == BLACK) blackAdditional += force.strength;
     }
 
     private int pursuitRetreaters(Force force) {

@@ -243,7 +243,7 @@ public class Force extends Image {
         officers = new ArrayList<Commander>();
         trace = new Trace();
         trace.add(hex);
-        order = new Order(false, 0, 0);
+        order = new Order(true, 0.7, 0);
         speed = 100;
         //TODO this should be moved to the constructor with Play
         setTouchable(Touchable.enabled);
@@ -1140,6 +1140,16 @@ public class Force extends Image {
         setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
         //trace.add(hex);
         if (backHex != hex) fatigue(FATIGUE_DROP / 2);
+
+        if (hex.containsEnemy(this)) {
+            if (hex.fighting == null) {
+                Fighting fighting = hex.startFighting();
+                fighting.resolve();
+            }
+            else {
+                hex.fighting.join(this);
+            }
+        }
     }
 
     public double forage() {
