@@ -1245,6 +1245,17 @@ public class Fighting {
         else return 1.0;
     }
 
+    private double getAverageMorale (Array<Force> forces) {
+        int sumStrength = 0;
+        double sumMorale = 0;
+        for (Force force : forces) {
+            sumStrength += force.strength;
+            sumMorale += force.morale * force.strength;
+        }
+        if (sumStrength > 0) return sumMorale / sumStrength;
+        else return 1.0;
+    }
+
 
     private Force getEnemyRandomForce(Force force) {
         Set<Force> enemy = null;

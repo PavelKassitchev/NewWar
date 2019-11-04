@@ -1202,6 +1202,10 @@ public class Force extends Image {
         strength = 0;
     }
 
+    public void route() {
+        if(isUnit) ((Unit)this).route();
+    }
+
     public void setRetreatDirection(Set<Force> enemies, boolean dispersed) {
         Set<Direction> directions = new HashSet<Direction>();
         for (Force f : enemies) {
