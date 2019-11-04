@@ -244,6 +244,7 @@ public class Unit extends Force {
     }
     public void route() {
         if (isSub) superForce.detach(this);
+        System.out.println(nation.color + " Retreat Direction inside route() method, it is " + order.retreatDirection);
         Hex hx = hex.getNeighbour(order.retreatDirection);
         if(hx == null) {
             //surrender();

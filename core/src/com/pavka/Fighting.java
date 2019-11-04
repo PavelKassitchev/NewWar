@@ -234,7 +234,12 @@ public class Fighting {
 
         for (Force f : hex.whiteForces) {
             if (blackAdvantage && f.morale <= 0) {
-                whiteBroken.add(f);
+                if (getAverageMorale(hex.blackForces) > MIN_MORALE) whiteBroken.add(f);
+                else {
+                    f.route();
+                    System.out.println("White " + f.strength + " routed to hex " + f.hex.row + " " +  f.hex.col);
+                }
+
             } else {
                 if (!white.containsKey(f)) white.put(f, f.strength);
                 //TODO check back hex property
@@ -278,7 +283,11 @@ public class Fighting {
 
         for (Force f : hex.blackForces) {
             if (whiteAdvantage && f.morale <= 0) {
-                blackBroken.add(f);
+                if (getAverageMorale(hex.whiteForces) > MIN_MORALE) blackBroken.add(f);
+                else {
+                    f.route();
+                    System.out.println("Black " + f.strength + " routed to hex " + f.hex.row + " " + f.hex.col);
+                }
             } else {
                 if (!black.containsKey(f)) black.put(f, f.strength);
                 if (f.order.frontDirection != null) {
