@@ -716,8 +716,9 @@ public class Fighting {
             }
 
             if (whiteToRetreat.size() == white.size() && blackToRetreat.size() != black.size()) {
-                System.out.println("WHITE TO RETREAT  = WHITE, BLACK TO RETREAT ! = BLACK");
+                System.out.println("WHITE TO RETREAT  = WHITE, " + white.size() + ", BLACK TO RETREAT ! = BLACK");
                 for (Force force : whiteToRetreat) {
+                    System.out.println("White FORCE of strength " + force.strength + " added to retreaters");
                     whiteRetreaters.add(force);
                     white.remove(force);
                     whiteImprisoned += pursuitRetreaters(force);
