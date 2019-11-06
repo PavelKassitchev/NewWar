@@ -434,6 +434,7 @@ public class Fighting {
         System.out.println("WHITE: current strength - " + whiteStrength + " killed - " + whiteCasualties + " imprisoned - " + whiteImprisoned);
         System.out.println("White Units Length = " + whiteUnits.size());
         System.out.println("White Fire = " + whiteFire + " WhiteCharge = " + whiteCharge);
+        System.out.println("WHITES: " + white.size());
 
         System.out.println();
         System.out.println("BLACK: current strength - " + blackStrength + " killed - " + blackCasualties + " imprisoned - " + blackImprisoned);
@@ -646,15 +647,13 @@ public class Fighting {
             blackStrength = 0;
 
             for (Force force : hex.whiteForces) {
-                if (force.strength == 0) white.remove(force);
-                else {
+                if (force.strength != 0) {
                     whiteStrength += force.strength;
                     force.distributeAmmo(0);
                 }
             }
             for (Force force : hex.blackForces) {
-                if (force.strength == 0) black.remove(force);
-                else {
+                if (force.strength != 0) {
                     blackStrength += force.strength;
                     force.distributeAmmo(0);
                 }
