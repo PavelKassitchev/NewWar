@@ -1,8 +1,9 @@
 package com.pavka;
 
 
-import static com.pavka.Nation.AUSTRIA;
-import static com.pavka.Nation.FRANCE;
+import com.badlogic.gdx.utils.Array;
+
+import static com.pavka.Nation.*;
 
 public class Unit extends Force {
 
@@ -242,7 +243,7 @@ public class Unit extends Force {
         if (isSub) superForce.doFire(ammoStock - initStock, fire - fireAttack);
         return fireAttack;
     }
-    public void route() {
+    public int route() {
         if (isSub) superForce.detach(this);
         System.out.println(nation.color + " Retreat Direction inside route() method, it is " + order.retreatDirection);
         Hex hx = hex.getNeighbour(order.retreatDirection);
@@ -250,6 +251,20 @@ public class Unit extends Force {
             //surrender();
         }
         else moveTo(hx);
+
+        while(hex.containsEnemy(this)) {
+            Array<Force> enemies = nation.color == BLACK? hex.whiteForces : hex.blackForces;
+            int totalStrength = 0;
+            for (Force e: enemies) {
+                if (e.morale > Fighting.MIN_MORALE) totalStrength += e.strength;
+            }
+            if (totalStrength > strength) return surrender();
+            else {
+                Hex x = hex.getNeighbour(order.retreatDirection);
+                moveTo(x);
+            }
+        }
+        return 0;
 
     }
 

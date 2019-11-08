@@ -377,6 +377,7 @@ public class Force extends Image {
         //TODO This may be a mistake! What if the force isn't in forces list?
         forces.remove(force);
         force.order = new Order();
+        force.setFrontDirection(order.frontDirection);
         force.trace = new Trace();
         force.trace.add(hex);
         force.message = null;
@@ -1101,6 +1102,7 @@ public class Force extends Image {
                 //symbol.setY(newHex.getRelY() - 8);
                 //hex = newHex;
                 setHex(newHex);
+                setFrontDirection(backHex.getDirection(hex));
                 //if (general != null) general.hex = hex;
                 setBounds(newHex.getRelX() - 8, newHex.getRelY() - 8, 12, 12);
                 hex.locate(this);
@@ -1137,11 +1139,12 @@ public class Force extends Image {
         hex.locate(this);
         //this.hex = hex;
         setHex(hex);
+        setFrontDirection(backHex.getDirection(hex));
         setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
         //trace.add(hex);
         if (backHex != hex) fatigue(FATIGUE_DROP / 2);
 
-        if (hex.containsEnemy(this)) {
+        if (hex.containsEnemy(this) && morale > Fighting.MIN_MORALE) {
             if (hex.fighting == null) {
                 Fighting fighting = hex.startFighting();
                 fighting.resolve();
@@ -1202,8 +1205,42 @@ public class Force extends Image {
         strength = 0;
     }
 
-    public void route() {
-        if(isUnit) ((Unit)this).route();
+    public int route() {
+        if(isUnit) return ((Unit)this).route();
+        return 0;
+    }
+
+    public void determineRetreatDirection(Set<Direction> directions) {
+        if(order.frontDirection != null && !directions.contains(order.frontDirection)) {
+            order.retreatDirection = order.frontDirection.getOpposite();
+        }
+        //TODO clean Set all if found not necessary
+
+        else {
+            Set<Direction> dirToRetreat = new HashSet<Direction>();
+            Set<Direction> all = Direction.asSet();
+            for (Direction d: directions) {
+                all.remove(d.getOpposite());
+                if(dirToRetreat.contains(d.getOpposite())) {
+                    dirToRetreat.remove(d.getOpposite());
+                }
+                else {
+                    dirToRetreat.add(d);
+                }
+            }
+            if (all.isEmpty()) order.retreatDirection = null;
+            else {
+                int index = (int)(new Random().nextDouble() * dirToRetreat.size());
+                for (Direction d: dirToRetreat) {
+                    if(index == 0) {
+                        order.retreatDirection = d;
+                        break;
+                    }
+                    index--;
+                }
+            }
+        }
+
     }
 
     public void setRetreatDirection(Set<Force> enemies, boolean dispersed) {
@@ -1397,30 +1434,44 @@ public class Force extends Image {
 
     private int actMorning() {
         int casualties = routine();
+        Hex start = hex;
         doOrders();
         //System.out.println("Morning food: " + foodStock + " Morning strength: " + strength);
+        //Hex finish = hex;
+        if(start == hex) setFrontDirection(null);
+        //else order.frontDirection = null;*/
         return casualties;
     }
 
     private int actMidday(boolean forcedMarch) {
         int casualties = routine();
+        Hex start = hex;
         if (forcedMarch) doOrders();
         else rest();
         //System.out.println("Midday food: " + foodStock + " Midday strength: " + strength);
+        //Hex finish = hex;
+        if(start == hex) setFrontDirection(null);
+        //else order.frontDirection = null;*/
         return casualties;
     }
 
     private int actEvening() {
         int casualties = routine();
+        Hex start = hex;
         doOrders();
         //System.out.println("Evening food: " + foodStock + " Evening strength: " + strength);
+        //Hex finish = hex;
+        if(start == hex) setFrontDirection(null);
+        //else order.frontDirection = null;*/
         return casualties;
     }
 
     private int actNight() {
         int casualties = routine();
         rest();
+        //order.frontDirection = null;
         //System.out.println("Night food: " + foodStock + " Night strength: " + strength);
+        setFrontDirection(null);
         return casualties;
     }
 
@@ -1434,6 +1485,15 @@ public class Force extends Image {
         casualties = suffer();
         //System.out.println("In the forth Routine casualties: " + casualties);
         return casualties;
+    }
+
+    private void setFrontDirection(Direction direction) {
+        order.frontDirection = direction;
+        if(!isUnit) {
+            for (Force f: forces) {
+                f.setFrontDirection(direction);
+            }
+        }
     }
 
 }

@@ -308,6 +308,9 @@ public class Play extends Stage implements Screen {
             }*/
             for (time = 0; time < 4; time++) act();
 
+            System.out.println();
+            System.out.println("Number of battles = " + Fighting.battles);
+            System.out.println();
 
         }
 

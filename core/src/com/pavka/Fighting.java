@@ -37,6 +37,8 @@ public class Fighting {
     public static final double NO_SCREEN_PENALTY = 1.5;
     public static final double MORALE_PURSUIT = 0.6;
 
+    public static int battles;
+
     private Hex hex;
 
     HashMap<Force, Integer> white;
@@ -94,6 +96,7 @@ public class Fighting {
     int blackSurrendedWagons;
 
     public Fighting(Hex h) {
+        battles++;
         hex = h;
         random = new Random();
 
@@ -236,7 +239,8 @@ public class Fighting {
             if (blackAdvantage && f.morale <= 0) {
                 if (getAverageMorale(hex.blackForces) > MIN_MORALE) whiteBroken.add(f);
                 else {
-                    f.route();
+                    whiteImprisoned += f.route();
+                    if (f.strength != 0) whiteDisordered += f.strength;
                     System.out.println("White " + f.strength + " routed to hex " + f.hex.row + " " +  f.hex.col);
                 }
 
@@ -285,7 +289,8 @@ public class Fighting {
             if (whiteAdvantage && f.morale <= 0) {
                 if (getAverageMorale(hex.whiteForces) > MIN_MORALE) blackBroken.add(f);
                 else {
-                    f.route();
+                    blackImprisoned += f.route();
+                    if (f.strength !=0) blackDisordered += f.strength;
                     System.out.println("Black " + f.strength + " routed to hex " + f.hex.row + " " + f.hex.col);
                 }
             } else {
@@ -609,8 +614,10 @@ public class Fighting {
                         if (unit != null) {
                             unit.isDisordered = false;
                             whiteRouted.add(unit);
-                            unit.setRetreatDirection(black.keySet(), true);
-                            unit.route();
+                            //unit.setRetreatDirection(black.keySet(), true);
+                            unit.determineRetreatDirection(blackFronts);
+                            if(unit.order.retreatDirection == null) whiteImprisoned += unit.surrender();
+                            else whiteImprisoned += unit.route();
                         }
 
                     } else whiteLosing = true;
@@ -636,8 +643,9 @@ public class Fighting {
                         if (unit != null) {
                             unit.isDisordered = false;
                             blackRouted.add(unit);
-                            unit.setRetreatDirection(white.keySet(), true);
-                            unit.route();
+                            unit.determineRetreatDirection(whiteFronts);
+                            if(unit.order.retreatDirection == null) blackImprisoned += unit.surrender();
+                            else blackImprisoned += unit.route();
                         }
                     } else blackLosing = true;
                 }
@@ -798,8 +806,9 @@ public class Fighting {
                     u.isDisordered = false;
                     whiteRouted.add(u);
                     Force f = u.superForce;
-                    u.setRetreatDirection(black.keySet(), true);
-                    u.route();
+                    u.determineRetreatDirection(blackFronts);
+                    if(u.order.retreatDirection == null) whiteImprisoned += u.surrender();
+                    else whiteImprisoned += u.route();
 
                     /*whiteImprisoned += pursuit(u);
                     whiteDisordered += u.strength;*/
@@ -820,8 +829,9 @@ public class Fighting {
                     u.isDisordered = false;
                     blackRouted.add(u);
                     Force f = u.superForce;
-                    u.setRetreatDirection(white.keySet(), true);
-                    u.route();
+                    u.determineRetreatDirection(whiteFronts);
+                    if(u.order.retreatDirection == null) blackImprisoned += u.surrender();
+                    else blackImprisoned += u.route();
 
                     /*blackImprisoned += pursuit(u);
                     blackDisordered += u.strength;*/
@@ -860,9 +870,10 @@ public class Fighting {
         if (winner == 1) {
             for (Force f : blackRetreaters) {
                 //f.surrenderWagons(1);
-                f.setRetreatDirection(white.keySet(), false);
-                f.retreat();
-                if (f.strength == 0 && f.forces.isEmpty()) f.disappear();
+                f.determineRetreatDirection(whiteFronts);
+                if(f.order.retreatDirection == null) blackImprisoned += f.surrender();
+                else f.retreat();
+                if (f != null && f.strength == 0 && f.forces.isEmpty()) f.disappear();
             }
             for (Unit u : blackRouted) {
                 System.out.println("Black Unit Routes, strength = " + u.strength);
@@ -874,9 +885,10 @@ public class Fighting {
         if (winner == -1) {
             for (Force f : whiteRetreaters) {
                 //f.surrenderWagons(1);
-                f.setRetreatDirection(black.keySet(), false);
-                f.retreat();
-                if (f.strength == 0 && f.forces.isEmpty()) f.disappear();
+                f.determineRetreatDirection(blackFronts);
+                if(f.order.retreatDirection == null) whiteImprisoned += f.surrender();
+                else f.retreat();
+                if (f != null && f.strength == 0 && f.forces.isEmpty()) f.disappear();
             }
             for (Unit u : whiteRouted) {
                 whiteImprisoned += pursuit(u);
@@ -887,26 +899,29 @@ public class Fighting {
         if(isOver && winner == 0) {
             for (Force f : blackRetreaters) {
                 //f.surrenderWagons(1);
-                f.setRetreatDirection(white.keySet(), false);
-                f.retreat();
-                if (f.strength == 0 && f.forces.isEmpty()) f.disappear();
+                f.determineRetreatDirection(whiteFronts);
+                if(f.order.retreatDirection == null) blackImprisoned += f.surrender();
+                else f.retreat();
+                if (f !=null && f.strength == 0 && f.forces.isEmpty()) f.disappear();
             }
             for (Unit u : blackRouted) {
                 blackImprisoned += pursuit(u);
                 blackDisordered += u.strength;
             }
-            for (Unit u : whiteRouted) whiteDisordered += u.strength;
+            //for (Unit u : whiteRouted) whiteDisordered += u.strength;
+
             for (Force f : whiteRetreaters) {
                 //f.surrenderWagons(1);
-                f.setRetreatDirection(black.keySet(), false);
-                f.retreat();
-                if (f.strength == 0 && f.forces.isEmpty()) f.disappear();
+                f.determineRetreatDirection(blackFronts);
+                if(f.order.retreatDirection == null) whiteImprisoned += f.surrender();
+                else f.retreat();
+                if (f != null && f.strength == 0 && f.forces.isEmpty()) f.disappear();
             }
             for (Unit u : whiteRouted) {
                 whiteImprisoned += pursuit(u);
                 whiteDisordered += u.strength;
             }
-            for (Unit u : blackRouted) blackDisordered += u.strength;
+            //for (Unit u : blackRouted) blackDisordered += u.strength;
 
         }
         System.out.println("CHECK. STAGE " + stage);
