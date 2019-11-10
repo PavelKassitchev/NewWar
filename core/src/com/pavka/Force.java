@@ -387,7 +387,7 @@ public class Force extends Image {
         //force.setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
         if (play != null) {
             System.out.println("This is in detach, if play != null but = " + play);
-            System.out.println("Detaching from... Strength: " + force.strength + " Hex: " + force.hex.getRelX() + " " + force.hex.getRelY());
+            System.out.println("Detaching... Strength: " + force.strength + " Hex: " + force.hex.getRelX() + " " + force.hex.getRelY() + " frontDirection = " + force.order.frontDirection);
             force.setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 12, 12);
             play.addActor(force);
             force.setPlay(play);
