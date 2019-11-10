@@ -407,6 +407,14 @@ public class Play extends Stage implements Screen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        //NEW VERSION
+
+        return true;
+    }
+
+    //OLD VERSION
+
+    /*{
         if (button == Input.Buttons.LEFT) {
 
             Actor hex = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
@@ -439,7 +447,6 @@ public class Play extends Stage implements Screen {
                 selectedPaths = null;
                 if (control != null) control.remove();
             } else {
-                //Actor hex = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
                 if (actor instanceof Hex) {
                     control = new Control((Hex) actor);
                     addActor(control);
@@ -457,10 +464,16 @@ public class Play extends Stage implements Screen {
         }
 
         return true;
-    }
+    }*/
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        //NEW VERSION
+
+        return true;
+    }
+    //OLD VERSION
+    /*{
         if (button == Input.Buttons.LEFT) {
 
             System.out.println("Touch UP Pos: " + getMousePosOnMap().x + " " + getMousePosOnMap().y);
@@ -472,25 +485,12 @@ public class Play extends Stage implements Screen {
                 System.out.println("YES!");
                 Hex start = paths.first().fromHex;
                 Hex finish = paths.peek().toHex;
-                //Hex end = finish;
+
                 if (selectedHex != endHex) {
-                    //Hex interm = (Hex) actor;
-                    //paths = navigate(start, interm);
-                    //paths.addAll(navigate(interm, endHex));
-                    //endHex = finish;
+
                 } else {
                     endHex = (Hex) actor;
                 }
-
-            /*if (selectedHex != endHex) {
-                Hex interm = (Hex)actor;
-                paths = navigate(startHex, interm);
-                paths.addAll(navigate(interm, endHex));
-            }
-            else {
-                endHex = (Hex)actor;
-                paths = navigate(startHex, endHex);
-            }*/
 
 
                 mileStone.remove();
@@ -547,8 +547,7 @@ public class Play extends Stage implements Screen {
                             navigate(selectedForce.getForceSpeed());
                             selectedForce.order.setPathsOrder(paths);
                             selectedForce.order.mileStone = mileStone;
-                            //selectedForce.isSelected = false;
-                            //selectedForce = null;
+
                         }
                     }
 
@@ -568,8 +567,7 @@ public class Play extends Stage implements Screen {
                             selectedForce.order.setPathsOrder(paths);
                             selectedForce.order.mileStone = mileStone;
                             //TODO attach?
-                            //selectedForce.isSelected = false;
-                            //selectedForce = null;
+
                         }
                     }
 
@@ -608,7 +606,7 @@ public class Play extends Stage implements Screen {
 
 
         return false;
-    }
+    }*/
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
@@ -636,7 +634,7 @@ public class Play extends Stage implements Screen {
         }
 
 
-        return false;
+        return true;
     }
 
     @Override
