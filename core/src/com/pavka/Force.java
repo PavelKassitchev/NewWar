@@ -173,7 +173,7 @@ public class Force extends Image {
     @Override
     public String toString() {
         String type = "";
-        if (isUnit) type += ", Type" + ((Unit) this).type;
+        if (isUnit) type += ", Type " + ((Unit) this).type;
         return nation + ": " + strength + " mrl: " + ((int) (morale * 100) / 100.0) + " ftg: " + ((int) (fatigue * 100) / 100.0) +
                 " food: " + ((int) (foodStock * 100) / 100.0)
                 + " ammo: " + ((int) (ammoStock * 100) / 100.0) + type;

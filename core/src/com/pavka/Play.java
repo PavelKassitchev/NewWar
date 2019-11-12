@@ -408,6 +408,45 @@ public class Play extends Stage implements Screen {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         //NEW VERSION
+        if(button == Input.Buttons.LEFT) {
+            Hex h = null;
+            Array<Force> forcesOnHex = null;
+            Base baseOnHex = null;
+            Actor a = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
+            if(a instanceof Hex) {
+                h = (Hex)a;
+
+                if(!h.whiteForces.isEmpty()) forcesOnHex = h.whiteForces;
+                if(!h.blackForces.isEmpty()) forcesOnHex = h.blackForces;
+
+                if(h.base != null) baseOnHex = h.base;
+
+            }
+
+            if(a instanceof Base) {
+                baseOnHex = (Base)a;
+                h = baseOnHex.hex;
+
+                if(!h.whiteForces.isEmpty()) forcesOnHex = h.whiteForces;
+                if(!h.blackForces.isEmpty()) forcesOnHex = h.blackForces;
+
+            }
+
+            if(a instanceof Force) {
+                Force f = (Force)a;
+                h = f.hex;
+
+                if(!h.whiteForces.isEmpty()) forcesOnHex = h.whiteForces;
+                if(!h.blackForces.isEmpty()) forcesOnHex = h.blackForces;
+
+                if(h.base != null) baseOnHex = h.base;
+
+            }
+            System.out.println("Actor = " + a);
+            System.out.println("Hex = " + h);
+            if(forcesOnHex != null) System.out.println(forcesOnHex);
+            if(baseOnHex != null) System.out.println(baseOnHex);
+        }
 
         return true;
     }
