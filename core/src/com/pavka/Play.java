@@ -67,6 +67,8 @@ public class Play extends Stage implements Screen {
 
     private Control control;
 
+    private Tableau tableau;
+
     //TODO exclude this variables
 
     private Force austria;
@@ -205,7 +207,7 @@ public class Play extends Stage implements Screen {
             addActor(france);
         }
 
-        if(keycode == Input.Keys.O) {
+        if (keycode == Input.Keys.O) {
             /*Force force = new Force(new Squadron(this, Nation.AUSTRIA, hexGraph.getHex(18, 18)), new Squadron(this, Nation.AUSTRIA, hexGraph.getHex(18, 18)));
             force.order.isForaging = 0.9;
             force.order.seekBattle = true;
@@ -222,28 +224,26 @@ public class Play extends Stage implements Screen {
             addActor(austria);
         }
 
-        if(keycode == Input.Keys.B) {
+        if (keycode == Input.Keys.B) {
 
             a = new Base(this, Nation.AUSTRIA, hexGraph.getHex(28, 28));
             //addActor(a);
 
         }
-        if(keycode == Input.Keys.R) {
+        if (keycode == Input.Keys.R) {
             b = new Base(this, Nation.FRANCE, hexGraph.getHex(2, 2));
             //addActor(b);
         }
-        if(keycode == Input.Keys.P) {
+        if (keycode == Input.Keys.P) {
 
             a.sendSupplies(austria, 250, 50);
             //System.out.println(train.order.pathsOrder);
         }
-        if(keycode == Input.Keys.L) {
+        if (keycode == Input.Keys.L) {
 
             b.sendSupplies(france, 250, 50);
             //System.out.println(train.order.pathsOrder);
         }
-
-
 
 
         if (keycode == Input.Keys.T) {
@@ -332,12 +332,12 @@ public class Play extends Stage implements Screen {
                 System.out.println(force.forage());
             }
         }
-        if(keycode == Input.Keys.U) {
+        if (keycode == Input.Keys.U) {
             System.out.println("White bases: " + whiteBases);
-            for(Base base: blackBases) System.out.println(base);
+            for (Base base : blackBases) System.out.println(base);
         }
-        if(keycode == Input.Keys.Z) {
-            if(selectedForce != null) Test.list(selectedForce);
+        if (keycode == Input.Keys.Z) {
+            if (selectedForce != null) Test.list(selectedForce);
         }
         return true;
 
@@ -350,12 +350,12 @@ public class Play extends Stage implements Screen {
 
     public static Base selectRandomBase(int color) {
         Array<Base> bases = null;
-        switch(color) {
+        switch (color) {
             case WHITE:
                 bases = whiteBases;
                 break;
             case BLACK:
-                bases= blackBases;
+                bases = blackBases;
                 break;
         }
         Random random = new Random();
@@ -369,7 +369,7 @@ public class Play extends Stage implements Screen {
             graphPath = hexGraph.findPath(start, finish);
             Iterator<Hex> iterator = graphPath.iterator();
             Hex sHex = null;
-            if(iterator.hasNext()) sHex = iterator.next();
+            if (iterator.hasNext()) sHex = iterator.next();
             Hex eHex;
             while (iterator.hasNext()) {
                 eHex = iterator.next();
@@ -408,44 +408,63 @@ public class Play extends Stage implements Screen {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         //NEW VERSION
-        if(button == Input.Buttons.LEFT) {
+        if (button == Input.Buttons.LEFT) {
+
             Hex h = null;
             Array<Force> forcesOnHex = null;
             Base baseOnHex = null;
+
             Actor a = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
-            if(a instanceof Hex) {
-                h = (Hex)a;
 
-                if(!h.whiteForces.isEmpty()) forcesOnHex = h.whiteForces;
-                if(!h.blackForces.isEmpty()) forcesOnHex = h.blackForces;
+            if (!secondClick) {
 
-                if(h.base != null) baseOnHex = h.base;
+                if (a instanceof Hex) {
+                    h = (Hex) a;
 
+                    if (!h.whiteForces.isEmpty()) forcesOnHex = h.whiteForces;
+                    if (!h.blackForces.isEmpty()) forcesOnHex = h.blackForces;
+
+                    if (h.base != null) baseOnHex = h.base;
+
+                }
+
+                if (a instanceof Base) {
+                    baseOnHex = (Base) a;
+                    h = baseOnHex.hex;
+
+                    if (!h.whiteForces.isEmpty()) forcesOnHex = h.whiteForces;
+                    if (!h.blackForces.isEmpty()) forcesOnHex = h.blackForces;
+
+                }
+
+                if (a instanceof Force) {
+                    Force f = (Force) a;
+                    h = f.hex;
+
+                    if (!h.whiteForces.isEmpty()) forcesOnHex = h.whiteForces;
+                    if (!h.blackForces.isEmpty()) forcesOnHex = h.blackForces;
+
+                    if (h.base != null) baseOnHex = h.base;
+
+                }
+                System.out.println("Actor = " + a);
+                System.out.println("Hex = " + h);
+                if (forcesOnHex != null) System.out.println(forcesOnHex);
+                if (baseOnHex != null) System.out.println(baseOnHex);
+                tableau = new Tableau(this, h, forcesOnHex, baseOnHex);
+                addActor(tableau);
+                tableau.init();
+
+                secondClick = true;
             }
 
-            if(a instanceof Base) {
-                baseOnHex = (Base)a;
-                h = baseOnHex.hex;
-
-                if(!h.whiteForces.isEmpty()) forcesOnHex = h.whiteForces;
-                if(!h.blackForces.isEmpty()) forcesOnHex = h.blackForces;
-
+            else {
+                if(a instanceof Label) System.out.println("Fantastic! It's a label!");
+                else if(a instanceof Tableau) {
+                    System.out.println("Great! It's Tableau!");
+                    System.out.println("Cost Label touchable = " + tableau.costLabel.isTouchable());
+                }
             }
-
-            if(a instanceof Force) {
-                Force f = (Force)a;
-                h = f.hex;
-
-                if(!h.whiteForces.isEmpty()) forcesOnHex = h.whiteForces;
-                if(!h.blackForces.isEmpty()) forcesOnHex = h.blackForces;
-
-                if(h.base != null) baseOnHex = h.base;
-
-            }
-            System.out.println("Actor = " + a);
-            System.out.println("Hex = " + h);
-            if(forcesOnHex != null) System.out.println(forcesOnHex);
-            if(baseOnHex != null) System.out.println(baseOnHex);
         }
 
         return true;
