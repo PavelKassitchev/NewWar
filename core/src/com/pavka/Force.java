@@ -170,6 +170,12 @@ public class Force extends Image {
 
     //new retreat method
 
+    public String getGeneralInfo() {
+        String type = "";
+        if (isUnit) type += ", Type " + ((Unit) this).type;
+        return nation + " Strength: " + strength + type;
+    }
+
     @Override
     public String toString() {
         String type = "";

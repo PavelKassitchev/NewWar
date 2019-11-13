@@ -26,24 +26,35 @@ public class Tableau extends Table {
     }
 
     public void init() {
+
         BitmapFont font = new BitmapFont();
         font.getData().setScale(0.7f);
         costLabel = new Label("Cost: " + hex.cell.getTile().getProperties().get("cost"),
                 new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
+        //costLabel.setWidth(18);
         costLabel.setWrap(true);
         play.addActor(costLabel);
-        add(costLabel);
+        add(costLabel).width(64f);
+
+        System.out.println(costLabel.getPrefWidth() + " " + costLabel.getStyle());
+        costLabel.setAlignment(0);
         row();
-        Label cropsLabel = new Label("Crops: " + hex.currentHarvest, new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
+        Label cropsLabel = new Label("Crops: " + hex.currentHarvest,
+                new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
+        cropsLabel.setWrap(true);
+        play.addActor(cropsLabel);
         add(cropsLabel);
         cropsLabel.setWrap(true);
+        cropsLabel.setAlignment(0);
         row();
         if (forces != null && forces.size > 0) {
             for (Force f : forces) {
                 //Label forceLabel = new Label("Forces: " + forces, new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
-                Label forceLabel = new Label(f.toString(), new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
+                Label forceLabel = new Label(f.getGeneralInfo(), new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
                 forceLabel.setWrap(true);
-                add(forceLabel);
+                play.addActor(forceLabel);
+                add(forceLabel).width(128f);
+                forceLabel.setAlignment(0);
                 row();
             }
         }
@@ -54,7 +65,7 @@ public class Tableau extends Table {
             row();
         }
         setPosition(hex.getX(), hex.getY());
-        setBounds(getX() - 8, getY() - 8, 64, 64);
+        setBounds(getX() - 8, getY() - 8, 164, 64);
         setTouchable(Touchable.enabled);
         setVisible(true);
         //setColor(0, 0, 0, 1);
