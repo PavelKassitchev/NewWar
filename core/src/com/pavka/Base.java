@@ -50,6 +50,9 @@ public class Base extends Image implements Supplier {
     public String toString() {
         return "BASE. Food: " + foodStock + " Ammo: " + ammoStock + " Hex: column: " + hex.col + " row: " + hex.row;
     }
+    public String getGeneralInfo() {
+        return "BASE " + nation + ", " + foodStock + " / " + ammoStock;
+    }
     @Override
     public void draw(Batch batch, float alpha) {
         Texture texture = nation == FRANCE ? textureFrance : textureAustria;

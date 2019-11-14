@@ -462,7 +462,6 @@ public class Play extends Stage implements Screen {
                 if(a instanceof Label) System.out.println("Fantastic! It's a label!");
                 else if(a instanceof Tableau) {
                     System.out.println("Great! It's Tableau!");
-                    System.out.println("Cost Label touchable = " + tableau.costLabel.isTouchable());
                 }
             }
         }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 
 public class Tableau extends Table {
@@ -15,8 +16,9 @@ public class Tableau extends Table {
     Hex hex;
     Array<Force> forces;
     Base base;
+    float totalHeight;
 
-    Label costLabel;
+    Label hexLabel;
 
     public Tableau(Play play, Hex hex, Array<Force> forces, Base base) {
         this.play = play;
@@ -29,43 +31,43 @@ public class Tableau extends Table {
 
         BitmapFont font = new BitmapFont();
         font.getData().setScale(0.7f);
-        costLabel = new Label("Cost: " + hex.cell.getTile().getProperties().get("cost"),
-                new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
-        //costLabel.setWidth(18);
-        costLabel.setWrap(true);
-        play.addActor(costLabel);
-        add(costLabel).width(64f);
+        Label.LabelStyle style = new Label.LabelStyle(font, new Color(1, 0, 0, 1));
 
-        System.out.println(costLabel.getPrefWidth() + " " + costLabel.getStyle());
-        costLabel.setAlignment(0);
+        hexLabel = new Label("Cost: " + hex.cell.getTile().getProperties().get("cost") + " Crops: " + hex.currentHarvest,
+                style);
+        //costLabel.setWidth(18);
+        hexLabel.setWrap(true);
+        play.addActor(hexLabel);
+        add(hexLabel).width(140f);
+        hexLabel.setAlignment(0);
+        hexLabel.setDebug(true);
+        totalHeight += hexLabel.getPrefHeight();
         row();
-        Label cropsLabel = new Label("Crops: " + hex.currentHarvest,
-                new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
-        cropsLabel.setWrap(true);
-        play.addActor(cropsLabel);
-        add(cropsLabel);
-        cropsLabel.setWrap(true);
-        cropsLabel.setAlignment(0);
-        row();
+
         if (forces != null && forces.size > 0) {
             for (Force f : forces) {
                 //Label forceLabel = new Label("Forces: " + forces, new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
                 Label forceLabel = new Label(f.getGeneralInfo(), new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
                 forceLabel.setWrap(true);
                 play.addActor(forceLabel);
-                add(forceLabel).width(128f);
+                add(forceLabel).width(140f);
                 forceLabel.setAlignment(0);
+                forceLabel.setDebug(true);
+                totalHeight += forceLabel.getPrefHeight();
                 row();
             }
         }
         if (base != null) {
-            Label baseLabel = new Label(hex.base.toString(), new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
+            Label baseLabel = new Label(base.getGeneralInfo(), new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
             baseLabel.setWrap(true);
-            add(baseLabel);
-            row();
+            play.addActor(baseLabel);
+            add(baseLabel).width(140f);
+            baseLabel.setDebug(true);
+            totalHeight += baseLabel.getPrefHeight();
         }
+        System.out.println("Height is " + totalHeight);
         setPosition(hex.getX(), hex.getY());
-        setBounds(getX() - 8, getY() - 8, 164, 64);
+        setBounds(getX() - 8, getY() - 8, 164, totalHeight);
         setTouchable(Touchable.enabled);
         setVisible(true);
         //setColor(0, 0, 0, 1);
