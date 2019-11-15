@@ -17,6 +17,7 @@ public class Hex extends Image {
     public int col;
     public int row;
     public String name;
+    public boolean isSelected;
     public double maxHarvest = 6;
     public double currentHarvest;
     public int index;

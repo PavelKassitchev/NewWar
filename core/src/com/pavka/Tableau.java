@@ -21,6 +21,8 @@ public class Tableau extends Table {
     float totalHeight;
 
     Label hexLabel;
+    Label baseLabel;
+    Label[] forceLabels;
 
     public Tableau(Play play, Hex hex, Array<Force> forces, Base base) {
         this.play = play;
@@ -33,41 +35,26 @@ public class Tableau extends Table {
 
         BitmapFont font = new BitmapFont();
         font.getData().setScale(0.7f);
-        Label.LabelStyle style = new Label.LabelStyle(font, new Color(1, 0, 0, 1));
+        Label.LabelStyle hexStyle = new Label.LabelStyle(font, new Color(1, 0, 0, 1));
         Pixmap labelColor = new Pixmap(1, 1, Pixmap.Format.RGB888);
         labelColor.setColor(Color.GOLD);
         labelColor.fill();
-        style.background = new Image(new Texture(labelColor)).getDrawable();
+        hexStyle.background = new Image(new Texture(labelColor)).getDrawable();
         hexLabel = new Label("Cost: " + hex.cell.getTile().getProperties().get("cost") + " Crops: " + hex.currentHarvest,
-                style);
-        //labelColor.setColor(Color.GOLD);
-        //costLabel.setWidth(18);
+                hexStyle);
         hexLabel.setWrap(true);
         play.addActor(hexLabel);
         add(hexLabel).width(140f);
-        //hexLabel.setAlignment(1);
         hexLabel.setDebug(true);
         totalHeight += hexLabel.getPrefHeight();
-        labelColor.dispose();
         row();
 
-        if (forces != null && forces.size > 0) {
-            for (Force f : forces) {
-                //Label forceLabel = new Label("Forces: " + forces, new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
-                Label forceLabel = new Label(f.getGeneralInfo(), new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
-                forceLabel.setWrap(true);
-                play.addActor(forceLabel);
-                add(forceLabel).width(140f);
-                forceLabel.pack();
-                forceLabel.setWidth(140f);
-                //forceLabel.setAlignment(0);
-                forceLabel.setDebug(true);
-                totalHeight += forceLabel.getPrefHeight();
-                row();
-            }
-        }
         if (base != null) {
-            Label baseLabel = new Label(base.getGeneralInfo(), new Label.LabelStyle(font, new Color(1, 0, 0, 1)));
+            Label.LabelStyle baseStyle = new Label.LabelStyle(font, new Color(1, 0, 0, 1));
+            labelColor.setColor(Color.CORAL);;
+            labelColor.fill();
+            baseStyle.background = new Image(new Texture(labelColor)).getDrawable();
+            baseLabel = new Label(base.getGeneralInfo(), baseStyle);
             baseLabel.setWrap(true);
 
             play.addActor(baseLabel);
@@ -76,16 +63,37 @@ public class Tableau extends Table {
             baseLabel.setWidth(140f);
             baseLabel.setDebug(true);
             totalHeight += baseLabel.getPrefHeight();
-            System.out.println(baseLabel.getHeight());
+            row();
         }
 
-        System.out.println("Height is " + totalHeight + " Rows: " + getRow(totalHeight));
+        if (forces != null && forces.size > 0) {
+            Label.LabelStyle forceStyle = new Label.LabelStyle(font, new Color(1, 0, 0, 1));
+            labelColor.setColor(Color.CYAN);;
+            labelColor.fill();
+            forceStyle.background = new Image(new Texture(labelColor)).getDrawable();
+
+            forceLabels = new Label[forces.size];
+            int i = 0;
+            for (Force f : forces) {
+                forceLabels[i] = new Label(f.getGeneralInfo(), forceStyle);
+                forceLabels[i].setWrap(true);
+                play.addActor(forceLabels[i]);
+                add(forceLabels[i]).width(140f);
+                forceLabels[i].pack();
+                forceLabels[i].setWidth(140f);
+                forceLabels[i].setDebug(true);
+                totalHeight += forceLabels[i].getPrefHeight();
+                i++;
+                if(i < forces.size) row();
+            }
+        }
+        if(base == null && (forces == null || forces.isEmpty())) hex.isSelected = true;
+
         setPosition(hex.getX(), hex.getY());
         setBounds(getX() - 8, getY() - 8, 164, totalHeight);
         setTouchable(Touchable.enabled);
         setVisible(true);
         align(1);
-        //setColor(0, 0, 0, 1);
         Skin skin = new Skin();
         Color color = new Color(0, 0, 0, 1);
         skin.add("color", color);
@@ -94,5 +102,6 @@ public class Tableau extends Table {
         skin.add("region", region);
         setSkin(skin);
         setBackground(skin.getDrawable("region"));
+        labelColor.dispose();
     }
 }

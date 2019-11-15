@@ -172,8 +172,8 @@ public class Force extends Image {
 
     public String getGeneralInfo() {
         String type = "";
-        if (isUnit) type += ", Type " + ((Unit) this).type;
-        return nation + " Strength: " + strength + type;
+        if (isUnit) type += ", " + ((Unit) this).type;
+        return nation + ": " + strength + " men" + type;
     }
 
     @Override
