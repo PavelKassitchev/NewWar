@@ -465,6 +465,7 @@ public class Play extends Stage implements Screen {
             } else {
                 if (a instanceof Label) {
                     Label label = (Label) a;
+                    System.out.println("Label touched! X = " + label.getX() + " Y = " + label.getY());
                     for (Tableau tableau : tableaus) {
                         if (label == tableau.hexLabel) {
                             tableau.hex.isSelected = true;
@@ -492,7 +493,7 @@ public class Play extends Stage implements Screen {
                                 if (label == tableau.extendButtons[i]) {
                                     System.out.println("EXTEND!");
                                     //Tableau table = new Tableau(tableauNum, this, (tableaus.get(tableauNum-1)).forces.get(i));
-                                    Tableau tab = new Tableau(tableauNum, this, tableau.forces.get(i), label);
+                                    Tableau tab = new Tableau(tableauNum, this, tableau.forces.get(i), getMousePosOnMap());
                                     //addActor(tableau);
                                     //tableau.initHex();
                                     addActor(tab);

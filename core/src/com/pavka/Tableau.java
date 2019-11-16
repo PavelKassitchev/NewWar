@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
@@ -42,7 +43,7 @@ public class Tableau extends Table {
     Label[] extendButtons;
     Label closeLabel;
 
-    public Tableau(int num, Play play, Force force, Label label) {
+    public Tableau(int num, Play play, Force force, Vector3 vector) {
         this.num = num;
         this.play = play;
         forces = new Array<Force>(force.forces.size());
@@ -75,33 +76,36 @@ public class Tableau extends Table {
         plusSkin.add("image", sprite);
         extendStyle.background = plusSkin.getDrawable("image");
 
-        Table table = new Table();
+        Table[] table = new Table[forces.size];
         int i = 0;
-
+        System.out.println("NUMBER OF LINES = " + forces.size);
         for(Force f: forces) {
             forceLabels[i] = new Label(f.getGeneralInfo(), forceStyle);
             forceLabels[i].setWrap(true);
             play.addActor(forceLabels[i]);
-            table.add().width(12);
-            table.add(forceLabels[i]).width(138f);
+            table[i] = new Table();
+            table[i].add().width(12);
+            table[i].add(forceLabels[i]).width(138f);
             forceLabels[i].pack();
             forceLabels[i].setWidth(138f);
             forceLabels[i].setDebug(true);
             totalHeight += forceLabels[i].getPrefHeight();
 
             extendButtons[i] = new Label("", extendStyle);
-            if (f.isUnit) table.add().width(12);
+            if (f.isUnit) table[i].add().width(12);
             else {
                 play.addActor(extendButtons[i]);
-                table.add(extendButtons[i]).width(12);
+                table[i].add(extendButtons[i]).width(12);
                 extendButtons[i].pack();
                 extendButtons[i].setWidth(12);
             }
-            i++;
-            add(table).width(150);
 
+            add(table[i]).width(150);
+            i++;
+            row();
         }
-        setPosition(label.getX(), label.getY());
+        System.out.println("NUMBER OF ROWS = " + i);
+        setPosition(vector.x, vector.y);
         setBounds(getX() + 8, getY() + 8, 164, totalHeight + 1);
         setTouchable(Touchable.enabled);
         setVisible(true);
@@ -117,71 +121,6 @@ public class Tableau extends Table {
         labelColor.dispose();
 
     }
-
-    public Tableau(int num, Play play, Force force){
-        this.num = num;
-        this.play = play;
-        extendingForce = force;
-        forces = new Array<Force>(extendingForce.forces.size());
-        for (Force f: extendingForce.forces) {
-            forces.add(f);
-        }
-
-        closeFont.getData().setScale(0.6f);
-        labelColor.setColor(Color.GRAY);
-        labelColor.fill();
-        closeStyle.background = new Image(new Texture(labelColor)).getDrawable();
-        closeLabel = new Label("CLOSE", closeStyle);
-        closeLabel.setAlignment(Align.right);
-        play.addActor(closeLabel);
-        add(closeLabel).width(164);
-        closeLabel.setDebug(true);
-        totalHeight += closeLabel.getPrefHeight();
-        row();
-
-        font.getData().setScale(0.7f);
-
-        labelColor.setColor(Color.CYAN);
-        labelColor.fill();
-        forceStyle.background = new Image(new Texture(labelColor)).getDrawable();
-        forceLabels = new Label[force.forces.size()];
-
-        extendButtons = new Label[force.forces.size()];
-        Texture texture = new Texture("plus-sign-in-circle.png");
-        Sprite sprite = new Sprite(texture);
-        Skin plusSkin = new Skin();
-        plusSkin.add("image", sprite);
-        extendStyle.background = plusSkin.getDrawable("image");
-
-        Table table = new Table();
-        int i = 0;
-
-        for(Force f: forces) {
-            forceLabels[i] = new Label(f.getGeneralInfo(), forceStyle);
-            forceLabels[i].setWrap(true);
-            play.addActor(forceLabels[i]);
-            table.add().width(12);
-            table.add(forceLabels[i]).width(138f);
-            forceLabels[i].pack();
-            forceLabels[i].setWidth(138f);
-            forceLabels[i].setDebug(true);
-            totalHeight += forceLabels[i].getPrefHeight();
-
-            extendButtons[i] = new Label("", extendStyle);
-            if (f.isUnit) table.add().width(12);
-            else {
-                play.addActor(extendButtons[i]);
-                table.add(extendButtons[i]).width(12);
-                extendButtons[i].pack();
-                extendButtons[i].setWidth(12);
-            }
-            i++;
-            add(table).width(150);
-
-        }
-
-    }
-
 
 
     public Tableau(int num, Play play, Hex hex, Array<Force> forces, Base base) {
@@ -260,33 +199,32 @@ public class Tableau extends Table {
             //Label.LabelStyle extendStyle = new Label.LabelStyle(font, new Color(1, 0, 0, 1));
             extendStyle.background = plusSkin.getDrawable("image");
 
-            Table table = new Table();
+            Table[] table = new Table[forces.size];
 
             int i = 0;
             for (Force f : forces) {
                 forceLabels[i] = new Label(f.getGeneralInfo(), forceStyle);
                 forceLabels[i].setWrap(true);
                 play.addActor(forceLabels[i]);
-                table.add().width(12);
-                table.add(forceLabels[i]).width(138f);
+                table[i] = new Table();
+                table[i].add().width(12);
+                table[i].add(forceLabels[i]).width(138f);
                 forceLabels[i].pack();
                 forceLabels[i].setWidth(138f);
                 forceLabels[i].setDebug(true);
                 totalHeight += forceLabels[i].getPrefHeight();
 
                 extendButtons[i] = new Label("", extendStyle);
-                if (f.isUnit) table.add().width(12);
+                if (f.isUnit) table[i].add().width(12);
                 else {
                     play.addActor(extendButtons[i]);
-                    table.add(extendButtons[i]).width(12);
+                    table[i].add(extendButtons[i]).width(12);
                     extendButtons[i].pack();
                     extendButtons[i].setWidth(12);
                 }
+                add(table[i]).width(150);
                 i++;
-                add(table).width(150);
-
-
-                //if(i < forces.size) row();
+                row();
             }
 
         }
