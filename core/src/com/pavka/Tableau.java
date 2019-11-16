@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
 public class Tableau extends Table {
@@ -23,6 +24,7 @@ public class Tableau extends Table {
     Label hexLabel;
     Label baseLabel;
     Label[] forceLabels;
+    Label closeLabel;
 
     public Tableau(Play play, Hex hex, Array<Force> forces, Base base) {
         this.play = play;
@@ -33,10 +35,26 @@ public class Tableau extends Table {
 
     public void init() {
 
+        BitmapFont closeFont = new BitmapFont();
+        closeFont.getData().setScale(0.6f);
+        Pixmap labelColor = new Pixmap(1, 1, Pixmap.Format.RGB888);
+
+        Label.LabelStyle closeStyle = new Label.LabelStyle(closeFont, debugTableColor);
+        labelColor.setColor(Color.GRAY);
+        labelColor.fill();
+        closeStyle.background = new Image(new Texture(labelColor)).getDrawable();
+        closeLabel = new Label("CLOSE", closeStyle);
+        closeLabel.setAlignment(Align.right);
+        play.addActor(closeLabel);
+        add(closeLabel).width(164);
+        closeLabel.setDebug(true);
+        totalHeight += closeLabel.getPrefHeight();
+        row();
+
         BitmapFont font = new BitmapFont();
         font.getData().setScale(0.7f);
+
         Label.LabelStyle hexStyle = new Label.LabelStyle(font, new Color(1, 0, 0, 1));
-        Pixmap labelColor = new Pixmap(1, 1, Pixmap.Format.RGB888);
         labelColor.setColor(Color.GOLD);
         labelColor.fill();
         hexStyle.background = new Image(new Texture(labelColor)).getDrawable();
@@ -90,7 +108,7 @@ public class Tableau extends Table {
         if(base == null && (forces == null || forces.isEmpty())) hex.isSelected = true;
 
         setPosition(hex.getX(), hex.getY());
-        setBounds(getX() - 8, getY() - 8, 164, totalHeight);
+        setBounds(getX()+8, getY()+8, 164, totalHeight);
         setTouchable(Touchable.enabled);
         setVisible(true);
         align(1);

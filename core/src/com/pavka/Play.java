@@ -67,7 +67,10 @@ public class Play extends Stage implements Screen {
 
     private Control control;
 
-    private Tableau tableau;
+
+    //private Tableau tableau;
+    private Array<Tableau> tableaus = new Array<Tableau>();
+    private int tableauNum;
 
     //TODO exclude this variables
 
@@ -451,18 +454,46 @@ public class Play extends Stage implements Screen {
                 System.out.println("Hex = " + h);
                 if (forcesOnHex != null) System.out.println(forcesOnHex);
                 if (baseOnHex != null) System.out.println(baseOnHex);
-                tableau = new Tableau(this, h, forcesOnHex, baseOnHex);
+                Tableau tableau = new Tableau(this, h, forcesOnHex, baseOnHex);
                 addActor(tableau);
                 tableau.init();
+                tableaus.add(tableau);
+                tableauNum++;
 
                 secondClick = true;
-            }
+            } else {
+                if (a instanceof Label) {
+                    Label label = (Label) a;
+                    for (Tableau tableau : tableaus) {
+                        if (label == tableau.hexLabel) {
+                            tableau.hex.isSelected = true;
+                            break;
+                        }
+                        else if (label == tableau.baseLabel) {
+                            System.out.println("Base Label");
+                            break;
+                        }
+                        if (label == tableau.closeLabel) {
+                            System.out.println("CLOSE");
+                            tableaus.removeValue(tableau, true);
+                            tableau.remove();
+                            tableau = null;
+                            secondClick = false;
+                        }
+                        else {
+                            for (int i = 0; i < tableau.forces.size; i++) {
+                                if (label == tableau.forceLabels[i]) {
+                                    tableau.forces.get(i).isSelected = true;
+                                    System.out.println("SELECTED FORCE: " + tableau.forces.get(i));
+                                }
+                            }
+                            break;
+                        }
 
-            else {
-                if(a instanceof Label) System.out.println("Fantastic! It's a label!");
-                else if(a instanceof Tableau) {
-                    System.out.println("Great! It's Tableau!");
+                    }
+
                 }
+
             }
         }
 
