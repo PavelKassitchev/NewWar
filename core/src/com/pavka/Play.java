@@ -454,9 +454,10 @@ public class Play extends Stage implements Screen {
                 System.out.println("Hex = " + h);
                 if (forcesOnHex != null) System.out.println(forcesOnHex);
                 if (baseOnHex != null) System.out.println(baseOnHex);
-                Tableau tableau = new Tableau(this, h, forcesOnHex, baseOnHex);
+                Tableau tableau = new Tableau(tableauNum, this, h, forcesOnHex, baseOnHex);
+                //addActor(tableau);
+                //tableau.initHex();
                 addActor(tableau);
-                tableau.init();
                 tableaus.add(tableau);
                 tableauNum++;
 
@@ -474,20 +475,33 @@ public class Play extends Stage implements Screen {
                             break;
                         }
                         if (label == tableau.closeLabel) {
-                            System.out.println("CLOSE");
+                            System.out.println("CLOSE " + tableau.num);
                             tableaus.removeValue(tableau, true);
                             tableau.remove();
                             tableau = null;
                             secondClick = false;
                         }
+
                         else {
                             for (int i = 0; i < tableau.forces.size; i++) {
                                 if (label == tableau.forceLabels[i]) {
                                     tableau.forces.get(i).isSelected = true;
                                     System.out.println("SELECTED FORCE: " + tableau.forces.get(i));
+                                    break;
+                                }
+                                if (label == tableau.extendButtons[i]) {
+                                    System.out.println("EXTEND!");
+                                    //Tableau table = new Tableau(tableauNum, this, (tableaus.get(tableauNum-1)).forces.get(i));
+                                    Tableau tab = new Tableau(tableauNum, this, tableau.forces.get(i), label);
+                                    //addActor(tableau);
+                                    //tableau.initHex();
+                                    addActor(tab);
+                                    tableaus.add(tab);
+                                    tableauNum++;
+                                    break;
                                 }
                             }
-                            break;
+
                         }
 
                     }
