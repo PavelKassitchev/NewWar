@@ -425,11 +425,37 @@ public class Play extends Stage implements Screen {
             float X = getMousePosOnMap().x;
             float Y = getMousePosOnMap().y;
             Actor a = hit(X, Y, true);
+            System.out.println("ACTOR IS " + a);
 
 
             if (selectedForce != null) {
+                if (a instanceof Label) {
+                    Label label = (Label) a;
+
+                    if (label == (tableaus.get(tableauNum - 1)).choice.moveLabel) {
+                        selectedForce.moveTo(selectedForce.hex.getNeighbour(Direction.EAST));
+                        closeTableau(1);
+                        selectedForce.isSelected = false;
+                        selectedForce = null;
+                    }
+                    else {
+                        for (Tableau tab : tableaus) {
+                            if (label == tab.closeLabel) {
+                                int n = tab.num;
+                                closeTableau(n);
+                                break;
+                            }
+                        }
+
+                    }
+                }
+                else {
+
+                    closeTableau(1);
+                }
                 //TODO
-            } else if (selectedBase != null) {
+            }
+            else if (selectedBase != null) {
                 if (a instanceof Label) {
                     Label label = (Label) a;
 
@@ -465,7 +491,8 @@ public class Play extends Stage implements Screen {
                 }
 
                 //TODO
-            } else if (selectedHex != null) {
+            }
+            else if (selectedHex != null) {
                 if (a instanceof Label) {
                     Label label = (Label) a;
 
@@ -495,6 +522,7 @@ public class Play extends Stage implements Screen {
                 }
                 //TODO
             }
+
             else {
                 if (a instanceof Hex) {
                     closeTableau(1);
@@ -520,49 +548,61 @@ public class Play extends Stage implements Screen {
                 if (a instanceof Label) {
                     Label label = (Label) a;
 
-                    for (Tableau tab : tableaus) {
+                    // CONTROL THIS
+                    //
+                    //
+                    int index = tableauNum - 1;
+                    for (int i = 0; i < index; i++) {
 
-                        if (label == tab.closeLabel) {
-                            int n = tab.num;
-                            closeTableau(n);
+                        if (label == (tableaus.get(i)).closeLabel) {
+                            closeTableau(i + 1);
                             break;
                         }
 
-                        if (label == tab.hexLabel) {
-                            tab.hex.isSelected = true;
-                            selectedHex = tab.hex;
+                        if (label == (tableaus.get(i)).hexLabel) {
+                            (tableaus.get(i)).hex.isSelected = true;
+                            selectedHex = (tableaus.get(i)).hex;
                             Tableau tableau = new Tableau(++tableauNum, this, selectedHex, X, Y, true);
                             tableaus.add(tableau);
                             addActor(tableau);
-
                             break;
                         }
 
-                        if (label == tab.baseLabel) {
-                            tab.base.isSelected = true;
-                            selectedBase = tab.base;
+                        if (label == (tableaus.get(i)).baseLabel) {
+                            (tableaus.get(i)).base.isSelected = true;
+                            selectedBase = (tableaus.get(i)).base;
                             Tableau tableau = new Tableau(++tableauNum, this, selectedBase, X, Y, true);
                             tableaus.add(tableau);
                             addActor(tableau);
                             break;
                         }
+                        System.out.println(" TAB: " + (tableaus.get(i)));
+                        System.out.println("Nab No. " + (tableaus.get(i)).num);
+                        System.out.println("Number of tableaus: " + tableauNum);
+                        for (int j = 0; i < (tableaus.get(i)).forces.size; i++) {
 
-                        for (int i = 0; i < tab.forces.size; i++) {
-
-                            if (label == tab.forceLabels[i]) {
-                                (tab.forces.get(i)).isSelected = true;
-                                selectedForce = tab.forces.get(i);
+                            if (label == (tableaus.get(i)).forceLabels[j]) {
+                                ((tableaus.get(i)).forces.get(j)).isSelected = true;
+                                selectedForce = (tableaus.get(i)).forces.get(j);
+                                Tableau tableau = new Tableau(++tableauNum, this, selectedForce, true, X, Y);
+                                tableaus.add(tableau);
+                                addActor(tableau);
                                 break;
                             }
 
-                            if (label == tab.extendButtons[i]) {
-                                Force fc = tab.forces.get(i);
+                            if (label == (tableaus.get(i)).extendButtons[j]) {
+                                Force fc = (tableaus.get(i)).forces.get(j);
                                 Tableau tableau = new Tableau(++tableauNum, this, fc, X, Y, true);
                                 tableaus.add(tableau);
                                 addActor(tableau);
+                                break;
                             }
                         }
                     }
+                    //
+                    //
+                    //
+
                 }
 
             }

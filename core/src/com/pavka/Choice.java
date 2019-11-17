@@ -12,9 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 public class Choice extends Table {
     Hex hex;
     Base base;
+    Force force;
     Label builtLabel;
     Label upgradeLabel;
     Label destroyLabel;
+    Label moveLabel;
     Tableau tableau;
     float totalHeight;
     Label.LabelStyle style;
@@ -53,8 +55,24 @@ public class Choice extends Table {
         init(x, y);
     }
 
+    public Choice(Tableau tableau, Force force, float x, float y) {
+        setStyle(tableau);
+        this.force = force;
+
+        moveLabel = new Label("Move to...", style);
+        tableau.play.addActor(moveLabel);
+        add(moveLabel).width(164);
+        moveLabel.setDebug(true);
+        moveLabel.setAlignment(0);
+        totalHeight += moveLabel.getPrefHeight();
+
+        init(x, y);
+    }
+
+
     private void setStyle(Tableau tableau) {
         this.tableau = tableau;
+        System.out.println("Tableau, label color " + tableau + " ");
         tableau.labelColor.setColor(Color.BROWN);
         tableau.labelColor.fill();
         style = new Label.LabelStyle(tableau.font, new Color(1, 1, 0, 1));

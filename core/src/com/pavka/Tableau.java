@@ -69,6 +69,17 @@ public class Tableau extends Table {
         this(num, play, force, x, y, false);
     }
 
+    public Tableau(int num, Play play, Force force, boolean selection, float x, float y) {
+        this.num = num;
+        this.play = play;
+        //labelColor = new Pixmap(1, 1, Pixmap.Format.RGB888);
+
+        if(selection) {
+            choice = new Choice(this, force, x, y);
+        }
+        init(x, y);
+    }
+
     public Tableau(int num, Play play, Force force, float x, float y, boolean extention) {
         this.num = num;
         this.play = play;
