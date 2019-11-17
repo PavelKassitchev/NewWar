@@ -427,69 +427,135 @@ public class Play extends Stage implements Screen {
             Actor a = hit(X, Y, true);
 
 
-            if(selectedForce != null) {
+            if (selectedForce != null) {
                 //TODO
-            }
-            else if(selectedBase != null) {
+            } else if (selectedBase != null) {
+                if (a instanceof Label) {
+                    Label label = (Label) a;
+
+                    if (label == (tableaus.get(tableauNum - 1)).choice.upgradeLabel) {
+                        selectedBase.upgrade();
+                        closeTableau(1);
+                        selectedBase.isSelected = false;
+                        selectedBase = null;
+                    }
+                    else if (label == (tableaus.get(tableauNum - 1)).choice.destroyLabel) {
+                        selectedBase.destroy();
+                        closeTableau(1);
+                        selectedBase.isSelected = false;
+                        selectedBase = null;
+                    }
+                    else {
+                        for (Tableau tab : tableaus) {
+                            if (label == tab.closeLabel) {
+                                int n = tab.num;
+                                closeTableau(n);
+                                selectedBase.isSelected = false;
+                                selectedBase = null;
+                                break;
+                            }
+                        }
+
+                    }
+                }
+                else {
+                    selectedBase.isSelected = false;
+                    selectedBase = null;
+                    closeTableau(1);
+                }
+
                 //TODO
-            }
-            else if(selectedHex != null) {
+            } else if (selectedHex != null) {
+                if (a instanceof Label) {
+                    Label label = (Label) a;
+
+                    if (label == (tableaus.get(tableauNum - 1)).choice.builtLabel) {
+                        selectedHex.builtBase();
+                        closeTableau(1);
+                        selectedHex.isSelected = false;
+                        selectedHex = null;
+                    }
+                    else {
+                        for (Tableau tab : tableaus) {
+                            if (label == tab.closeLabel) {
+                                int n = tab.num;
+                                closeTableau(n);
+                                selectedHex.isSelected = false;
+                                selectedHex = null;
+                                break;
+                            }
+                        }
+
+                    }
+                }
+                else {
+                    selectedHex.isSelected = false;
+                    selectedHex = null;
+                    closeTableau(1);
+                }
                 //TODO
             }
             else {
-                if(a instanceof Hex) {
+                if (a instanceof Hex) {
                     closeTableau(1);
-                    Hex hx = (Hex)a;
+                    Hex hx = (Hex) a;
                     Tableau tableau = new Tableau(++tableauNum, this, hx, X, Y);
                     tableaus.add(tableau);
                     addActor(tableau);
                 }
-                if(a instanceof Base) {
+                if (a instanceof Base) {
                     closeTableau(1);
-                    Base bs = (Base)a;
+                    Base bs = (Base) a;
                     Tableau tableau = new Tableau(++tableauNum, this, bs, X, Y);
                     tableaus.add(tableau);
                     addActor(tableau);
                 }
-                if(a instanceof Force) {
+                if (a instanceof Force) {
                     closeTableau(1);
-                    Force fc = (Force)a;
+                    Force fc = (Force) a;
                     Tableau tableau = new Tableau(++tableauNum, this, fc, X, Y);
                     tableaus.add(tableau);
                     addActor(tableau);
                 }
-                if(a instanceof Label) {
-                    Label label = (Label)a;
+                if (a instanceof Label) {
+                    Label label = (Label) a;
 
-                    for(Tableau tab: tableaus) {
+                    for (Tableau tab : tableaus) {
 
-                        if(label == tab.closeLabel) {
+                        if (label == tab.closeLabel) {
                             int n = tab.num;
                             closeTableau(n);
                             break;
                         }
 
-                        if(label == tab.hexLabel) {
+                        if (label == tab.hexLabel) {
                             tab.hex.isSelected = true;
                             selectedHex = tab.hex;
+                            Tableau tableau = new Tableau(++tableauNum, this, selectedHex, X, Y, true);
+                            tableaus.add(tableau);
+                            addActor(tableau);
+
                             break;
                         }
 
-                        if(label == tab.baseLabel) {
+                        if (label == tab.baseLabel) {
                             tab.base.isSelected = true;
                             selectedBase = tab.base;
+                            Tableau tableau = new Tableau(++tableauNum, this, selectedBase, X, Y, true);
+                            tableaus.add(tableau);
+                            addActor(tableau);
                             break;
                         }
 
-                        for(int i = 0; i < tab.forces.size; i++) {
+                        for (int i = 0; i < tab.forces.size; i++) {
 
-                            if(label == tab.forceLabels[i]) {
+                            if (label == tab.forceLabels[i]) {
                                 (tab.forces.get(i)).isSelected = true;
                                 selectedForce = tab.forces.get(i);
                                 break;
                             }
 
-                            if(label == tab.extendButtons[i]) {
+                            if (label == tab.extendButtons[i]) {
                                 Force fc = tab.forces.get(i);
                                 Tableau tableau = new Tableau(++tableauNum, this, fc, X, Y, true);
                                 tableaus.add(tableau);

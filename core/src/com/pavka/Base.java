@@ -45,6 +45,13 @@ public class Base extends Image implements Supplier {
         ammoStock = 1000;
     }
 
+    public void upgrade() {
+        System.out.println("UPGRADE");
+    }
+    public void destroy() {
+        System.out.println("DESTROY");
+    }
+
 
     @Override
     public String toString() {

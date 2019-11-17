@@ -53,6 +53,10 @@ public class Hex extends Image {
         return fighting;
     }
 
+    public void builtBase() {
+        System.out.println("We begin building a Base!");
+    }
+
     /*@Override
     public void draw(Batch batch, float alpha) {
         batch.draw(texture, getRelX(), getRelY());
