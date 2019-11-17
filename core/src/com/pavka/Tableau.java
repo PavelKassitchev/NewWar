@@ -44,10 +44,13 @@ public class Tableau extends Table {
     Label closeLabel;
 
     public Tableau(int num, Play play, Force force, Vector3 vector) {
+
+        System.out.println("Tableau no. " + num + " opened!");
+
         this.num = num;
         this.play = play;
         forces = new Array<Force>(force.forces.size());
-        for (Force f: force.forces) {
+        for (Force f : force.forces) {
             forces.add(f);
         }
         closeFont.getData().setScale(0.6f);
@@ -79,7 +82,7 @@ public class Tableau extends Table {
         Table[] table = new Table[forces.size];
         int i = 0;
         System.out.println("NUMBER OF LINES = " + forces.size);
-        for(Force f: forces) {
+        for (Force f : forces) {
             forceLabels[i] = new Label(f.getGeneralInfo(), forceStyle);
             forceLabels[i].setWrap(true);
             play.addActor(forceLabels[i]);
@@ -121,7 +124,174 @@ public class Tableau extends Table {
         labelColor.dispose();
 
     }
+    //
+    //
+    //
+    //
 
+
+    public Tableau(int num, Play play, Hex hex, float x, float y) {
+        this.num = num;
+        this.play = play;
+        this.hex = hex;
+
+        if (hex.base != null) base = hex.base;
+
+        if (!hex.whiteForces.isEmpty()) forces = hex.whiteForces;
+        if (!hex.blackForces.isEmpty()) forces = hex.blackForces;
+
+        init(x, y);
+    }
+
+    public Tableau(int num, Play play, Force force, float x, float y) {
+        this(num, play, force, x, y, false);
+    }
+
+    public Tableau(int num, Play play, Force force, float x, float y, boolean extention) {
+        if(!extention) {
+            this.num = num;
+            this.play = play;
+
+            hex = force.hex;
+
+            if (hex.base != null) base = hex.base;
+
+            if (!hex.whiteForces.isEmpty()) forces = hex.whiteForces;
+            if (!hex.blackForces.isEmpty()) forces = hex.blackForces;
+
+            init(x, y);
+        }
+        else {
+            this.num = num;
+            this.play = play;
+            forces = new Array<Force>();
+            for(Force f: force.forces) {
+                forces.add(f);
+            }
+            init(x, y);
+        }
+    }
+
+    public Tableau(int num, Play play, Base base, float x, float y) {
+        this.num = num;
+        this.play = play;
+        this.base = base;
+
+        hex = base.hex;
+
+        if (!hex.whiteForces.isEmpty()) forces = hex.whiteForces;
+        if (!hex.blackForces.isEmpty()) forces = hex.blackForces;
+
+        init(x, y);
+    }
+
+    private void init(float x, float y) {
+
+        closeFont.getData().setScale(0.6f);
+        labelColor.setColor(Color.GRAY);
+        labelColor.fill();
+        closeStyle.background = new Image(new Texture(labelColor)).getDrawable();
+        closeLabel = new Label("CLOSE", closeStyle);
+        closeLabel.setAlignment(Align.right);
+        play.addActor(closeLabel);
+        add(closeLabel).width(164);
+        closeLabel.setDebug(true);
+        totalHeight += closeLabel.getPrefHeight();
+        row();
+
+        font.getData().setScale(0.7f);
+
+        if (hex != null) {
+            labelColor.setColor(Color.GOLD);
+            labelColor.fill();
+            hexStyle.background = new Image(new Texture(labelColor)).getDrawable();
+            hexLabel = new Label("Cost: " + hex.cell.getTile().getProperties().get("cost") + " Crops: " + hex.currentHarvest,
+                    hexStyle);
+            hexLabel.setWrap(true);
+            play.addActor(hexLabel);
+            add(hexLabel).width(138f);
+            hexLabel.setDebug(true);
+            totalHeight += hexLabel.getPrefHeight();
+            row();
+        }
+
+        if (base != null) {
+            labelColor.setColor(Color.CORAL);
+            labelColor.fill();
+            baseStyle.background = new Image(new Texture(labelColor)).getDrawable();
+            baseLabel = new Label(base.getGeneralInfo(), baseStyle);
+            baseLabel.setWrap(true);
+            play.addActor(baseLabel);
+            add(baseLabel).width(138f);
+            baseLabel.pack();
+            baseLabel.setWidth(138f);
+            baseLabel.setDebug(true);
+            totalHeight += baseLabel.getPrefHeight();
+            row();
+        }
+
+        if (forces != null && forces.size > 0) {
+            labelColor.setColor(Color.CYAN);
+            labelColor.fill();
+            forceStyle.background = new Image(new Texture(labelColor)).getDrawable();
+            forceLabels = new Label[forces.size];
+
+            extendButtons = new Label[forces.size];
+            Texture texture = new Texture("plus-sign-in-circle.png");
+            Sprite sprite = new Sprite(texture);
+            Skin plusSkin = new Skin();
+            plusSkin.add("image", sprite);
+            extendStyle.background = plusSkin.getDrawable("image");
+
+            Table[] table = new Table[forces.size];
+
+            int i = 0;
+            for (Force f : forces) {
+                forceLabels[i] = new Label(f.getGeneralInfo(), forceStyle);
+                forceLabels[i].setWrap(true);
+                play.addActor(forceLabels[i]);
+                table[i] = new Table();
+                table[i].add().width(12);
+                table[i].add(forceLabels[i]).width(138f);
+                forceLabels[i].pack();
+                forceLabels[i].setWidth(138f);
+                forceLabels[i].setDebug(true);
+                totalHeight += forceLabels[i].getPrefHeight();
+
+                extendButtons[i] = new Label("", extendStyle);
+                if (f.isUnit) table[i].add().width(12);
+                else {
+                    play.addActor(extendButtons[i]);
+                    table[i].add(extendButtons[i]).width(12);
+                    extendButtons[i].pack();
+                    extendButtons[i].setWidth(12);
+                }
+                add(table[i]).width(150);
+                i++;
+                row();
+            }
+        }
+        setPosition(x, y);
+        setBounds(getX() + 8, getY() + 8, 164, totalHeight + 1);
+        setTouchable(Touchable.enabled);
+        setVisible(true);
+        //align(1);
+        Skin skin = new Skin();
+        Color color = new Color(0, 0, 0, 1);
+        skin.add("color", color);
+        TextureRegion region = new TextureRegion();
+        region.setRegion(new Texture("square-32.png"));
+        skin.add("region", region);
+        setSkin(skin);
+        setBackground(skin.getDrawable("region"));
+        labelColor.dispose();
+    }
+
+
+    //
+    //
+    //
+    //
 
     public Tableau(int num, Play play, Hex hex, Array<Force> forces, Base base) {
         this.num = num;
@@ -133,6 +303,8 @@ public class Tableau extends Table {
     }
 
     private void initHex() {
+
+        System.out.println("Tableau no. " + num + " opened!");
 
         //BitmapFont closeFont = new BitmapFont();
         closeFont.getData().setScale(0.6f);

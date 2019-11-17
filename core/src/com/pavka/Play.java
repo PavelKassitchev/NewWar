@@ -59,6 +59,7 @@ public class Play extends Stage implements Screen {
     private OrthographicCamera camera;
     private Force selectedForce;
     private Hex selectedHex;
+    private Base selectedBase;
     private Array<Path> selectedPaths;
 
     private Hex currentHex;
@@ -407,6 +408,14 @@ public class Play extends Stage implements Screen {
 
     }
 
+    private void closeTableau(int i) {
+        for (int num = tableauNum; num > i - 1; num--) {
+            tableaus.get(num - 1).remove();
+            tableaus.removeValue(tableaus.get(num - 1), true);
+        }
+        tableauNum = i - 1;
+    }
+
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
@@ -417,9 +426,103 @@ public class Play extends Stage implements Screen {
             Array<Force> forcesOnHex = null;
             Base baseOnHex = null;
 
-            Actor a = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
 
-            if (!secondClick) {
+            float X = getMousePosOnMap().x;
+            float Y = getMousePosOnMap().y;
+            Actor a = hit(X, Y, true);
+            //
+            //
+            //
+            //
+            //
+
+            if(selectedForce != null) {
+                //TODO
+            }
+            else if(selectedBase != null) {
+                //TODO
+            }
+            else if(selectedHex != null) {
+                //TODO
+            }
+            else {
+                if(a instanceof Hex) {
+                    closeTableau(1);
+                    Hex hx = (Hex)a;
+                    Tableau tableau = new Tableau(++tableauNum, this, hx, X, Y);
+                    tableaus.add(tableau);
+                    addActor(tableau);
+                }
+                if(a instanceof Base) {
+                    closeTableau(1);
+                    Base bs = (Base)a;
+                    Tableau tableau = new Tableau(++tableauNum, this, bs, X, Y);
+                    tableaus.add(tableau);
+                    addActor(tableau);
+                }
+                if(a instanceof Force) {
+                    closeTableau(1);
+                    Force fc = (Force)a;
+                    Tableau tableau = new Tableau(++tableauNum, this, fc, X, Y);
+                    tableaus.add(tableau);
+                    addActor(tableau);
+                }
+                if(a instanceof Label) {
+                    Label label = (Label)a;
+
+                    for(Tableau tab: tableaus) {
+
+                        if(label == tab.closeLabel) {
+                            int n = tab.num;
+                            closeTableau(n);
+                            break;
+                        }
+
+                        if(label == tab.hexLabel) {
+                            tab.hex.isSelected = true;
+                            selectedHex = tab.hex;
+                            break;
+                        }
+
+                        if(label == tab.baseLabel) {
+                            tab.base.isSelected = true;
+                            selectedBase = tab.base;
+                            break;
+                        }
+
+                        for(int i = 0; i < tab.forces.size; i++) {
+
+                            if(label == tab.forceLabels[i]) {
+                                (tab.forces.get(i)).isSelected = true;
+                                selectedForce = tab.forces.get(i);
+                                break;
+                            }
+
+                            if(label == tab.extendButtons[i]) {
+                                Force fc = tab.forces.get(i);
+                                Tableau tableau = new Tableau(++tableauNum, this, fc, X, Y, true);
+                                tableaus.add(tableau);
+                                addActor(tableau);
+                            }
+                        }
+                    }
+                }
+
+            }
+
+
+
+
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+
+            /*if (!secondClick) {
 
                 if (a instanceof Hex) {
                     h = (Hex) a;
@@ -454,51 +557,49 @@ public class Play extends Stage implements Screen {
                 System.out.println("Hex = " + h);
                 if (forcesOnHex != null) System.out.println(forcesOnHex);
                 if (baseOnHex != null) System.out.println(baseOnHex);
-                Tableau tableau = new Tableau(tableauNum, this, h, forcesOnHex, baseOnHex);
-                //addActor(tableau);
-                //tableau.initHex();
+                Tableau tableau = new Tableau(++tableauNum, this, h, forcesOnHex, baseOnHex);
+
                 addActor(tableau);
                 tableaus.add(tableau);
-                tableauNum++;
 
                 secondClick = true;
-            } else {
+
+            }
+            else {
                 if (a instanceof Label) {
                     Label label = (Label) a;
-                    System.out.println("Label touched! X = " + label.getX() + " Y = " + label.getY());
-                    for (Tableau tableau : tableaus) {
-                        if (label == tableau.hexLabel) {
-                            tableau.hex.isSelected = true;
+                    for (Tableau t : tableaus) {
+                        if (label == t.hexLabel) {
+                            t.hex.isSelected = true;
                             break;
                         }
-                        else if (label == tableau.baseLabel) {
+                        else if (label == t.baseLabel) {
                             System.out.println("Base Label");
                             break;
                         }
-                        if (label == tableau.closeLabel) {
-                            System.out.println("CLOSE " + tableau.num);
-                            tableaus.removeValue(tableau, true);
-                            tableau.remove();
-                            tableau = null;
+                        if (label == t.closeLabel) {
+                            System.out.println("CLOSE " + t.num);
+
+                            closeTableau(t.num);
                             secondClick = false;
                         }
 
                         else {
-                            for (int i = 0; i < tableau.forces.size; i++) {
-                                if (label == tableau.forceLabels[i]) {
-                                    tableau.forces.get(i).isSelected = true;
-                                    System.out.println("SELECTED FORCE: " + tableau.forces.get(i));
+                            for (int i = 0; i < t.forces.size; i++) {
+                                if (label == t.forceLabels[i]) {
+                                    t.forces.get(i).isSelected = true;
+                                    System.out.println("SELECTED FORCE: " + t.forces.get(i));
                                     break;
                                 }
-                                if (label == tableau.extendButtons[i]) {
+                                if (label == t.extendButtons[i]) {
                                     System.out.println("EXTEND!");
                                     //Tableau table = new Tableau(tableauNum, this, (tableaus.get(tableauNum-1)).forces.get(i));
-                                    Tableau tab = new Tableau(tableauNum, this, tableau.forces.get(i), getMousePosOnMap());
+                                    Tableau tab = new Tableau(++tableauNum, this, t.forces.get(i), getMousePosOnMap());
                                     //addActor(tableau);
                                     //tableau.initHex();
                                     addActor(tab);
                                     tableaus.add(tab);
-                                    tableauNum++;
+                                    //tableauNum++;
                                     break;
                                 }
                             }
@@ -509,7 +610,7 @@ public class Play extends Stage implements Screen {
 
                 }
 
-            }
+            }*/
         }
 
         return true;
