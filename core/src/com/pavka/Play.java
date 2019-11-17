@@ -422,19 +422,10 @@ public class Play extends Stage implements Screen {
         //NEW VERSION
         if (button == Input.Buttons.LEFT) {
 
-            Hex h = null;
-            Array<Force> forcesOnHex = null;
-            Base baseOnHex = null;
-
-
             float X = getMousePosOnMap().x;
             float Y = getMousePosOnMap().y;
             Actor a = hit(X, Y, true);
-            //
-            //
-            //
-            //
-            //
+
 
             if(selectedForce != null) {
                 //TODO
@@ -509,108 +500,6 @@ public class Play extends Stage implements Screen {
                 }
 
             }
-
-
-
-
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-
-            /*if (!secondClick) {
-
-                if (a instanceof Hex) {
-                    h = (Hex) a;
-
-                    if (!h.whiteForces.isEmpty()) forcesOnHex = h.whiteForces;
-                    if (!h.blackForces.isEmpty()) forcesOnHex = h.blackForces;
-
-                    if (h.base != null) baseOnHex = h.base;
-
-                }
-
-                if (a instanceof Base) {
-                    baseOnHex = (Base) a;
-                    h = baseOnHex.hex;
-
-                    if (!h.whiteForces.isEmpty()) forcesOnHex = h.whiteForces;
-                    if (!h.blackForces.isEmpty()) forcesOnHex = h.blackForces;
-
-                }
-
-                if (a instanceof Force) {
-                    Force f = (Force) a;
-                    h = f.hex;
-
-                    if (!h.whiteForces.isEmpty()) forcesOnHex = h.whiteForces;
-                    if (!h.blackForces.isEmpty()) forcesOnHex = h.blackForces;
-
-                    if (h.base != null) baseOnHex = h.base;
-
-                }
-                System.out.println("Actor = " + a);
-                System.out.println("Hex = " + h);
-                if (forcesOnHex != null) System.out.println(forcesOnHex);
-                if (baseOnHex != null) System.out.println(baseOnHex);
-                Tableau tableau = new Tableau(++tableauNum, this, h, forcesOnHex, baseOnHex);
-
-                addActor(tableau);
-                tableaus.add(tableau);
-
-                secondClick = true;
-
-            }
-            else {
-                if (a instanceof Label) {
-                    Label label = (Label) a;
-                    for (Tableau t : tableaus) {
-                        if (label == t.hexLabel) {
-                            t.hex.isSelected = true;
-                            break;
-                        }
-                        else if (label == t.baseLabel) {
-                            System.out.println("Base Label");
-                            break;
-                        }
-                        if (label == t.closeLabel) {
-                            System.out.println("CLOSE " + t.num);
-
-                            closeTableau(t.num);
-                            secondClick = false;
-                        }
-
-                        else {
-                            for (int i = 0; i < t.forces.size; i++) {
-                                if (label == t.forceLabels[i]) {
-                                    t.forces.get(i).isSelected = true;
-                                    System.out.println("SELECTED FORCE: " + t.forces.get(i));
-                                    break;
-                                }
-                                if (label == t.extendButtons[i]) {
-                                    System.out.println("EXTEND!");
-                                    //Tableau table = new Tableau(tableauNum, this, (tableaus.get(tableauNum-1)).forces.get(i));
-                                    Tableau tab = new Tableau(++tableauNum, this, t.forces.get(i), getMousePosOnMap());
-                                    //addActor(tableau);
-                                    //tableau.initHex();
-                                    addActor(tab);
-                                    tableaus.add(tab);
-                                    //tableauNum++;
-                                    break;
-                                }
-                            }
-
-                        }
-
-                    }
-
-                }
-
-            }*/
         }
 
         return true;

@@ -43,7 +43,7 @@ public class Tableau extends Table {
     Label[] extendButtons;
     Label closeLabel;
 
-    public Tableau(int num, Play play, Force force, Vector3 vector) {
+    /*public Tableau(int num, Play play, Force force, Vector3 vector) {
 
         System.out.println("Tableau no. " + num + " opened!");
 
@@ -123,7 +123,7 @@ public class Tableau extends Table {
         setBackground(skin.getDrawable("region"));
         labelColor.dispose();
 
-    }
+    }*/
     //
     //
     //
@@ -293,7 +293,7 @@ public class Tableau extends Table {
     //
     //
 
-    public Tableau(int num, Play play, Hex hex, Array<Force> forces, Base base) {
+    /*public Tableau(int num, Play play, Hex hex, Array<Force> forces, Base base) {
         this.num = num;
         this.play = play;
         this.hex = hex;
@@ -416,5 +416,5 @@ public class Tableau extends Table {
         setSkin(skin);
         setBackground(skin.getDrawable("region"));
         labelColor.dispose();
-    }
+    }*/
 }
