@@ -14,10 +14,12 @@ public class Choice extends Table {
     Base base;
     Force force;
     Label builtLabel;
+    Label createLabel;
     Label upgradeLabel;
     Label destroyLabel;
     Label moveLabel;
-    Label jokeLabel;
+    Label detachLabel;
+    Label attachLabel;
     Tableau tableau;
     float totalHeight;
     Label.LabelStyle style;
@@ -32,6 +34,10 @@ public class Choice extends Table {
         builtLabel.setDebug(true);
         builtLabel.setAlignment(0);
         totalHeight += builtLabel.getPrefHeight();
+        row();
+
+        createLabel = new Label("Create New Force", style);
+        initLabel(createLabel);
         init(x, y);
     }
 
@@ -67,14 +73,23 @@ public class Choice extends Table {
         moveLabel.setAlignment(0);
         totalHeight += moveLabel.getPrefHeight();
         row();
-        jokeLabel = new Label("Move to smile...", style);
-        tableau.play.addActor(jokeLabel);
-        add(jokeLabel).width(164);
-        jokeLabel.setDebug(true);
-        jokeLabel.setAlignment(0);
-        totalHeight += jokeLabel.getPrefHeight();
+
+        detachLabel = new Label("Detach", style);
+        initLabel(detachLabel);
+        row();
+
+        attachLabel = new Label("Attach to...", style);
+        initLabel(attachLabel);
 
         init(x, y);
+    }
+
+    private void initLabel(Label label) {
+        tableau.play.addActor(label);
+        add(label).width(164);
+        label.setDebug(true);
+        label.setAlignment(0);
+        totalHeight += label.getPrefHeight();
     }
 
 

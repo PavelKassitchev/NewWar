@@ -25,6 +25,7 @@ public class Tableau extends Table {
     public static Label.LabelStyle baseStyle = new Label.LabelStyle(font, new Color(1, 0, 0, 1));
     public static Label.LabelStyle forceStyle = new Label.LabelStyle(font, new Color(1, 0, 0, 1));
     public static Label.LabelStyle extendStyle = new Label.LabelStyle(font, new Color(1, 0, 0, 1));
+    public static Label.LabelStyle extendStyleM = new Label.LabelStyle(font, new Color(1, 0, 0, 1));
 
     public Pixmap labelColor = new Pixmap(1, 1, Pixmap.Format.RGB888);
 
@@ -107,12 +108,12 @@ public class Tableau extends Table {
         this(num, play, base, x, y, false);
     }
 
-    public Tableau(int num, Play play, Base base, float x, float y, boolean recontruct) {
+    public Tableau(int num, Play play, Base base, float x, float y, boolean reconstruct) {
         this.num = num;
         this.play = play;
         this.base = base;
 
-        if(!recontruct) {
+        if(!reconstruct) {
             hex = base.hex;
 
             if (!hex.whiteForces.isEmpty()) forces = hex.whiteForces;
@@ -186,11 +187,15 @@ public class Tableau extends Table {
                 forceLabels = new Label[forces.size];
 
                 extendButtons = new Label[forces.size];
-                Texture texture = new Texture("plus-sign-in-circle.png");
-                Sprite sprite = new Sprite(texture);
+                Texture textureP = new Texture("plus-sign-in-circle.png");
+                Sprite spriteP = new Sprite(textureP);
                 Skin plusSkin = new Skin();
-                plusSkin.add("image", sprite);
-                extendStyle.background = plusSkin.getDrawable("image");
+                Texture textureM = new Texture("round-delete-button.png");
+                Sprite spriteM = new Sprite(textureM);
+                plusSkin.add("imageP", spriteP);
+                plusSkin.add("imageM", spriteM);
+                extendStyle.background = plusSkin.getDrawable("imageP");
+                extendStyleM.background =plusSkin.getDrawable("imageM");
 
                 Table[] table = new Table[forces.size];
 
@@ -208,6 +213,7 @@ public class Tableau extends Table {
                     totalHeight += forceLabels[i].getPrefHeight();
 
                     extendButtons[i] = new Label("", extendStyle);
+                    //extendButtons[i] = new SwitchLabel();
                     if (f.isUnit) table[i].add().width(12);
                     else {
                         play.addActor(extendButtons[i]);

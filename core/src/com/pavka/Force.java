@@ -282,6 +282,15 @@ public class Force extends Image {
         else play.blackTroops.add(this);
     }
 
+    public boolean contains(Force force) {
+        if(this == force) return true;
+        if(isUnit) return false;
+        for(Force f: forces) {
+            if(f.contains(force)) return true;
+        }
+        return false;
+    }
+
     public Array<Unit> surrenderWagons(double probab) {
         Array<Unit> surrendedWagons = new Array<Unit>();
         Random random = new Random();

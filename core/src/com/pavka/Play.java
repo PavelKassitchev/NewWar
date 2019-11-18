@@ -438,6 +438,12 @@ public class Play extends Stage implements Screen {
                         selectedForce.isSelected = false;
                         selectedForce = null;
                     }
+                    else if (label == (tableaus.get(tableauNum - 1)).choice.detachLabel) {
+                        if(selectedForce.isSub) selectedForce.superForce.detach(selectedForce);
+                        closeTableau(1);
+                        selectedForce.isSelected = false;
+                        selectedForce = null;
+                    }
                     else {
                         for (Tableau tab : tableaus) {
                             if (label == tab.closeLabel) {
@@ -506,6 +512,12 @@ public class Play extends Stage implements Screen {
                         selectedHex.isSelected = false;
                         selectedHex = null;
                     }
+                    else if (label == (tableaus.get(tableauNum - 1)).choice.createLabel) {
+                        new Force(this, FRANCE, selectedHex);
+                        closeTableau(1);
+                        selectedHex.isSelected = false;
+                        selectedHex = null;
+                    }
                     else {
                         for (Tableau tab : tableaus) {
                             if (label == tab.closeLabel) {
@@ -556,7 +568,7 @@ public class Play extends Stage implements Screen {
                     //
                     //
                     int index = tableauNum;
-                    for (int i = 0; i < index; i++) {
+                a:    for (int i = 0; i < index; i++) {
 
                         if (label == (tableaus.get(i)).closeLabel) {
                             closeTableau(i + 1);
@@ -595,11 +607,20 @@ public class Play extends Stage implements Screen {
                             }
 
                             if (label == (tableaus.get(i)).extendButtons[j]) {
-                                Force fc = (tableaus.get(i)).forces.get(j);
-                                Tableau tableau = new Tableau(++tableauNum, this, fc, X, Y, true);
-                                tableaus.add(tableau);
-                                addActor(tableau);
-                                break;
+                                if((tableaus.get(i)).extendButtons[j].getStyle() == Tableau.extendStyle) {
+                                    (tableaus.get(i)).extendButtons[j].setStyle(Tableau.extendStyleM);
+                                    Force fc = (tableaus.get(i)).forces.get(j);
+                                    Tableau tableau = new Tableau(++tableauNum, this, fc, X, Y, true);
+                                    tableaus.add(tableau);
+                                    addActor(tableau);
+                                    break;
+                                }
+                                else{
+                                    (tableaus.get(i)).extendButtons[j].setStyle(Tableau.extendStyle);
+                                    closeTableau(i + 2);
+                                    break a;
+                                }
+
                             }
                         }
                     }
