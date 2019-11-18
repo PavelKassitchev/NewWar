@@ -443,6 +443,8 @@ public class Play extends Stage implements Screen {
                             if (label == tab.closeLabel) {
                                 int n = tab.num;
                                 closeTableau(n);
+                                selectedForce.isSelected = false;
+                                selectedForce = null;
                                 break;
                             }
                         }
@@ -452,6 +454,8 @@ public class Play extends Stage implements Screen {
                 else {
 
                     closeTableau(1);
+                    selectedForce.isSelected = false;
+                    selectedForce = null;
                 }
                 //TODO
             }
@@ -551,7 +555,7 @@ public class Play extends Stage implements Screen {
                     // CONTROL THIS
                     //
                     //
-                    int index = tableauNum - 1;
+                    int index = tableauNum;
                     for (int i = 0; i < index; i++) {
 
                         if (label == (tableaus.get(i)).closeLabel) {
@@ -579,7 +583,7 @@ public class Play extends Stage implements Screen {
                         System.out.println(" TAB: " + (tableaus.get(i)));
                         System.out.println("Nab No. " + (tableaus.get(i)).num);
                         System.out.println("Number of tableaus: " + tableauNum);
-                        for (int j = 0; i < (tableaus.get(i)).forces.size; i++) {
+                        for (int j = 0; j < (tableaus.get(i)).forces.size; j++) {
 
                             if (label == (tableaus.get(i)).forceLabels[j]) {
                                 ((tableaus.get(i)).forces.get(j)).isSelected = true;
@@ -807,7 +811,7 @@ public class Play extends Stage implements Screen {
         return false;
     }*/
 
-    @Override
+    /*@Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         if (selectedHex != null) {
 
@@ -834,7 +838,7 @@ public class Play extends Stage implements Screen {
 
 
         return true;
-    }
+    }*/
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {

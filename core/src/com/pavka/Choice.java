@@ -17,6 +17,7 @@ public class Choice extends Table {
     Label upgradeLabel;
     Label destroyLabel;
     Label moveLabel;
+    Label jokeLabel;
     Tableau tableau;
     float totalHeight;
     Label.LabelStyle style;
@@ -65,6 +66,13 @@ public class Choice extends Table {
         moveLabel.setDebug(true);
         moveLabel.setAlignment(0);
         totalHeight += moveLabel.getPrefHeight();
+        row();
+        jokeLabel = new Label("Move to smile...", style);
+        tableau.play.addActor(jokeLabel);
+        add(jokeLabel).width(164);
+        jokeLabel.setDebug(true);
+        jokeLabel.setAlignment(0);
+        totalHeight += jokeLabel.getPrefHeight();
 
         init(x, y);
     }
