@@ -444,6 +444,11 @@ public class Play extends Stage implements Screen {
                         selectedForce.isSelected = false;
                         selectedForce = null;
                     }
+                    else if (label == (tableaus.get(tableauNum - 1)).choice.attachLabel) {
+                        Tableau tableau = new Tableau(++tableauNum, this, selectedForce, X, Y);
+                        tableaus.add(tableau);
+                        addActor(tableau);
+                    }
                     else {
                         for (Tableau tab : tableaus) {
                             if (label == tab.closeLabel) {
