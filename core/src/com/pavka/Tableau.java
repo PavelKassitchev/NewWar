@@ -16,6 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
+import static com.pavka.Nation.WHITE;
+
 public class Tableau extends Table {
 
     public static BitmapFont closeFont = new BitmapFont();
@@ -77,6 +79,15 @@ public class Tableau extends Table {
 
         if(selection) {
             choice = new Choice(this, force, x, y);
+        }
+        else {
+            Hex hx = force.hex;
+            int clr = force.nation.color;
+            Array<Force> frc = clr == WHITE? hx.whiteForces : hx.blackForces;
+            forces = new Array<Force>();
+            for(Force f: frc) {
+                if(f != force) forces.add(f);
+            }
         }
         init(x, y);
     }
