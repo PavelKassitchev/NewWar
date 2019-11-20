@@ -576,7 +576,7 @@ public class Play extends Stage implements Screen {
                         if (label == (tableaus.get(i)).closeLabel) {
                             if (i > attachNum + 1) closeTableau(i + 1);
                             else {
-                                if (i == attachNum + 1) closeTableau(i);
+                                if (i == attachNum + 1 && forceToAttach != null) closeTableau(i);
                                 else closeTableau(i + 1);
 
                                 forceToAttach = null;
