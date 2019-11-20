@@ -622,7 +622,7 @@ public class Play extends Stage implements Screen {
 
                                 if (label == (tableaus.get(i)).forceLabels[j]) {
 
-                                    if(i < attachNum + 2 && forceToAttach != null) {
+                                    if(i < attachNum + 1 && forceToAttach != null) {
                                         closeTableau(i + 2);
                                         forceToAttach = null;
                                         attachNum = 0;
@@ -637,20 +637,27 @@ public class Play extends Stage implements Screen {
                                 }
 
                                 if (label == (tableaus.get(i)).extendButtons[j]) {
-                                    if(i < attachNum + 2 && forceToAttach != null) {
+                                    System.out.println("Extension Button Clicked! NoI. " + i + " NoJ " + j + " " +
+                                            (tableaus.get(i)).extendButtons[j].getStyle());
+                                    if(i < attachNum + 1 && forceToAttach != null) {
+                                        System.out.println("I IS TOO SMALL");
                                         closeTableau(i + 2);
                                         forceToAttach = null;
                                         attachNum = 0;
                                         break a;
                                     }
                                     if ((tableaus.get(i)).extendButtons[j].getStyle() == Tableau.extendStyle) {
+                                        System.out.println((tableaus.get(i)).extendButtons[j].getStyle() == Tableau.extendStyle);
                                         (tableaus.get(i)).extendButtons[j].setStyle(Tableau.extendStyleM);
                                         Force fc = (tableaus.get(i)).forces.get(j);
+                                        System.out.println("WE ARE EXTENDING TABLEAU I = " + i + ", tableauNum = " + tableauNum + ", sel = " +
+                                                selectedForce + ", force to attach = " + forceToAttach);
                                         Tableau tableau = new Tableau(++tableauNum, this, fc, X, Y, true);
                                         tableaus.add(tableau);
                                         addActor(tableau);
                                         break;
                                     } else {
+                                        System.out.println((tableaus.get(i)).extendButtons[j].getStyle() == Tableau.extendStyle);
                                         (tableaus.get(i)).extendButtons[j].setStyle(Tableau.extendStyle);
                                         closeTableau(i + 2);
                                         break a;
