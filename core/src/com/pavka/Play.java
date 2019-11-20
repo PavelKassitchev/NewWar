@@ -28,10 +28,9 @@ import static com.pavka.UnitType.INFANTRY;
 
 public class Play extends Stage implements Screen {
 
+    public static final String MAP = "maps/WarMap.tmx";
     public static int turn;
     public static int time;
-    public static final String MAP = "maps/WarMap.tmx";
-
     public static TiledMap map = new TmxMapLoader().load(MAP);
 
 
@@ -42,18 +41,18 @@ public class Play extends Stage implements Screen {
     public static MapLayer objectLayer = map.getLayers().get("ObjectLayer");
     ;
     public static TiledMapTileLayer tileLayer = (TiledMapTileLayer) map.getLayers().get("TileLayer");
+    public static Commander blackCommander;
+    public static Commander whiteCommander;
+    static Array<Force> blackTroops = new Array<Force>();
+    static Array<Force> whiteTroops = new Array<Force>();
+    static Array<Base> blackBases = new Array<Base>();
+    static Array<Base> whiteBases = new Array<Base>();
     public boolean newMode;
     Hex startHex;
     Hex endHex;
     MileStone mileStone;
     ShapeRenderer shapeRenderer;
     Array<Path> paths;
-    static Array<Force> blackTroops = new Array<Force>();
-    static Array<Force> whiteTroops = new Array<Force>();
-    static Array<Base> blackBases = new Array<Base>();
-    static Array<Base> whiteBases = new Array<Base>();
-    public static Commander blackCommander;
-    public static Commander whiteCommander;
     private HexagonalTiledMapRenderer renderer;
     private OrthographicCamera camera;
     private Force selectedForce;
@@ -108,6 +107,40 @@ public class Play extends Stage implements Screen {
 
     }
 
+    public static Base selectRandomBase(int color) {
+        Array<Base> bases = null;
+        switch (color) {
+            case WHITE:
+                bases = whiteBases;
+                break;
+            case BLACK:
+                bases = blackBases;
+                break;
+        }
+        Random random = new Random();
+        int index = random.nextInt(bases.size);
+        return bases.get(index);
+    }
+
+    public static Array<Path> navigate(Hex start, Hex finish) {
+        Array<Path> paths = new Array<Path>();
+        if (start != finish) {
+            graphPath = hexGraph.findPath(start, finish);
+            Iterator<Hex> iterator = graphPath.iterator();
+            Hex sHex = null;
+            if (iterator.hasNext()) sHex = iterator.next();
+            Hex eHex;
+            while (iterator.hasNext()) {
+                eHex = iterator.next();
+                paths.add(Play.hexGraph.getPath(sHex, eHex));
+                sHex = eHex;
+            }
+
+
+        }
+        return paths;
+    }
+
     @Override
     public void show() {
         float w = Gdx.graphics.getWidth();
@@ -119,7 +152,6 @@ public class Play extends Stage implements Screen {
         camera.setToOrtho(false, w, h);
         Gdx.input.setInputProcessor(this);
     }
-
 
     @Override
     public void render(float delta) {
@@ -353,40 +385,6 @@ public class Play extends Stage implements Screen {
         return false;
     }
 
-    public static Base selectRandomBase(int color) {
-        Array<Base> bases = null;
-        switch (color) {
-            case WHITE:
-                bases = whiteBases;
-                break;
-            case BLACK:
-                bases = blackBases;
-                break;
-        }
-        Random random = new Random();
-        int index = random.nextInt(bases.size);
-        return bases.get(index);
-    }
-
-    public static Array<Path> navigate(Hex start, Hex finish) {
-        Array<Path> paths = new Array<Path>();
-        if (start != finish) {
-            graphPath = hexGraph.findPath(start, finish);
-            Iterator<Hex> iterator = graphPath.iterator();
-            Hex sHex = null;
-            if (iterator.hasNext()) sHex = iterator.next();
-            Hex eHex;
-            while (iterator.hasNext()) {
-                eHex = iterator.next();
-                paths.add(Play.hexGraph.getPath(sHex, eHex));
-                sHex = eHex;
-            }
-
-
-        }
-        return paths;
-    }
-
     private void navigate(double speed) {
         if (startHex != endHex) {
             graphPath = hexGraph.findPath(startHex, endHex);
@@ -612,34 +610,45 @@ public class Play extends Stage implements Screen {
                         System.out.println("Nab No. " + (tableaus.get(i)).num);
                         System.out.println("Number of tableaus: " + tableauNum);
                         if ((tableaus.get(i)).forces != null) {
-                            /*if(i < attachNum + 2) {
-                                closeTableau(i + 2);
-                                forceToAttach = null;
-                                attachNum = 0;
-                                break a;
-                            }*/
+
                             for (int j = 0; j < (tableaus.get(i)).forces.size; j++) {
 
                                 if (label == (tableaus.get(i)).forceLabels[j]) {
 
-                                    if(i < attachNum + 1 && forceToAttach != null) {
+                                    if (i < attachNum + 1 && forceToAttach != null) {
                                         closeTableau(i + 2);
                                         forceToAttach = null;
                                         attachNum = 0;
                                         break a;
                                     }
-                                    ((tableaus.get(i)).forces.get(j)).isSelected = true;
-                                    selectedForce = (tableaus.get(i)).forces.get(j);
-                                    Tableau tableau = new Tableau(++tableauNum, this, selectedForce, true, X, Y);
-                                    tableaus.add(tableau);
-                                    addActor(tableau);
-                                    break;
+                                    else {
+                                        if(forceToAttach != null) {
+                                            Force f = (tableaus.get(i)).forces.get(j);
+                                            if(f.isUnit) {
+                                                System.out.println("REINFORCEMENT!");
+                                            }
+                                            else {
+                                                f.attach(forceToAttach);
+                                                closeTableau(1);
+                                            }
+
+                                            forceToAttach = null;
+                                            attachNum = 0;
+                                            break a;
+                                        }
+                                        ((tableaus.get(i)).forces.get(j)).isSelected = true;
+                                        selectedForce = (tableaus.get(i)).forces.get(j);
+                                        Tableau tableau = new Tableau(++tableauNum, this, selectedForce, true, X, Y);
+                                        tableaus.add(tableau);
+                                        addActor(tableau);
+                                        break;
+                                    }
                                 }
 
                                 if (label == (tableaus.get(i)).extendButtons[j]) {
                                     System.out.println("Extension Button Clicked! NoI. " + i + " NoJ " + j + " " +
                                             (tableaus.get(i)).extendButtons[j].getStyle());
-                                    if(i < attachNum + 1 && forceToAttach != null) {
+                                    if (i < attachNum + 1 && forceToAttach != null) {
                                         System.out.println("I IS TOO SMALL");
                                         closeTableau(i + 2);
                                         forceToAttach = null;
@@ -647,7 +656,6 @@ public class Play extends Stage implements Screen {
                                         break a;
                                     }
                                     if ((tableaus.get(i)).extendButtons[j].getStyle() == Tableau.extendStyle) {
-                                        System.out.println((tableaus.get(i)).extendButtons[j].getStyle() == Tableau.extendStyle);
                                         (tableaus.get(i)).extendButtons[j].setStyle(Tableau.extendStyleM);
                                         Force fc = (tableaus.get(i)).forces.get(j);
                                         System.out.println("WE ARE EXTENDING TABLEAU I = " + i + ", tableauNum = " + tableauNum + ", sel = " +
@@ -657,7 +665,6 @@ public class Play extends Stage implements Screen {
                                         addActor(tableau);
                                         break;
                                     } else {
-                                        System.out.println((tableaus.get(i)).extendButtons[j].getStyle() == Tableau.extendStyle);
                                         (tableaus.get(i)).extendButtons[j].setStyle(Tableau.extendStyle);
                                         closeTableau(i + 2);
                                         break a;
