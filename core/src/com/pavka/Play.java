@@ -18,7 +18,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.Iterator;
@@ -58,7 +57,7 @@ public class Play extends Stage implements Screen {
     private HexagonalTiledMapRenderer renderer;
     private OrthographicCamera camera;
     private Force selectedForce;
-    private Force forceToCommand;
+    private Force forceToAttach;
     private Hex selectedHex;
     private Base selectedBase;
     private Array<Path> selectedPaths;
@@ -73,6 +72,7 @@ public class Play extends Stage implements Screen {
     //private Tableau tableau;
     private Array<Tableau> tableaus = new Array<Tableau>();
     private int tableauNum;
+    private int attachNum;
 
     //TODO exclude this variables
 
@@ -446,10 +446,11 @@ public class Play extends Stage implements Screen {
                             selectedForce.isSelected = false;
                             selectedForce = null;
                         } else if (label == ch.attachLabel) {
+                            attachNum = tableauNum - 1;
+                            forceToAttach = selectedForce;
                             Tableau tableau = new Tableau(++tableauNum, this, selectedForce, false, X, Y);
                             tableaus.add(tableau);
                             addActor(tableau);
-                            forceToCommand = selectedForce;
                             selectedForce.isSelected = false;
                             selectedForce = null;
                         }
@@ -543,7 +544,8 @@ public class Play extends Stage implements Screen {
                     Tableau tableau = new Tableau(++tableauNum, this, hx, X, Y);
                     tableaus.add(tableau);
                     addActor(tableau);
-                    forceToCommand = null;
+                    forceToAttach = null;
+                    attachNum = 0;
                 }
                 if (a instanceof Base) {
                     closeTableau(1);
@@ -551,7 +553,8 @@ public class Play extends Stage implements Screen {
                     Tableau tableau = new Tableau(++tableauNum, this, bs, X, Y);
                     tableaus.add(tableau);
                     addActor(tableau);
-                    forceToCommand = null;
+                    forceToAttach = null;
+                    attachNum = 0;
                 }
                 if (a instanceof Force) {
                     closeTableau(1);
@@ -559,7 +562,8 @@ public class Play extends Stage implements Screen {
                     Tableau tableau = new Tableau(++tableauNum, this, fc, X, Y);
                     tableaus.add(tableau);
                     addActor(tableau);
-                    forceToCommand = null;
+                    forceToAttach = null;
+                    attachNum = 0;
                 }
                 if (a instanceof Label) {
                     Label label = (Label) a;
@@ -572,8 +576,14 @@ public class Play extends Stage implements Screen {
                     for (int i = 0; i < index; i++) {
 
                         if (label == (tableaus.get(i)).closeLabel) {
-                            closeTableau(i + 1);
-                            forceToCommand = null;
+                            if (i > attachNum + 1) closeTableau(i + 1);
+                            else {
+                                if (i == attachNum + 1) closeTableau(i);
+                                else closeTableau(i + 1);
+
+                                forceToAttach = null;
+                                attachNum = 0;
+                            }
                             break;
                         }
 
@@ -583,7 +593,8 @@ public class Play extends Stage implements Screen {
                             Tableau tableau = new Tableau(++tableauNum, this, selectedHex, X, Y, true);
                             tableaus.add(tableau);
                             addActor(tableau);
-                            forceToCommand = null;
+                            forceToAttach = null;
+                            attachNum = 0;
                             break;
                         }
 
@@ -593,16 +604,30 @@ public class Play extends Stage implements Screen {
                             Tableau tableau = new Tableau(++tableauNum, this, selectedBase, X, Y, true);
                             tableaus.add(tableau);
                             addActor(tableau);
-                            forceToCommand = null;
+                            forceToAttach = null;
+                            attachNum = 0;
                             break;
                         }
                         System.out.println(" TAB: " + (tableaus.get(i)));
                         System.out.println("Nab No. " + (tableaus.get(i)).num);
                         System.out.println("Number of tableaus: " + tableauNum);
                         if ((tableaus.get(i)).forces != null) {
+                            /*if(i < attachNum + 2) {
+                                closeTableau(i + 2);
+                                forceToAttach = null;
+                                attachNum = 0;
+                                break a;
+                            }*/
                             for (int j = 0; j < (tableaus.get(i)).forces.size; j++) {
 
                                 if (label == (tableaus.get(i)).forceLabels[j]) {
+
+                                    if(i < attachNum + 2 && forceToAttach != null) {
+                                        closeTableau(i + 2);
+                                        forceToAttach = null;
+                                        attachNum = 0;
+                                        break a;
+                                    }
                                     ((tableaus.get(i)).forces.get(j)).isSelected = true;
                                     selectedForce = (tableaus.get(i)).forces.get(j);
                                     Tableau tableau = new Tableau(++tableauNum, this, selectedForce, true, X, Y);
@@ -612,6 +637,12 @@ public class Play extends Stage implements Screen {
                                 }
 
                                 if (label == (tableaus.get(i)).extendButtons[j]) {
+                                    if(i < attachNum + 2 && forceToAttach != null) {
+                                        closeTableau(i + 2);
+                                        forceToAttach = null;
+                                        attachNum = 0;
+                                        break a;
+                                    }
                                     if ((tableaus.get(i)).extendButtons[j].getStyle() == Tableau.extendStyle) {
                                         (tableaus.get(i)).extendButtons[j].setStyle(Tableau.extendStyleM);
                                         Force fc = (tableaus.get(i)).forces.get(j);
