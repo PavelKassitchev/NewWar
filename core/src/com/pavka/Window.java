@@ -24,6 +24,9 @@ public class Window extends Table {
     public static Label.LabelStyle forceStyle = new Label.LabelStyle(font, new Color(1, 0, 0, 1));
     public static Label.LabelStyle plusStyle = new Label.LabelStyle(font, new Color(1, 0, 0, 1));
     public static Label.LabelStyle minusStyle = new Label.LabelStyle(font, new Color(1, 0, 0, 1));
+    //public static Label.LabelStyle choiceStyle = new Label.LabelStyle(font, new Color(1, 1, 0, 1));
+
+
     static {
         Texture textureP = new Texture("plus-sign-in-circle.png");
         Sprite spriteP = new Sprite(textureP);
@@ -33,7 +36,7 @@ public class Window extends Table {
         plusMinusSkin.add("imageP", spriteP);
         plusMinusSkin.add("imageM", spriteM);
         plusStyle.background = plusMinusSkin.getDrawable("imageP");
-        minusStyle.background =plusMinusSkin.getDrawable("imageM");
+        minusStyle.background = plusMinusSkin.getDrawable("imageM");
         closeFont.getData().setScale(0.6f);
         font.getData().setScale(0.7f);
     }
@@ -53,6 +56,7 @@ public class Window extends Table {
     public Label baseLabel;
     public SwitchLabel[] forceLabels;
     public SwitchLabel[] extendLabels;
+    public Choice choice;
     public Label[] choiceLabels;
 
     private float totalHeight;
@@ -61,16 +65,17 @@ public class Window extends Table {
         this.play = play;
         this.hex = hex;
 
-        if(hex.base != null) this.base = base;
+        if (hex.base != null) this.base = base;
         if (!hex.whiteForces.isEmpty()) forces = hex.whiteForces;
         if (!hex.blackForces.isEmpty()) forces = hex.blackForces;
     }
+
     //TODO
-    /*private void init(float x, float y) {
+    private void init(float x, float y) {
         labelColor.setColor(Color.GRAY);
         labelColor.fill();
         closeStyle.background = new Image(new Texture(labelColor)).getDrawable();
-        closeLabel = new SwitchLabel(this,"CLOSE", closeStyle);
+        closeLabel = new SwitchLabel(this, "CLOSE", closeStyle);
         closeLabel.setAlignment(Align.right);
         play.addActor(closeLabel);
         add(closeLabel).width(164);
@@ -78,15 +83,15 @@ public class Window extends Table {
         totalHeight += closeLabel.getPrefHeight();
         row();
 
-        if (choiceLabels != null) {
+        if (choice != null) {
             //totalHeight += choice.getPrefHeight();
-            for (Label label: choiceLabels) {
-            add(label).width(164);
-            label.pack();
-            label.setWidth(164);}
+            add(choice).width(164);
+            choice.pack();
+            choice.setWidth(164);
             //choice.setDebug(true);
-        }
-        else {
+
+            //choice.setDebug(true);
+        } else {
             if (hex != null) {
                 labelColor.setColor(Color.GOLD);
                 labelColor.fill();
@@ -120,24 +125,15 @@ public class Window extends Table {
                 labelColor.setColor(Color.CYAN);
                 labelColor.fill();
                 forceStyle.background = new Image(new Texture(labelColor)).getDrawable();
-                forceLabels = new Label[forces.size];
+                forceLabels = new SwitchLabel[forces.size];
 
-                extendButtons = new Label[forces.size];
-                Texture textureP = new Texture("plus-sign-in-circle.png");
-                Sprite spriteP = new Sprite(textureP);
-                Skin plusMinusSkin = new Skin();
-                Texture textureM = new Texture("round-delete-button.png");
-                Sprite spriteM = new Sprite(textureM);
-                plusMinusSkin.add("imageP", spriteP);
-                plusMinusSkin.add("imageM", spriteM);
-                extendStyle.background = plusMinusSkin.getDrawable("imageP");
-                extendStyleM.background =plusMinusSkin.getDrawable("imageM");
+                extendLabels = new SwitchLabel[forces.size];
 
                 Table[] table = new Table[forces.size];
 
                 int i = 0;
                 for (Force f : forces) {
-                    forceLabels[i] = new Label(f.getGeneralInfo(), forceStyle);
+                    forceLabels[i] = new SwitchLabel(this, f.getGeneralInfo(), forceStyle);
                     forceLabels[i].setWrap(true);
                     play.addActor(forceLabels[i]);
                     table[i] = new Table();
@@ -148,14 +144,14 @@ public class Window extends Table {
                     //forceLabels[i].setDebug(true);
                     totalHeight += forceLabels[i].getPrefHeight();
 
-                    extendButtons[i] = new Label("", extendStyle);
+                    extendLabels[i] = new SwitchLabel(this, "", plusStyle);
                     //extendButtons[i] = new SwitchLabel();
                     if (f.isUnit) table[i].add().width(12);
                     else {
-                        play.addActor(extendButtons[i]);
-                        table[i].add(extendButtons[i]).width(12);
-                        extendButtons[i].pack();
-                        extendButtons[i].setWidth(12);
+                        play.addActor(extendLabels[i]);
+                        table[i].add(extendLabels[i]).width(12);
+                        extendLabels[i].pack();
+                        extendLabels[i].setWidth(12);
                     }
                     add(table[i]).width(150);
                     i++;
@@ -179,6 +175,6 @@ public class Window extends Table {
         labelColor.dispose();
     }
 
-}*/
-
 }
+
+
