@@ -25,6 +25,14 @@ public class SwitchLabel extends Label {
         this.text = text;
     }
 
+    public SwitchLabel(Window window, String text, Label.LabelStyle styleOne) {
+        super(text, styleOne);
+        this.styleOne = styleOne;
+
+        this.window = window;
+        this.text = text;
+    }
+
     public void changeStyle() {
         if(getStyle() == styleOne) setStyle(styleTwo);
         else setStyle(styleOne);

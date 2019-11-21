@@ -200,13 +200,13 @@ public class Tableau extends Table {
                 extendButtons = new Label[forces.size];
                 Texture textureP = new Texture("plus-sign-in-circle.png");
                 Sprite spriteP = new Sprite(textureP);
-                Skin plusSkin = new Skin();
+                Skin plusMinusSkin = new Skin();
                 Texture textureM = new Texture("round-delete-button.png");
                 Sprite spriteM = new Sprite(textureM);
-                plusSkin.add("imageP", spriteP);
-                plusSkin.add("imageM", spriteM);
-                extendStyle.background = plusSkin.getDrawable("imageP");
-                extendStyleM.background =plusSkin.getDrawable("imageM");
+                plusMinusSkin.add("imageP", spriteP);
+                plusMinusSkin.add("imageM", spriteM);
+                extendStyle.background = plusMinusSkin.getDrawable("imageP");
+                extendStyleM.background =plusMinusSkin.getDrawable("imageM");
 
                 Table[] table = new Table[forces.size];
 
