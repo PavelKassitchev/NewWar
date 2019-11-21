@@ -72,6 +72,9 @@ public class Window extends Table {
 
     //TODO
     private void init(float x, float y) {
+
+        children = new Array<Window>();
+
         labelColor.setColor(Color.GRAY);
         labelColor.fill();
         closeStyle.background = new Image(new Texture(labelColor)).getDrawable();

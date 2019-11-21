@@ -42,6 +42,10 @@ public class SwitchLabel extends Label {
         text = newText;
     }
 
+    public Window getWindow() {
+        return window;
+    }
+
     /*public SwitchLabel() {
         super("", extendStyle);
         Texture textureP = new Texture("plus-sign-in-circle.png");

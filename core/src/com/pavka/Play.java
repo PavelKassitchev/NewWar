@@ -68,6 +68,7 @@ public class Play extends Stage implements Screen {
     private Control control;
 
 
+    private Window selectedWindow;
     //private Tableau tableau;
     private Array<Tableau> tableaus = new Array<Tableau>();
     private int tableauNum;

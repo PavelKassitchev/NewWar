@@ -140,6 +140,8 @@ public class Tableau extends Table {
 
     private void init(float x, float y) {
 
+
+
         closeFont.getData().setScale(0.6f);
         labelColor.setColor(Color.GRAY);
         labelColor.fill();
