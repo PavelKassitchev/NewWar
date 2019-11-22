@@ -415,6 +415,32 @@ public class Play extends Stage implements Screen {
         }
         tableauNum = i - 1;
     }
+    private void closeWindow(Window w) {
+        if(selectedWindow == w) {
+            if(w.parent != null) selectedWindow = w.parent;
+            else selectedWindow = null;
+        }
+        if(w.children.isEmpty()) {
+            w.remove();
+            if(w.parent != null) {
+                Window parent = w.parent;
+                parent.children.removeValue(w, true);
+            }
+        }
+        else {
+            for(Window children: w.children) closeWindow(children);
+        }
+    }
+
+    private void closeWindows() {
+        if (selectedWindow != null) {
+            Window root = selectedWindow;
+            while (root.parent != null) {
+                root = root.parent;
+            }
+            closeWindow(root);
+        }
+    }
 
 
     @Override
@@ -538,6 +564,7 @@ public class Play extends Stage implements Screen {
                 //TODO
             } else {
                 if (a instanceof Hex) {
+                    closeWindows();
                     Hex hx = (Hex)a;
                     selectedWindow = new Window(this, hx, X, Y);
                     addActor(selectedWindow);
@@ -572,7 +599,12 @@ public class Play extends Stage implements Screen {
                     forceToAttach = null;
                     attachNum = 0;
                 }
-                if (a instanceof Label) {
+                if (a instanceof SwitchLabel) {
+                    SwitchLabel label = (SwitchLabel) a;
+                    Window w = label.getWindow();
+                    if(label == w.closeLabel)
+                    closeWindow(w);
+                    /*
                     Label label = (Label) a;
 
                     // CONTROL THIS
@@ -686,7 +718,7 @@ public class Play extends Stage implements Screen {
                     //
                     //
                     //
-
+                */
                 }
 
             }

@@ -49,6 +49,7 @@ public class Window extends Table {
     public Array<Force> forces;
 
     public Window parent;
+    public SwitchLabel parentLabel;
     public Array<Window> children;
 
     public SwitchLabel closeLabel;
