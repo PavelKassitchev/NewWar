@@ -538,6 +538,12 @@ public class Play extends Stage implements Screen {
                 //TODO
             } else {
                 if (a instanceof Hex) {
+                    Hex hx = (Hex)a;
+                    selectedWindow = new Window(this, hx, X, Y);
+                    addActor(selectedWindow);
+
+                    //this is working version with tableau
+                    /*
                     closeTableau(1);
                     Hex hx = (Hex) a;
                     Tableau tableau = new Tableau(++tableauNum, this, hx, X, Y);
@@ -545,6 +551,8 @@ public class Play extends Stage implements Screen {
                     addActor(tableau);
                     forceToAttach = null;
                     attachNum = 0;
+
+                     */
                 }
                 if (a instanceof Base) {
                     closeTableau(1);
@@ -630,7 +638,7 @@ public class Play extends Stage implements Screen {
                                             }
                                             else {
                                                 f.attach(forceToAttach);
-                                                closeTableau(1);
+                                                //closeTableau(1);
                                             }
 
                                             forceToAttach = null;

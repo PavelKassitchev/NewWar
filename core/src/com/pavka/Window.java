@@ -68,8 +68,14 @@ public class Window extends Table {
         if (hex.base != null) this.base = base;
         if (!hex.whiteForces.isEmpty()) forces = hex.whiteForces;
         if (!hex.blackForces.isEmpty()) forces = hex.blackForces;
+
+        init(x, y);
     }
 
+    public void setChild(Window win) {
+        children.add(win);
+        win.parent = this;
+    }
     //TODO
     private void init(float x, float y) {
 
