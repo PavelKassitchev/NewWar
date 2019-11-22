@@ -439,7 +439,15 @@ public class Play extends Stage implements Screen {
                 root = root.parent;
             }
             closeWindow(root);
+            clearSelections();
         }
+    }
+    private void clearSelections() {
+        forceToAttach = null;
+        selectedForce = null;
+        selectedWindow = null;
+        selectedBase = null;
+        selectedHex = null;
     }
 
 
@@ -565,9 +573,14 @@ public class Play extends Stage implements Screen {
             } else {
                 if (a instanceof Hex) {
                     closeWindows();
-                    Hex hx = (Hex)a;
-                    selectedWindow = new Window(this, hx, X, Y);
-                    addActor(selectedWindow);
+                    Hex hx;
+                    if (selectedForce == null && selectedHex == null && selectedBase == null && forceToAttach == null) {
+                        closeWindows();
+                        hx = (Hex) a;
+                        selectedWindow = new Window(this, hx, X, Y);
+                        addActor(selectedWindow);
+                    }
+                    else closeWindows();
 
                     //this is working version with tableau
                     /*
