@@ -415,11 +415,30 @@ public class Play extends Stage implements Screen {
         }
         tableauNum = i - 1;
     }
-    private void closeWindow(Window w) {
-        if(selectedWindow == w) {
-            if(w.parent != null) selectedWindow = w.parent;
-            else selectedWindow = null;
+    private void clearWindow(Window w) {
+        w.parent = null;
+        w.remove();
+        if(!w.children.isEmpty()) {
+            for(Window child: w.children) {
+                clearWindow(child);
+            }
         }
+    }
+
+    private void closeWindow(Window w) {
+        if(w.parentLabel != null) {
+            w.parentLabel.childWindow = null;
+            w.parentLabel.changeStyle();
+        }
+        if(w.parent != null) {
+            selectedWindow = w.parent;
+            w.parent.children.removeValue(w, true);
+        }
+        else selectedWindow = null;
+
+        clearWindow(w);
+
+        /*System.out.println("CHILDREN: " + w.children);
         if(w.children.isEmpty()) {
             w.remove();
             if(w.parent != null) {
@@ -428,8 +447,15 @@ public class Play extends Stage implements Screen {
             }
         }
         else {
-            for(Window children: w.children) closeWindow(children);
+            for(Window children: w.children) {
+                System.out.println("CLOSING A CHILD..");
+                closeWindow(children);
+            }
+
+
         }
+
+         */
     }
 
     private void closeWindows() {
@@ -572,11 +598,9 @@ public class Play extends Stage implements Screen {
                 //TODO
             } else {
                 if (a instanceof Hex) {
-                    closeWindows();
-                    Hex hx;
+                    Hex hx = (Hex) a;
                     if (selectedForce == null && selectedHex == null && selectedBase == null && forceToAttach == null) {
                         closeWindows();
-                        hx = (Hex) a;
                         selectedWindow = new Window(this, hx, X, Y);
                         addActor(selectedWindow);
                     }
@@ -595,6 +619,16 @@ public class Play extends Stage implements Screen {
                      */
                 }
                 if (a instanceof Base) {
+                    Base b = (Base) a;
+                    Hex hx = b.hex;
+                    if (selectedForce == null && selectedHex == null && selectedBase == null && forceToAttach == null) {
+                        closeWindows();
+                        selectedWindow = new Window(this, hx, X, Y);
+                        addActor(selectedWindow);
+                    }
+                    else closeWindows();
+                    //this is working version with tableau
+                    /*
                     closeTableau(1);
                     Base bs = (Base) a;
                     Tableau tableau = new Tableau(++tableauNum, this, bs, X, Y);
@@ -602,8 +636,20 @@ public class Play extends Stage implements Screen {
                     addActor(tableau);
                     forceToAttach = null;
                     attachNum = 0;
+
+                     */
                 }
                 if (a instanceof Force) {
+                    Force f = (Force) a;
+                    Hex hx = f.hex;
+                    if (selectedForce == null && selectedHex == null && selectedBase == null && forceToAttach == null) {
+                        closeWindows();
+                        selectedWindow = new Window(this, hx, X, Y);
+                        addActor(selectedWindow);
+                    }
+                    else closeWindows();
+
+                    /*
                     closeTableau(1);
                     Force fc = (Force) a;
                     Tableau tableau = new Tableau(++tableauNum, this, fc, X, Y);
@@ -611,12 +657,32 @@ public class Play extends Stage implements Screen {
                     addActor(tableau);
                     forceToAttach = null;
                     attachNum = 0;
+
+                     */
                 }
                 if (a instanceof SwitchLabel) {
                     SwitchLabel label = (SwitchLabel) a;
-                    Window w = label.getWindow();
-                    if(label == w.closeLabel)
-                    closeWindow(w);
+                    Window w = label.window;
+
+                    if(label == w.closeLabel) {
+                        closeWindow(w);
+                    }
+                    else {
+                        for(int i = 0; i < w.forces.size; i++) {
+                            if(label == w.extendLabels[i]) {
+                                label.changeStyle();
+                                if (label.getStyle() == label.styleTwo) {
+                                    Force fc = w.forces.get(i);
+                                    selectedWindow = new Window(this, fc, label, X, Y);
+                                    addActor(selectedWindow);
+                                }
+                                else {
+                                    closeWindow(label.childWindow);
+                                    label.changeStyle();
+                                }
+                            }
+                        }
+                    }
                     /*
                     Label label = (Label) a;
 

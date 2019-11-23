@@ -12,6 +12,7 @@ public class SwitchLabel extends Label {
     public static Label.LabelStyle extendStyle = new Label.LabelStyle(font, new Color(1, 0, 0, 1));
 
     public Window window;
+    public Window childWindow;
 
     Label.LabelStyle styleOne;
     Label.LabelStyle styleTwo;

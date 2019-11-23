@@ -66,16 +66,35 @@ public class Window extends Table {
         this.play = play;
         this.hex = hex;
 
-        if (hex.base != null) this.base = base;
+        if (hex.base != null) base = hex.base;
         if (!hex.whiteForces.isEmpty()) forces = hex.whiteForces;
         if (!hex.blackForces.isEmpty()) forces = hex.blackForces;
 
         init(x, y);
     }
 
+    public Window(Play play, Force force, SwitchLabel parentLabel, float x, float y) {
+        this.play = play;
+        this.parentLabel = parentLabel;
+        parentLabel.childWindow = this;
+        setParent(parentLabel.window);
+        System.out.println("PARENT IS " + parent);
+        int size = force.forces.size();
+        forces = new Array<Force>(size);
+        for(int i = 0; i < size; i++) {
+            forces.add(force.forces.get(i));
+        }
+        init(x, y);
+
+    }
+
     public void setChild(Window win) {
         children.add(win);
         win.parent = this;
+    }
+    public void setParent(Window win) {
+        parent = win;
+        win.children.add(this);
     }
     //TODO
     private void init(float x, float y) {
@@ -154,7 +173,7 @@ public class Window extends Table {
                     //forceLabels[i].setDebug(true);
                     totalHeight += forceLabels[i].getPrefHeight();
 
-                    extendLabels[i] = new SwitchLabel(this, "", plusStyle);
+                    extendLabels[i] = new SwitchLabel(this, "", plusStyle, minusStyle);
                     //extendButtons[i] = new SwitchLabel();
                     if (f.isUnit) table[i].add().width(12);
                     else {
