@@ -14,6 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
+import static com.pavka.Nation.WHITE;
+
 public class Window extends Table {
 
     public static BitmapFont closeFont = new BitmapFont();
@@ -85,7 +87,46 @@ public class Window extends Table {
             forces.add(force.forces.get(i));
         }
         init(x, y);
+    }
 
+    public Window(Play play, Window parent, Force force, float x, float y) {
+        this.play = play;
+
+        setParent(parent);
+        choice = new Choice(this, force, x, y);
+        init(x, y);
+    }
+
+    public Window(Play play, Window parent, Force force, boolean toAttach, float x, float y) {
+        this.play = play;
+
+        setParent(parent);
+        if(toAttach) {
+            Array<Force> fcs = force.nation.color == WHITE? force.hex.whiteForces : force.hex.blackForces;
+            forces = new Array<Force>();
+            for(Force f: fcs) {
+                if(f != force) forces.add(f);
+            }
+        }
+        else choice = new Choice(this, force, x, y);
+        init(x, y);
+    }
+
+    public Window(Play play, Window parent, Hex hex, float x, float y) {
+        this.play = play;
+        this.hex = hex;
+
+        setParent(parent);
+        choice = new Choice(this, hex, x, y);
+        init(x, y);
+    }
+    public Window(Play play, Window parent, Base base, float x, float y) {
+        this.play = play;
+        this.base = base;
+
+        setParent(parent);
+        choice = new Choice(this, base, x, y);
+        init(x, y);
     }
 
     public void setChild(Window win) {
@@ -201,6 +242,8 @@ public class Window extends Table {
         skin.add("region", region);
         setSkin(skin);
         setBackground(skin.getDrawable("region"));
+
+        play.addActor(this);
         labelColor.dispose();
     }
 

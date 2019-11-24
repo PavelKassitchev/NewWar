@@ -224,6 +224,10 @@ public class Play extends Stage implements Screen {
     //TODO just for testing
     @Override
     public boolean keyUp(int keycode) {
+        if(keycode == Input.Keys.G) {
+            System.out.println("Selected force = " + selectedForce + " selected window = " + selectedWindow + " force to attach = " + forceToAttach + " selected hex = " +
+                    selectedHex);
+        }
         if (keycode == Input.Keys.C) {
             /*Force force = new Force(new Squadron(this, Nation.FRANCE, hexGraph.getHex(8, 4)), new Squadron(this, Nation.FRANCE, hexGraph.getHex(8, 4)));
             force.order.isForaging = 0.8;
@@ -426,6 +430,7 @@ public class Play extends Stage implements Screen {
     }
 
     private void closeWindow(Window w) {
+
         if(w.parentLabel != null) {
             w.parentLabel.childWindow = null;
             w.parentLabel.changeStyle();
@@ -467,9 +472,11 @@ public class Play extends Stage implements Screen {
             closeWindow(root);
             clearSelections();
         }
+        clearSelections();
     }
     private void clearSelections() {
         forceToAttach = null;
+        System.out.println("Force to Attach = " + forceToAttach);
         selectedForce = null;
         selectedWindow = null;
         selectedBase = null;
@@ -488,7 +495,7 @@ public class Play extends Stage implements Screen {
             System.out.println("ACTOR IS " + a);
 
 
-            if (selectedForce != null) {
+            /* if (selectedForce != null) {
                 if (a instanceof Label) {
                     Label label = (Label) a;
                     Choice ch = (tableaus.get(tableauNum - 1)).choice;
@@ -531,7 +538,9 @@ public class Play extends Stage implements Screen {
                     selectedForce = null;
                 }
                 //TODO
-            } else if (selectedBase != null) {
+            } */
+
+            /* else if (selectedBase != null) {
                 if (a instanceof Label) {
                     Label label = (Label) a;
 
@@ -564,7 +573,8 @@ public class Play extends Stage implements Screen {
                 }
 
                 //TODO
-            } else if (selectedHex != null) {
+            }*/
+            /* else if (selectedHex != null) {
                 if (a instanceof Label) {
                     Label label = (Label) a;
 
@@ -596,15 +606,16 @@ public class Play extends Stage implements Screen {
                     closeTableau(1);
                 }
                 //TODO
-            } else {
+            } */
+            //else {
                 if (a instanceof Hex) {
                     Hex hx = (Hex) a;
                     if (selectedForce == null && selectedHex == null && selectedBase == null && forceToAttach == null) {
                         closeWindows();
                         selectedWindow = new Window(this, hx, X, Y);
-                        addActor(selectedWindow);
-                    }
-                    else closeWindows();
+                        //addActor(selectedWindow);
+                    } else closeWindows();
+                }
 
                     //this is working version with tableau
                     /*
@@ -616,15 +627,15 @@ public class Play extends Stage implements Screen {
                     forceToAttach = null;
                     attachNum = 0;
 
-                     */
-                }
+
+                }*/
                 if (a instanceof Base) {
                     Base b = (Base) a;
                     Hex hx = b.hex;
                     if (selectedForce == null && selectedHex == null && selectedBase == null && forceToAttach == null) {
                         closeWindows();
                         selectedWindow = new Window(this, hx, X, Y);
-                        addActor(selectedWindow);
+                        //addActor(selectedWindow);
                     }
                     else closeWindows();
                     //this is working version with tableau
@@ -645,9 +656,12 @@ public class Play extends Stage implements Screen {
                     if (selectedForce == null && selectedHex == null && selectedBase == null && forceToAttach == null) {
                         closeWindows();
                         selectedWindow = new Window(this, hx, X, Y);
-                        addActor(selectedWindow);
+                        //addActor(selectedWindow);
                     }
-                    else closeWindows();
+                    else {
+                        System.out.println("Closing from force...");
+                        closeWindows();
+                    }
 
                     /*
                     closeTableau(1);
@@ -674,11 +688,24 @@ public class Play extends Stage implements Screen {
                                 if (label.getStyle() == label.styleTwo) {
                                     Force fc = w.forces.get(i);
                                     selectedWindow = new Window(this, fc, label, X, Y);
-                                    addActor(selectedWindow);
+                                    //addActor(selectedWindow);
                                 }
                                 else {
                                     closeWindow(label.childWindow);
                                     label.changeStyle();
+                                }
+                            }
+                            else if(label == w.forceLabels[i]) {
+                                if (forceToAttach != null) {
+                                    if (!(w.forces.get(i)).isUnit) {
+                                        w.forces.get(i).attach(forceToAttach);
+                                        closeWindows();
+                                    }
+                                }
+                                else {
+                                    selectedForce = w.forces.get(i);
+                                    selectedWindow = new Window(this, w, selectedForce, X, Y);
+
                                 }
                             }
                         }
@@ -799,9 +826,59 @@ public class Play extends Stage implements Screen {
                     //
                 */
                 }
+                else if(a instanceof Label) {
+                    Label label = (Label) a;
+
+                    if (selectedWindow.choice != null) {
+                        Choice choice = selectedWindow.choice;
+
+                        if(label == choice.builtLabel) {
+                            selectedHex.builtBase();
+                            closeWindows();
+                        }
+                        if(label == choice.createLabel) {
+                            new Force(this, FRANCE, selectedHex);
+                            closeWindows();
+                        }
+                        if(label == choice.upgradeLabel) {
+                            selectedBase.upgrade();
+                            closeWindows();
+                        }
+                        if(label == choice.destroyLabel) {
+                            selectedBase.destroy();
+                            closeWindows();
+                        }
+                        if(label == choice.detachLabel) {
+                            if(selectedForce.superForce != null) {
+                                selectedForce.superForce.detach(selectedForce);
+                                closeWindows();
+                            }
+                        }
+                        if(label == choice.attachLabel) {
+                            forceToAttach = selectedForce;
+                            selectedForce = null;
+                            selectedWindow = new Window(this, selectedWindow, forceToAttach, true, X, Y);
+                        }
+                    }
+
+                    else if (label != selectedWindow.hexLabel && label != selectedWindow.baseLabel) {
+                        closeWindows();
+                    }
+                    else {
+                        if(label == selectedWindow.hexLabel) {
+                            selectedHex =  selectedWindow.hex;
+                            selectedWindow = new Window(this, selectedWindow, selectedWindow.hex, X, Y);
+                        }
+                        if(label == selectedWindow.baseLabel) {
+                            selectedBase = selectedWindow.base;
+                            selectedWindow = new Window(this, selectedWindow, selectedWindow.base, X, Y);
+                        }
+                    }
+
+                }
 
             }
-        }
+        //}
 
         return true;
     }

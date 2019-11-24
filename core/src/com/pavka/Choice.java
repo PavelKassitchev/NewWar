@@ -20,11 +20,11 @@ public class Choice extends Table {
     Label moveLabel;
     Label detachLabel;
     Label attachLabel;
-    Tableau tableau;
+    Window tableau;
     float totalHeight;
     Label.LabelStyle style;
 
-    public Choice(Tableau tableau, Hex hex, float x, float y) {
+    public Choice(Window tableau, Hex hex, float x, float y) {
         setStyle(tableau);
         this.hex = hex;
 
@@ -36,12 +36,12 @@ public class Choice extends Table {
         totalHeight += builtLabel.getPrefHeight();
         row();
 
-        createLabel = new Label("Create New Force", style);
+        createLabel = new Label("Create a New Force", style);
         initLabel(createLabel);
         init(x, y);
     }
 
-    public Choice(Tableau tableau, Base base, float x, float y) {
+    public Choice(Window tableau, Base base, float x, float y) {
         setStyle(tableau);
         this.base = base;
 
@@ -62,7 +62,7 @@ public class Choice extends Table {
         init(x, y);
     }
 
-    public Choice(Tableau tableau, Force force, float x, float y) {
+    public Choice(Window tableau, Force force, float x, float y) {
         setStyle(tableau);
         this.force = force;
 
@@ -93,9 +93,8 @@ public class Choice extends Table {
     }
 
 
-    private void setStyle(Tableau tableau) {
+    private void setStyle(Window tableau) {
         this.tableau = tableau;
-        System.out.println("Tableau, label color " + tableau + " ");
         tableau.labelColor.setColor(Color.BROWN);
         tableau.labelColor.fill();
         style = new Label.LabelStyle(tableau.font, new Color(1, 1, 0, 1));

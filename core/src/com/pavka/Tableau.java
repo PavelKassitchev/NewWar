@@ -63,7 +63,7 @@ public class Tableau extends Table {
             if (!hex.blackForces.isEmpty()) forces = hex.blackForces;
 
         } else {
-            choice = new Choice(this, hex, x, y);
+            //choice = new Choice(this, hex, x, y);
         }
         init(x, y);
     }
@@ -78,7 +78,7 @@ public class Tableau extends Table {
         //labelColor = new Pixmap(1, 1, Pixmap.Format.RGB888);
 
         if(selection) {
-            choice = new Choice(this, force, x, y);
+            //choice = new Choice(this, force, x, y);
         }
         else {
             Hex hx = force.hex;
@@ -133,7 +133,7 @@ public class Tableau extends Table {
 
         }
         else {
-            choice = new Choice(this, base, x, y);
+            //choice = new Choice(this, base, x, y);
         }
         init(x, y);
     }
