@@ -13,6 +13,7 @@ public class Choice extends Table {
     Hex hex;
     Base base;
     Force force;
+    Label pathLabel;
     Label builtLabel;
     Label createLabel;
     Label upgradeLabel;
@@ -28,12 +29,13 @@ public class Choice extends Table {
         setStyle(tableau);
         this.hex = hex;
 
+        pathLabel = new Label("Path to...", style);
+        initLabel(pathLabel);
+        row();
+
+
         builtLabel = new Label("Build a Base", style);
-        tableau.play.addActor(builtLabel);
-        add(builtLabel).width(164);
-        builtLabel.setDebug(true);
-        builtLabel.setAlignment(0);
-        totalHeight += builtLabel.getPrefHeight();
+        initLabel(builtLabel);
         row();
 
         createLabel = new Label("Create a New Force", style);
@@ -87,7 +89,7 @@ public class Choice extends Table {
     private void initLabel(Label label) {
         tableau.play.addActor(label);
         add(label).width(164);
-        label.setDebug(true);
+        //label.setDebug(true);
         label.setAlignment(0);
         totalHeight += label.getPrefHeight();
     }

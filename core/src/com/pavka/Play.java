@@ -59,6 +59,7 @@ public class Play extends Stage implements Screen {
     private Force forceToAttach;
     private Force forceToMove;
     private Hex selectedHex;
+    private Hex hexToMove;
     private Base selectedBase;
     private Array<Path> selectedPaths;
 
@@ -228,6 +229,9 @@ public class Play extends Stage implements Screen {
         if(keycode == Input.Keys.G) {
             System.out.println("Selected force = " + selectedForce + " selected window = " + selectedWindow + " force to attach = " + forceToAttach + " selected hex = " +
                     selectedHex);
+            if(selectedWindow != null) {
+                System.out.println("Choice = " + selectedWindow.choice);
+            }
         }
         if (keycode == Input.Keys.C) {
             /*Force force = new Force(new Squadron(this, Nation.FRANCE, hexGraph.getHex(8, 4)), new Squadron(this, Nation.FRANCE, hexGraph.getHex(8, 4)));
@@ -588,9 +592,15 @@ public class Play extends Stage implements Screen {
                 }
                 else if(a instanceof Label) {
                     Label label = (Label) a;
+                    Window p = selectedWindow.parent;
 
                     if (selectedWindow.choice != null) {
                         Choice choice = selectedWindow.choice;
+
+                        if(label == choice.pathLabel) {
+                            hexToMove = selectedHex;
+                            closeWindows();
+                        }
 
                         if(label == choice.builtLabel) {
                             selectedHex.builtBase();
@@ -623,11 +633,19 @@ public class Play extends Stage implements Screen {
                             forceToMove = selectedForce;
                             closeWindows();
                         }
+                        if(p != null && (label == p.baseLabel || label == p.hexLabel)) {
+                            selectedHex = null;
+                            selectedBase =null;
+                            selectedForce = null;
+                            closeWindow(selectedWindow);
+                        }
+
                     }
 
                     else if (label != selectedWindow.hexLabel && label != selectedWindow.baseLabel) {
                         closeWindows();
                     }
+
                     else {
                         if(label == selectedWindow.hexLabel) {
                             selectedHex =  selectedWindow.hex;
