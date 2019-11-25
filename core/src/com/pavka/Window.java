@@ -56,7 +56,9 @@ public class Window extends Table {
 
     public SwitchLabel closeLabel;
     public Label hexLabel;
+    public SwitchLabel hLabel;
     public Label baseLabel;
+    public SwitchLabel bLabel;
     public SwitchLabel[] forceLabels;
     public SwitchLabel[] extendLabels;
     public Choice choice;

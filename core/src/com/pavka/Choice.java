@@ -25,21 +25,36 @@ public class Choice extends Table {
     float totalHeight;
     Label.LabelStyle style;
 
+    SwitchLabel pLabel;
+    SwitchLabel bLabel;
+    SwitchLabel cLabel;
+    SwitchLabel uLabel;
+    SwitchLabel dLabel;
+    SwitchLabel mLabel;
+    SwitchLabel detLabel;
+    SwitchLabel aLabel;
+
     public Choice(Window tableau, Hex hex, float x, float y) {
         setStyle(tableau);
         this.hex = hex;
 
-        pathLabel = new Label("Path to...", style);
-        initLabel(pathLabel);
+        /*pathLabel = new Label("Path to...", style);
+        initLabel(pathLabel);*/
+        pLabel = new SwitchLabel(tableau, "Path to...", style);
+        initSwitchLabel(pLabel, false);
         row();
 
 
-        builtLabel = new Label("Build a Base", style);
-        initLabel(builtLabel);
+        /*builtLabel = new Label("Build a Base", style);
+        initLabel(builtLabel);*/
+        bLabel = new SwitchLabel(tableau, "Build a Base", style);
+        initSwitchLabel(bLabel, false);
         row();
 
-        createLabel = new Label("Create a New Force", style);
-        initLabel(createLabel);
+        /*createLabel = new Label("Create a New Force", style);
+        initLabel(createLabel);*/
+        cLabel = new SwitchLabel(tableau, "Create New Force", style);
+        initSwitchLabel(cLabel, false);
         init(x, y);
     }
 
@@ -71,7 +86,7 @@ public class Choice extends Table {
         moveLabel = new Label("Move to...", style);
         tableau.play.addActor(moveLabel);
         add(moveLabel).width(164);
-        moveLabel.setDebug(true);
+        //moveLabel.setDebug(true);
         moveLabel.setAlignment(0);
         totalHeight += moveLabel.getPrefHeight();
         row();
@@ -92,6 +107,21 @@ public class Choice extends Table {
         //label.setDebug(true);
         label.setAlignment(0);
         totalHeight += label.getPrefHeight();
+    }
+
+    private void initSwitchLabel(SwitchLabel label, boolean inactive) {
+
+        if(inactive) {
+            label.changeStyle();
+        }
+        else tableau.play.addActor(label);
+        add(label).width(164);
+        label.setAlignment(0);
+        totalHeight += label.getPrefHeight();
+        /*if(inactive) {
+            label.changeStyle();
+        }
+        else tableau.play.addActor(label);*/
     }
 
 

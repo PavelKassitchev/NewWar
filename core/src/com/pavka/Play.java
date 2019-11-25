@@ -640,6 +640,7 @@ public class Play extends Stage implements Screen {
                             closeWindow(selectedWindow);
                         }
 
+
                     }
 
                     else if (label != selectedWindow.hexLabel && label != selectedWindow.baseLabel) {
