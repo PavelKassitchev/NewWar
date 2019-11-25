@@ -168,13 +168,13 @@ public class Window extends Table {
                 labelColor.setColor(Color.GOLD);
                 labelColor.fill();
                 hexStyle.background = new Image(new Texture(labelColor)).getDrawable();
-                hexLabel = new Label("Cost: " + hex.cell.getTile().getProperties().get("cost") + " Crops: " + hex.currentHarvest,
+                hLabel = new SwitchLabel(this, "Cost: " + hex.cell.getTile().getProperties().get("cost") + " Crops: " + hex.currentHarvest,
                         hexStyle);
-                hexLabel.setWrap(true);
-                play.addActor(hexLabel);
-                add(hexLabel).width(138f);
+                hLabel.setWrap(true);
+                play.addActor(hLabel);
+                add(hLabel).width(138f);
                 //hexLabel.setDebug(true);
-                totalHeight += hexLabel.getPrefHeight();
+                totalHeight += hLabel.getPrefHeight();
                 row();
             }
 
@@ -182,14 +182,14 @@ public class Window extends Table {
                 labelColor.setColor(Color.CORAL);
                 labelColor.fill();
                 baseStyle.background = new Image(new Texture(labelColor)).getDrawable();
-                baseLabel = new Label(base.getGeneralInfo(), baseStyle);
-                baseLabel.setWrap(true);
-                play.addActor(baseLabel);
-                add(baseLabel).width(138f);
-                baseLabel.pack();
-                baseLabel.setWidth(138f);
+                bLabel = new SwitchLabel(this, base.getGeneralInfo(), baseStyle);
+                bLabel.setWrap(true);
+                play.addActor(bLabel);
+                add(bLabel).width(138f);
+                bLabel.pack();
+                bLabel.setWidth(138f);
                 //baseLabel.setDebug(true);
-                totalHeight += baseLabel.getPrefHeight();
+                totalHeight += bLabel.getPrefHeight();
                 row();
             }
 

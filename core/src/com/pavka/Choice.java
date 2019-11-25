@@ -62,19 +62,23 @@ public class Choice extends Table {
         setStyle(tableau);
         this.base = base;
 
-        upgradeLabel = new Label("Upgrade the Base", style);
+        /*upgradeLabel = new Label("Upgrade the Base", style);
         tableau.play.addActor(upgradeLabel);
         add(upgradeLabel).width(164);
         upgradeLabel.setDebug(true);
         upgradeLabel.setAlignment(0);
-        totalHeight += upgradeLabel.getPrefHeight();
+        totalHeight += upgradeLabel.getPrefHeight();*/
+        uLabel = new SwitchLabel(tableau, "Upgrade the Base", style);
+        initSwitchLabel(uLabel, false);
         row();
-        destroyLabel = new Label("Destroy the Base", style);
+        /*destroyLabel = new Label("Destroy the Base", style);
         tableau.play.addActor(destroyLabel);
         add(destroyLabel).width(164);
         destroyLabel.setDebug(true);
         destroyLabel.setAlignment(0);
-        totalHeight += destroyLabel.getPrefHeight();
+        totalHeight += destroyLabel.getPrefHeight();*/
+        dLabel = new SwitchLabel(tableau, "Destroy the Base", style);
+        initSwitchLabel(dLabel, false);
 
         init(x, y);
     }
@@ -83,20 +87,26 @@ public class Choice extends Table {
         setStyle(tableau);
         this.force = force;
 
-        moveLabel = new Label("Move to...", style);
+        /*moveLabel = new Label("Move to...", style);
         tableau.play.addActor(moveLabel);
         add(moveLabel).width(164);
         //moveLabel.setDebug(true);
         moveLabel.setAlignment(0);
-        totalHeight += moveLabel.getPrefHeight();
+        totalHeight += moveLabel.getPrefHeight();*/
+        mLabel = new SwitchLabel(tableau, "Move to...", style);
+        initSwitchLabel(mLabel, false);
         row();
 
-        detachLabel = new Label("Detach", style);
-        initLabel(detachLabel);
+        detLabel = new SwitchLabel(tableau, "Detach", style);
+        initSwitchLabel(detLabel, false);
+        /*detachLabel = new Label("Detach", style);
+        initLabel(detachLabel);*/
         row();
 
-        attachLabel = new Label("Attach to...", style);
-        initLabel(attachLabel);
+        aLabel = new SwitchLabel(tableau, "Attach to...", style);
+        initSwitchLabel(aLabel, false);
+        /*attachLabel = new Label("Attach to...", style);
+        initLabel(attachLabel);*/
 
         init(x, y);
     }

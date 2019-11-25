@@ -451,7 +451,11 @@ public class Play extends Stage implements Screen {
                 p.children.removeValue(w, true);
             }
         }
-        else selectedWindow = null;
+        else {
+            //selectedWindow = null;
+            clearSelections();
+
+        }
 
         clearWindow(w);
 
@@ -558,8 +562,73 @@ public class Play extends Stage implements Screen {
 
                     if(label == w.closeLabel) {
                         closeWindow(w);
+                        return true;
                     }
-                    else {
+                    if(label == w.hLabel) {
+                        if(selectedWindow != w) {
+                            for(Window wind: w.children){
+                                closeWindow(wind);
+                            }
+                        }
+                        selectedHex = w.hex;
+                        selectedWindow = new Window(this, selectedWindow, selectedWindow.hex, X, Y);
+                        return true;
+                    }
+                    if(label == w.bLabel) {
+                        if(selectedWindow != w) {
+                            for(Window wind: w.children){
+                                closeWindow(wind);
+                            }
+                        }
+                        selectedBase =w.base;
+                        selectedWindow = new Window(this, selectedWindow, selectedWindow.base, X, Y);
+                        return true;
+                    }
+                    else if(w.choice != null) {
+                        Choice choice = w.choice;
+                        if(label == choice.pLabel) {
+                            hexToMove = selectedHex;
+                            closeWindows();
+                        }
+                        if(label == choice.bLabel) {
+                            selectedHex.builtBase();
+                            closeWindows();
+                        }
+                        if(label == choice.cLabel) {
+                            new Force(this, FRANCE, selectedHex);
+                            closeWindows();
+                        }
+                        if(label == choice.uLabel) {
+                            selectedBase.upgrade();
+                            closeWindows();
+                        }
+                        if(label == choice.dLabel) {
+                            selectedBase.destroy();
+                            closeWindows();
+                        }
+                        if(label == choice.detLabel) {
+                            if(selectedForce.superForce != null) {
+                                selectedForce.superForce.detach(selectedForce);
+                                closeWindows();
+                            }
+                        }
+                        if(label == choice.aLabel) {
+                            forceToAttach = selectedForce;
+                            selectedForce = null;
+                            selectedWindow = new Window(this, selectedWindow, forceToAttach, true, X, Y);
+                        }
+                        if(label == choice.mLabel) {
+                            forceToMove = selectedForce;
+                            closeWindows();
+                        }
+                        return true;
+                    }
+                    else if(w.forces != null){
+                        if(selectedHex != null || selectedBase != null) {
+                            selectedHex = null;
+                            selectedBase = null;
+                            closeWindow(selectedWindow);
+                        }
                         for(int i = 0; i < w.forces.size; i++) {
                             if(label == w.extendLabels[i]) {
                                 label.changeStyle();
@@ -581,6 +650,11 @@ public class Play extends Stage implements Screen {
                                     }
                                 }
                                 else {
+                                    if(selectedWindow != w) {
+                                        for(Window wind: w.children){
+                                            closeWindow(wind);
+                                        }
+                                    }
                                     selectedForce = w.forces.get(i);
                                     selectedWindow = new Window(this, w, selectedForce, X, Y);
 
@@ -590,7 +664,7 @@ public class Play extends Stage implements Screen {
                     }
 
                 }
-                else if(a instanceof Label) {
+                /*else if(a instanceof Label) {
                     Label label = (Label) a;
                     Window p = selectedWindow.parent;
 
@@ -658,7 +732,7 @@ public class Play extends Stage implements Screen {
                         }
                     }
 
-                }
+                }*/
 
             }
 
