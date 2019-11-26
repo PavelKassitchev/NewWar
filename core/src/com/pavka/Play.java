@@ -564,8 +564,11 @@ public class Play extends Stage implements Screen {
                     }
                     if(label == w.hLabel) {
                         if(selectedWindow != w) {
-                            for(Window wind: w.children){
+                            System.out.println("Children: " + w.children.size);
+                            Array<Window> ch = new Array<Window>(w.children);
+                            for(Window wind: ch){
                                 closeWindow(wind);
+                                System.out.println("Window closed, left open: " + w.children.size);
                             }
                             selectedHex = null;
                             selectedBase = null;
@@ -580,8 +583,10 @@ public class Play extends Stage implements Screen {
                     }
                     if(label == w.bLabel) {
                         if(selectedWindow != w) {
-                            for(Window wind: w.children){
+                            Array<Window> ch = new Array<Window>(w.children);
+                            for(Window wind: ch){
                                 closeWindow(wind);
+                                System.out.println("Window closed");
                             }
                             selectedHex = null;
                             selectedBase = null;
@@ -662,6 +667,15 @@ public class Play extends Stage implements Screen {
 
                         for(int i = 0; i < w.forces.size; i++) {
                             if(label == w.extendLabels[i]) {
+                                if(w != selectedWindow && selectedWindow.choice != null) {
+                                    selectedHex = null;
+                                    selectedBase = null;
+                                    selectedForce = null;
+                                    Array<Window> ch = new Array<Window>(w.children);
+                                    for(Window wind: ch){
+                                        closeWindow(wind);
+                                    }
+                                }
                                 label.changeStyle();
                                 if (label.getStyle() == label.styleTwo) {
                                     Force fc = w.forces.get(i);
@@ -681,7 +695,8 @@ public class Play extends Stage implements Screen {
                                 }
                                 else {
                                     if(selectedWindow != w) {
-                                        for(Window wind: w.children){
+                                        Array<Window> ch = new Array<Window>(w.children);
+                                        for(Window wind: ch){
                                             closeWindow(wind);
                                         }
                                         selectedHex = null;
