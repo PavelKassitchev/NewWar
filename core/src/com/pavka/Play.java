@@ -17,7 +17,6 @@ import com.badlogic.gdx.maps.tiled.renderers.HexagonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.Iterator;
@@ -551,7 +550,6 @@ public class Play extends Stage implements Screen {
 
                     }
                     else {
-                        System.out.println("Closing from force...");
                         closeWindows();
                     }
 
@@ -569,9 +567,15 @@ public class Play extends Stage implements Screen {
                             for(Window wind: w.children){
                                 closeWindow(wind);
                             }
+                            selectedHex = null;
+                            selectedBase = null;
+                            selectedForce = null;
+                            forceToAttach = null;
                         }
-                        selectedHex = w.hex;
-                        selectedWindow = new Window(this, selectedWindow, selectedWindow.hex, X, Y);
+                        else {
+                            selectedHex = w.hex;
+                            selectedWindow = new Window(this, selectedWindow, selectedWindow.hex, X, Y);
+                        }
                         return true;
                     }
                     if(label == w.bLabel) {
@@ -579,56 +583,83 @@ public class Play extends Stage implements Screen {
                             for(Window wind: w.children){
                                 closeWindow(wind);
                             }
+                            selectedHex = null;
+                            selectedBase = null;
+                            selectedForce = null;
+                            forceToAttach = null;
                         }
-                        selectedBase =w.base;
-                        selectedWindow = new Window(this, selectedWindow, selectedWindow.base, X, Y);
+                        else {
+                            selectedBase = w.base;
+                            selectedWindow = new Window(this, selectedWindow, selectedWindow.base, X, Y);
+                        }
                         return true;
                     }
-                    else if(w.choice != null) {
+                    if(w.choice != null) {
+
                         Choice choice = w.choice;
+
                         if(label == choice.pLabel) {
                             hexToMove = selectedHex;
                             closeWindows();
+                            return true;
                         }
                         if(label == choice.bLabel) {
                             selectedHex.builtBase();
                             closeWindows();
+                            return true;
                         }
                         if(label == choice.cLabel) {
                             new Force(this, FRANCE, selectedHex);
                             closeWindows();
+                            return true;
                         }
                         if(label == choice.uLabel) {
                             selectedBase.upgrade();
                             closeWindows();
+                            return true;
                         }
                         if(label == choice.dLabel) {
                             selectedBase.destroy();
                             closeWindows();
+                            return true;
                         }
                         if(label == choice.detLabel) {
-                            if(selectedForce.superForce != null) {
+                            if(forceToAttach != null) {
+                                forceToAttach = null;
+                                closeWindow(w);
+                            }
+                            else if(selectedForce.superForce != null) {
                                 selectedForce.superForce.detach(selectedForce);
                                 closeWindows();
+                                return true;
                             }
                         }
                         if(label == choice.aLabel) {
-                            forceToAttach = selectedForce;
-                            selectedForce = null;
-                            selectedWindow = new Window(this, selectedWindow, forceToAttach, true, X, Y);
+                            if(forceToAttach != null) {
+                                forceToAttach = null;
+                                closeWindow(w);
+                            }
+                            else {
+                                forceToAttach = selectedForce;
+                                selectedForce = null;
+                                selectedWindow = new Window(this, selectedWindow, forceToAttach, true, X, Y);
+                                return true;
+                            }
                         }
                         if(label == choice.mLabel) {
-                            forceToMove = selectedForce;
-                            closeWindows();
+                            if(forceToAttach != null) {
+                                forceToAttach = null;
+                                closeWindow(w);
+                            }
+                            else {
+                                forceToMove = selectedForce;
+                                closeWindows();
+                            }
                         }
                         return true;
                     }
-                    else if(w.forces != null){
-                        if(selectedHex != null || selectedBase != null) {
-                            selectedHex = null;
-                            selectedBase = null;
-                            closeWindow(selectedWindow);
-                        }
+                    if(w.forces != null){
+
                         for(int i = 0; i < w.forces.size; i++) {
                             if(label == w.extendLabels[i]) {
                                 label.changeStyle();
@@ -654,9 +685,15 @@ public class Play extends Stage implements Screen {
                                         for(Window wind: w.children){
                                             closeWindow(wind);
                                         }
+                                        selectedHex = null;
+                                        selectedBase = null;
+                                        selectedForce = null;
                                     }
-                                    selectedForce = w.forces.get(i);
-                                    selectedWindow = new Window(this, w, selectedForce, X, Y);
+                                    else {
+                                        selectedForce = w.forces.get(i);
+                                        selectedWindow = new Window(this, w, selectedForce, X, Y);
+                                    }
+                                    return true;
 
                                 }
                             }
