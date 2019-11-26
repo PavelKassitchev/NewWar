@@ -666,7 +666,6 @@ public class Play extends Stage implements Screen {
                                 if (label.getStyle() == label.styleTwo) {
                                     Force fc = w.forces.get(i);
                                     selectedWindow = new Window(this, fc, label, X, Y);
-
                                 }
                                 else {
                                     closeWindow(label.childWindow);
