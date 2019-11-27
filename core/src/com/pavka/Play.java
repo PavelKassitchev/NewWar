@@ -522,11 +522,19 @@ public class Play extends Stage implements Screen {
 
                 if (a instanceof Hex) {
                     Hex hx = (Hex) a;
-                    if (selectedForce == null && selectedHex == null && selectedBase == null && forceToAttach == null) {
+                    if (selectedForce == null && selectedHex == null && selectedBase == null && forceToAttach == null
+                            && startHex == null && forceToMove == null) {
                         closeWindows();
                         selectedWindow = new Window(this, hx, X, Y);
 
-                    } else closeWindows();
+                    }
+                    else if (startHex != null) {
+                        endHex = hx;
+                        navigate(INFANTRY.SPEED);
+                        startHex = null;
+                        endHex = null;
+                    }
+                    else closeWindows();
                 }
 
 
@@ -562,7 +570,7 @@ public class Play extends Stage implements Screen {
                         closeWindow(w);
                         return true;
                     }
-                    if(label == w.hLabel) {
+                    if(label == w.hexLabel) {
                         if(selectedWindow != w) {
                             System.out.println("Children: " + w.children.size);
                             Array<Window> ch = new Array<Window>(w.children);
@@ -581,7 +589,7 @@ public class Play extends Stage implements Screen {
                         }
                         return true;
                     }
-                    if(label == w.bLabel) {
+                    if(label == w.baseLabel) {
                         if(selectedWindow != w) {
                             Array<Window> ch = new Array<Window>(w.children);
                             for(Window wind: ch){
@@ -603,32 +611,32 @@ public class Play extends Stage implements Screen {
 
                         Choice choice = w.choice;
 
-                        if(label == choice.pLabel) {
-                            hexToMove = selectedHex;
+                        if(label == choice.pathLabel) {
+                            startHex = selectedHex;
                             closeWindows();
                             return true;
                         }
-                        if(label == choice.bLabel) {
+                        if(label == choice.buildLabel) {
                             selectedHex.builtBase();
                             closeWindows();
                             return true;
                         }
-                        if(label == choice.cLabel) {
+                        if(label == choice.createLabel) {
                             new Force(this, FRANCE, selectedHex);
                             closeWindows();
                             return true;
                         }
-                        if(label == choice.uLabel) {
+                        if(label == choice.upgradeLabel) {
                             selectedBase.upgrade();
                             closeWindows();
                             return true;
                         }
-                        if(label == choice.dLabel) {
+                        if(label == choice.destroyLabel) {
                             selectedBase.destroy();
                             closeWindows();
                             return true;
                         }
-                        if(label == choice.detLabel) {
+                        if(label == choice.detachLabel) {
                             if(forceToAttach != null) {
                                 forceToAttach = null;
                                 closeWindow(w);
@@ -639,7 +647,7 @@ public class Play extends Stage implements Screen {
                                 return true;
                             }
                         }
-                        if(label == choice.aLabel) {
+                        if(label == choice.attachLabel) {
                             if(forceToAttach != null) {
                                 forceToAttach = null;
                                 closeWindow(w);
@@ -651,7 +659,7 @@ public class Play extends Stage implements Screen {
                                 return true;
                             }
                         }
-                        if(label == choice.mLabel) {
+                        if(label == choice.moveLabel) {
                             if(forceToAttach != null) {
                                 forceToAttach = null;
                                 closeWindow(w);
@@ -715,75 +723,6 @@ public class Play extends Stage implements Screen {
                     }
 
                 }
-                /*else if(a instanceof Label) {
-                    Label label = (Label) a;
-                    Window p = selectedWindow.parent;
-
-                    if (selectedWindow.choice != null) {
-                        Choice choice = selectedWindow.choice;
-
-                        if(label == choice.pathLabel) {
-                            hexToMove = selectedHex;
-                            closeWindows();
-                        }
-
-                        if(label == choice.builtLabel) {
-                            selectedHex.builtBase();
-                            closeWindows();
-                        }
-                        if(label == choice.createLabel) {
-                            new Force(this, FRANCE, selectedHex);
-                            closeWindows();
-                        }
-                        if(label == choice.upgradeLabel) {
-                            selectedBase.upgrade();
-                            closeWindows();
-                        }
-                        if(label == choice.destroyLabel) {
-                            selectedBase.destroy();
-                            closeWindows();
-                        }
-                        if(label == choice.detachLabel) {
-                            if(selectedForce.superForce != null) {
-                                selectedForce.superForce.detach(selectedForce);
-                                closeWindows();
-                            }
-                        }
-                        if(label == choice.attachLabel) {
-                            forceToAttach = selectedForce;
-                            selectedForce = null;
-                            selectedWindow = new Window(this, selectedWindow, forceToAttach, true, X, Y);
-                        }
-                        if(label == choice.moveLabel) {
-                            forceToMove = selectedForce;
-                            closeWindows();
-                        }
-                        if(p != null && (label == p.baseLabel || label == p.hexLabel)) {
-                            selectedHex = null;
-                            selectedBase =null;
-                            selectedForce = null;
-                            closeWindow(selectedWindow);
-                        }
-
-
-                    }
-
-                    else if (label != selectedWindow.hexLabel && label != selectedWindow.baseLabel) {
-                        closeWindows();
-                    }
-
-                    else {
-                        if(label == selectedWindow.hexLabel) {
-                            selectedHex =  selectedWindow.hex;
-                            selectedWindow = new Window(this, selectedWindow, selectedWindow.hex, X, Y);
-                        }
-                        if(label == selectedWindow.baseLabel) {
-                            selectedBase = selectedWindow.base;
-                            selectedWindow = new Window(this, selectedWindow, selectedWindow.base, X, Y);
-                        }
-                    }
-
-                }*/
 
             }
 

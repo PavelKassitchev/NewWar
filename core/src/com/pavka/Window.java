@@ -26,7 +26,6 @@ public class Window extends Table {
     public static Label.LabelStyle forceStyle = new Label.LabelStyle(font, new Color(1, 0, 0, 1));
     public static Label.LabelStyle plusStyle = new Label.LabelStyle(font, new Color(1, 0, 0, 1));
     public static Label.LabelStyle minusStyle = new Label.LabelStyle(font, new Color(1, 0, 0, 1));
-    //public static Label.LabelStyle choiceStyle = new Label.LabelStyle(font, new Color(1, 1, 0, 1));
 
 
     static {
@@ -55,14 +54,11 @@ public class Window extends Table {
     public Array<Window> children;
 
     public SwitchLabel closeLabel;
-    public Label hexLabel;
-    public SwitchLabel hLabel;
-    public Label baseLabel;
-    public SwitchLabel bLabel;
+    public SwitchLabel hexLabel;
+    public SwitchLabel baseLabel;
     public SwitchLabel[] forceLabels;
     public SwitchLabel[] extendLabels;
     public Choice choice;
-    public Label[] choiceLabels;
 
     private float totalHeight;
 
@@ -168,13 +164,13 @@ public class Window extends Table {
                 labelColor.setColor(Color.GOLD);
                 labelColor.fill();
                 hexStyle.background = new Image(new Texture(labelColor)).getDrawable();
-                hLabel = new SwitchLabel(this, "Cost: " + hex.cell.getTile().getProperties().get("cost") + " Crops: " + hex.currentHarvest,
+                hexLabel = new SwitchLabel(this, "Cost: " + hex.cell.getTile().getProperties().get("cost") + " Crops: " + hex.currentHarvest,
                         hexStyle);
-                hLabel.setWrap(true);
-                play.addActor(hLabel);
-                add(hLabel).width(138f);
+                hexLabel.setWrap(true);
+                play.addActor(hexLabel);
+                add(hexLabel).width(138f);
                 //hexLabel.setDebug(true);
-                totalHeight += hLabel.getPrefHeight();
+                totalHeight += hexLabel.getPrefHeight();
                 row();
             }
 
@@ -182,14 +178,14 @@ public class Window extends Table {
                 labelColor.setColor(Color.CORAL);
                 labelColor.fill();
                 baseStyle.background = new Image(new Texture(labelColor)).getDrawable();
-                bLabel = new SwitchLabel(this, base.getGeneralInfo(), baseStyle);
-                bLabel.setWrap(true);
-                play.addActor(bLabel);
-                add(bLabel).width(138f);
-                bLabel.pack();
-                bLabel.setWidth(138f);
+                baseLabel = new SwitchLabel(this, base.getGeneralInfo(), baseStyle);
+                baseLabel.setWrap(true);
+                play.addActor(baseLabel);
+                add(baseLabel).width(138f);
+                baseLabel.pack();
+                baseLabel.setWidth(138f);
                 //baseLabel.setDebug(true);
-                totalHeight += bLabel.getPrefHeight();
+                totalHeight += baseLabel.getPrefHeight();
                 row();
             }
 

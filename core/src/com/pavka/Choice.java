@@ -13,48 +13,34 @@ public class Choice extends Table {
     Hex hex;
     Base base;
     Force force;
-    Label pathLabel;
-    Label builtLabel;
-    Label createLabel;
-    Label upgradeLabel;
-    Label destroyLabel;
-    Label moveLabel;
-    Label detachLabel;
-    Label attachLabel;
+
     Window tableau;
     float totalHeight;
     Label.LabelStyle style;
 
-    SwitchLabel pLabel;
-    SwitchLabel bLabel;
-    SwitchLabel cLabel;
-    SwitchLabel uLabel;
-    SwitchLabel dLabel;
-    SwitchLabel mLabel;
-    SwitchLabel detLabel;
-    SwitchLabel aLabel;
+    SwitchLabel pathLabel;
+    SwitchLabel buildLabel;
+    SwitchLabel createLabel;
+    SwitchLabel upgradeLabel;
+    SwitchLabel destroyLabel;
+    SwitchLabel moveLabel;
+    SwitchLabel detachLabel;
+    SwitchLabel attachLabel;
 
     public Choice(Window tableau, Hex hex, float x, float y) {
         setStyle(tableau);
         this.hex = hex;
 
-        /*pathLabel = new Label("Path to...", style);
-        initLabel(pathLabel);*/
-        pLabel = new SwitchLabel(tableau, "Path to...", style);
-        initSwitchLabel(pLabel, false);
+        pathLabel = new SwitchLabel(tableau, "Path to...", style);
+        initSwitchLabel(pathLabel, false);
         row();
 
-
-        /*builtLabel = new Label("Build a Base", style);
-        initLabel(builtLabel);*/
-        bLabel = new SwitchLabel(tableau, "Build a Base", style);
-        initSwitchLabel(bLabel, false);
+        buildLabel = new SwitchLabel(tableau, "Build a Base", style);
+        initSwitchLabel(buildLabel, false);
         row();
 
-        /*createLabel = new Label("Create a New Force", style);
-        initLabel(createLabel);*/
-        cLabel = new SwitchLabel(tableau, "Create New Force", style);
-        initSwitchLabel(cLabel, false);
+        createLabel = new SwitchLabel(tableau, "Create New Force", style);
+        initSwitchLabel(createLabel, false);
         init(x, y);
     }
 
@@ -62,23 +48,13 @@ public class Choice extends Table {
         setStyle(tableau);
         this.base = base;
 
-        /*upgradeLabel = new Label("Upgrade the Base", style);
-        tableau.play.addActor(upgradeLabel);
-        add(upgradeLabel).width(164);
-        upgradeLabel.setDebug(true);
-        upgradeLabel.setAlignment(0);
-        totalHeight += upgradeLabel.getPrefHeight();*/
-        uLabel = new SwitchLabel(tableau, "Upgrade the Base", style);
-        initSwitchLabel(uLabel, false);
+
+        upgradeLabel = new SwitchLabel(tableau, "Upgrade the Base", style);
+        initSwitchLabel(upgradeLabel, false);
         row();
-        /*destroyLabel = new Label("Destroy the Base", style);
-        tableau.play.addActor(destroyLabel);
-        add(destroyLabel).width(164);
-        destroyLabel.setDebug(true);
-        destroyLabel.setAlignment(0);
-        totalHeight += destroyLabel.getPrefHeight();*/
-        dLabel = new SwitchLabel(tableau, "Destroy the Base", style);
-        initSwitchLabel(dLabel, false);
+
+        destroyLabel = new SwitchLabel(tableau, "Destroy the Base", style);
+        initSwitchLabel(destroyLabel, false);
 
         init(x, y);
     }
@@ -87,37 +63,20 @@ public class Choice extends Table {
         setStyle(tableau);
         this.force = force;
 
-        /*moveLabel = new Label("Move to...", style);
-        tableau.play.addActor(moveLabel);
-        add(moveLabel).width(164);
-        //moveLabel.setDebug(true);
-        moveLabel.setAlignment(0);
-        totalHeight += moveLabel.getPrefHeight();*/
-        mLabel = new SwitchLabel(tableau, "Move to...", style);
-        initSwitchLabel(mLabel, false);
+        moveLabel = new SwitchLabel(tableau, "Move to...", style);
+        initSwitchLabel(moveLabel, false);
         row();
 
-        detLabel = new SwitchLabel(tableau, "Detach", style);
-        initSwitchLabel(detLabel, false);
-        /*detachLabel = new Label("Detach", style);
-        initLabel(detachLabel);*/
+        detachLabel = new SwitchLabel(tableau, "Detach", style);
+        initSwitchLabel(detachLabel, false);
         row();
 
-        aLabel = new SwitchLabel(tableau, "Attach to...", style);
-        initSwitchLabel(aLabel, false);
-        /*attachLabel = new Label("Attach to...", style);
-        initLabel(attachLabel);*/
+        attachLabel = new SwitchLabel(tableau, "Attach to...", style);
+        initSwitchLabel(attachLabel, false);
 
         init(x, y);
     }
 
-    private void initLabel(Label label) {
-        tableau.play.addActor(label);
-        add(label).width(164);
-        //label.setDebug(true);
-        label.setAlignment(0);
-        totalHeight += label.getPrefHeight();
-    }
 
     private void initSwitchLabel(SwitchLabel label, boolean inactive) {
 
@@ -128,10 +87,6 @@ public class Choice extends Table {
         add(label).width(164);
         label.setAlignment(0);
         totalHeight += label.getPrefHeight();
-        /*if(inactive) {
-            label.changeStyle();
-        }
-        else tableau.play.addActor(label);*/
     }
 
 
