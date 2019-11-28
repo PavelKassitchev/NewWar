@@ -172,6 +172,8 @@ public class Play extends Stage implements Screen {
                 path.render(shapeRenderer);
             }
         }
+
+
         camera.update();
         //act(Gdx.graphics.getDeltaTime());
         //draw();
