@@ -16,6 +16,11 @@ public class MileStone extends Image {
 
     }
 
+    public MileStone(Hex hex, int days) {
+        this.hex = hex;
+        this.days = days;
+    }
+
     public MileStone(Hex hex) {
         this.hex = hex;
     }
@@ -23,7 +28,7 @@ public class MileStone extends Image {
     public void draw(Batch batch, float alpha) {
 
         font.getData().setScale(0.8f);
-        font.draw(batch, String.valueOf(days), hex.getX(), hex.getY());
+        font.draw(batch, String.valueOf(days), hex.getX() + 6, hex.getY() + 12);
     }
     /*public void act(float delta) {
 

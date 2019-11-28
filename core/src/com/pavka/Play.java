@@ -50,6 +50,7 @@ public class Play extends Stage implements Screen {
     Hex startHex;
     Hex endHex;
     MileStone mileStone;
+    MileStone start;
     ShapeRenderer shapeRenderer;
     Array<Path> paths;
     private HexagonalTiledMapRenderer renderer;
@@ -406,7 +407,10 @@ public class Play extends Stage implements Screen {
                 paths.add(Play.hexGraph.getPath(sHex, eHex));
                 sHex = eHex;
             }
-
+            if(mileStone != null) {
+                mileStone.remove();
+                mileStone = null;
+            }
             mileStone = new MileStone(paths.peek().getToNode());
             mileStone.days = Path.getDaysToGo(paths, speed);
             addActor(mileStone);
@@ -613,6 +617,11 @@ public class Play extends Stage implements Screen {
 
                         if(label == choice.pathLabel) {
                             startHex = selectedHex;
+                            if(start != null) {
+                                start.remove();
+                            }
+                            start = new MileStone(startHex, 0);
+                            addActor(start);
                             closeWindows();
                             return true;
                         }
@@ -976,7 +985,7 @@ public class Play extends Stage implements Screen {
             if (currentStone != null) currentStone.remove();
             currentStone = null;
         }
-        return false;
+        return true;
     }
 
     @Override
