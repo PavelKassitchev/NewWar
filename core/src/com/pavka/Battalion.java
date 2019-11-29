@@ -17,6 +17,7 @@ public class Battalion extends Unit {
     public Battalion(Play play, Nation nation, Hex hex) {
         this(nation, hex);
         this.play = play;
+        play.addActor(this);
     }
 
     public Battalion (Nation nation, Hex hex, int strength) {

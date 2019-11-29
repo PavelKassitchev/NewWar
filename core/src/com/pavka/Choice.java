@@ -27,6 +27,46 @@ public class Choice extends Table {
     SwitchLabel detachLabel;
     SwitchLabel attachLabel;
 
+    SwitchLabel whiteBattalion;
+    SwitchLabel whiteSquadron;
+    SwitchLabel whiteBattery;
+    SwitchLabel blackBattalion;
+    SwitchLabel blackSquadron;
+    SwitchLabel blackBattery;
+
+    public Choice (Window tableau, Hex hex, boolean create, float x, float y) {
+        if(create) {
+            setStyle(tableau);
+            this.hex = hex;
+
+            whiteBattalion = new SwitchLabel(tableau, "White Battalion", style);
+            initSwitchLabel(whiteBattalion, false);
+            row();
+
+            whiteSquadron = new SwitchLabel(tableau, "White Squadron", style);
+            initSwitchLabel(whiteSquadron, false);
+            row();
+
+            whiteBattery = new SwitchLabel(tableau, "White Battery", style);
+            initSwitchLabel(whiteBattery, false);
+            row();
+
+            blackBattalion = new SwitchLabel(tableau, "Black Battalion", style);
+            initSwitchLabel(blackBattalion, false);
+            row();
+
+            blackSquadron = new SwitchLabel(tableau, "Black Squadron", style);
+            initSwitchLabel(blackSquadron, false);
+            row();
+
+            blackBattery = new SwitchLabel(tableau, "Black Battery", style);
+            initSwitchLabel(blackBattery, false);
+
+            init(x, y);
+        }
+
+    }
+
     public Choice(Window tableau, Hex hex, float x, float y) {
         setStyle(tableau);
         this.hex = hex;

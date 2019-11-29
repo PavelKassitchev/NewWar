@@ -517,6 +517,63 @@ public class Play extends Stage implements Screen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+
+        //Just to try
+        if(button == Input.Buttons.RIGHT) {
+            float X = getMousePosOnMap().x;
+            float Y = getMousePosOnMap().y;
+            Actor a = hit(X, Y, true);
+            System.out.println("ACTOR IS " + a);
+
+            if(a instanceof Hex) {
+                Hex h = (Hex)a;
+                selectedWindow = new Window(this, h, true, X, Y);
+                return true;
+            }
+            if(a instanceof SwitchLabel) {
+                SwitchLabel label = (SwitchLabel)a;
+                Choice choice = selectedWindow.choice;
+
+                if(label == choice.whiteBattalion) {
+                    Force force = new Battalion(this, FRANCE, selectedWindow.hex);
+                    whiteTroops.add(force);
+                    closeWindows();
+                    return true;
+                }
+                if(label == choice.whiteSquadron) {
+                    Force force = new Squadron(this, FRANCE, selectedWindow.hex);
+                    whiteTroops.add(force);
+                    closeWindows();
+                    return true;
+                }
+                if(label == choice.whiteBattery) {
+                    Force force = new Battery(this, FRANCE, selectedWindow.hex);
+                    whiteTroops.add(force);
+                    closeWindows();
+                    return true;
+                }
+                if(label == choice.blackBattalion) {
+                    Force force = new Battalion(this, AUSTRIA, selectedWindow.hex);
+                    blackTroops.add(force);
+                    closeWindows();
+                    return true;
+                }
+                if(label == choice.blackSquadron) {
+                    Force force = new Squadron(this, AUSTRIA, selectedWindow.hex);
+                    blackTroops.add(force);
+                    closeWindows();
+                    return true;
+                }
+                if(label == choice.blackBattery) {
+                    Force force = new Battery(this, AUSTRIA, selectedWindow.hex);
+                    blackTroops.add(force);
+                    closeWindows();
+                    return true;
+                }
+
+            }
+        }
+
         //NEW VERSION
         if (button == Input.Buttons.LEFT) {
 
@@ -633,7 +690,8 @@ public class Play extends Stage implements Screen {
                             return true;
                         }
                         if(label == choice.createLabel) {
-                            new Force(this, FRANCE, selectedHex);
+                            Force force = new Force(this, FRANCE, selectedHex);
+                            whiteTroops.add(force);
                             closeWindows();
                             return true;
                         }

@@ -27,4 +27,5 @@ public class Wagon extends Unit {
         fatigue = 0;
         morale = nation.getNationalMorale();*/
     }
+
 }

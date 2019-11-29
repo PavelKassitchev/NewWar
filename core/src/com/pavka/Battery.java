@@ -18,6 +18,7 @@ public class Battery extends Unit {
     public Battery(Play play, Nation nation, Hex hex) {
         this(nation, hex);
         this.play = play;
+        play.addActor(this);
     }
     public Battery(Nation nation, Hex hex, int strength) {
         super(nation, UnitType.ARTILLERY, hex, strength);

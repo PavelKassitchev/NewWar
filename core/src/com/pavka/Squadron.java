@@ -18,6 +18,7 @@ public class Squadron extends Unit {
     public Squadron(Play play, Nation nation, Hex hex) {
         this(nation, hex);
         this.play = play;
+        play.addActor(this);
     }
 
     public Squadron(Nation nation, Hex hex, int strength) {

@@ -62,6 +62,13 @@ public class Window extends Table {
 
     private float totalHeight;
 
+    public Window (Play play, Hex hex, boolean create, float x, float y) {
+        this.play = play;
+        this.hex = hex;
+        choice = new Choice(this, hex, create, x, y);
+        init(x, y);
+    }
+
     public Window(Play play, Hex hex, float x, float y) {
         this.play = play;
         this.hex = hex;
