@@ -20,7 +20,8 @@ public class Choice extends Table {
 
     SwitchLabel pathLabel;
     SwitchLabel buildLabel;
-    SwitchLabel createLabel;
+    SwitchLabel createWLabel;
+    SwitchLabel createBLabel;
     SwitchLabel upgradeLabel;
     SwitchLabel destroyLabel;
     SwitchLabel showLabel;
@@ -90,8 +91,13 @@ public class Choice extends Table {
         initSwitchLabel(buildLabel, false);
         row();
 
-        createLabel = new SwitchLabel(tableau, "Create New Force", style);
-        initSwitchLabel(createLabel, false);
+        createWLabel = new SwitchLabel(tableau, "Create New White Force", style);
+        initSwitchLabel(createWLabel, false);
+        row();
+
+        createBLabel = new SwitchLabel(tableau, "Create New Black Force", style);
+        initSwitchLabel(createBLabel, false);
+
         init(x, y);
     }
 

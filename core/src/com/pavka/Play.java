@@ -757,9 +757,15 @@ public class Play extends Stage implements Screen {
                             closeWindows();
                             return true;
                         }
-                        if(label == choice.createLabel) {
+                        if(label == choice.createWLabel) {
                             Force force = new Force(this, FRANCE, selectedHex);
                             whiteTroops.add(force);
+                            closeWindows();
+                            return true;
+                        }
+                        if(label == choice.createBLabel) {
+                            Force force = new Force(this, AUSTRIA, selectedHex);
+                            blackTroops.add(force);
                             closeWindows();
                             return true;
                         }
