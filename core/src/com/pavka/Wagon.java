@@ -27,5 +27,10 @@ public class Wagon extends Unit {
         fatigue = 0;
         morale = nation.getNationalMorale();*/
     }
+    public Wagon(Play play, Nation nation, Hex hex) {
+        this(nation, hex);
+        this.play = play;
+        play.addActor(this);
+    }
 
 }

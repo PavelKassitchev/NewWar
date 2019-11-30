@@ -30,6 +30,6 @@ public class Order extends Message {
 
     public void setPathsOrder(Array<Path> pathsOrder) {
         this.pathsOrder = pathsOrder;
-        //mileStone = new MileStone(pathsOrder.peek().getToNode());
+        mileStone = new MileStone(pathsOrder.peek().getToNode());
     }
 }

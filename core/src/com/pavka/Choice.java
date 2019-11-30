@@ -23,6 +23,7 @@ public class Choice extends Table {
     SwitchLabel createLabel;
     SwitchLabel upgradeLabel;
     SwitchLabel destroyLabel;
+    SwitchLabel showLabel;
     SwitchLabel moveLabel;
     SwitchLabel detachLabel;
     SwitchLabel attachLabel;
@@ -30,9 +31,11 @@ public class Choice extends Table {
     SwitchLabel whiteBattalion;
     SwitchLabel whiteSquadron;
     SwitchLabel whiteBattery;
+    SwitchLabel whiteWagon;
     SwitchLabel blackBattalion;
     SwitchLabel blackSquadron;
     SwitchLabel blackBattery;
+    SwitchLabel blackWagon;
 
     public Choice (Window tableau, Hex hex, boolean create, float x, float y) {
         if(create) {
@@ -51,6 +54,10 @@ public class Choice extends Table {
             initSwitchLabel(whiteBattery, false);
             row();
 
+            whiteWagon = new SwitchLabel(tableau, "White Wagon", style);
+            initSwitchLabel(whiteWagon, false);
+            row();
+
             blackBattalion = new SwitchLabel(tableau, "Black Battalion", style);
             initSwitchLabel(blackBattalion, false);
             row();
@@ -61,6 +68,10 @@ public class Choice extends Table {
 
             blackBattery = new SwitchLabel(tableau, "Black Battery", style);
             initSwitchLabel(blackBattery, false);
+            row();
+
+            blackWagon = new SwitchLabel(tableau, "Black Wagon", style);
+            initSwitchLabel(blackWagon, false);
 
             init(x, y);
         }
@@ -102,6 +113,10 @@ public class Choice extends Table {
     public Choice(Window tableau, Force force, float x, float y) {
         setStyle(tableau);
         this.force = force;
+
+        showLabel = new SwitchLabel(tableau, "Show Path", style);
+        initSwitchLabel(showLabel, false);
+        row();
 
         moveLabel = new SwitchLabel(tableau, "Move to...", style);
         initSwitchLabel(moveLabel, false);

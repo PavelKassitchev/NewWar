@@ -436,13 +436,15 @@ public class Fighting {
         }*/
         System.out.println("INIT. NUMBER OF STAGE: " + stage);
         System.out.println();
-        System.out.println("WHITE: current strength - " + whiteStrength + " killed - " + whiteCasualties + " imprisoned - " + whiteImprisoned);
+        System.out.println("WHITE: current strength - " + whiteStrength + " killed - " + whiteCasualties + " imprisoned - " + whiteImprisoned + " morale - " +
+        getAverageMorale(whiteUnits));
         System.out.println("White Units Length = " + whiteUnits.size());
         System.out.println("White Fire = " + whiteFire + " WhiteCharge = " + whiteCharge);
         System.out.println("WHITES: " + white.size());
 
         System.out.println();
-        System.out.println("BLACK: current strength - " + blackStrength + " killed - " + blackCasualties + " imprisoned - " + blackImprisoned);
+        System.out.println("BLACK: current strength - " + blackStrength + " killed - " + blackCasualties + " imprisoned - " + blackImprisoned + " morale - " +
+                getAverageMorale(blackUnits));
         System.out.println("Black Units Length = " + blackUnits.size());
         System.out.println("Black Fire = " + blackFire + " Black Charge = " + blackCharge);
 

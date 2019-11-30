@@ -339,12 +339,21 @@ public class Play extends Stage implements Screen {
 
             if (selectedForce != null) selectedForce.isSelected = false;
             selectedForce = null;
+            forceToMove = null;
+            forceToAttach = null;
+            selectedHex = null;
+            selectedBase = null;
             startHex = null;
             endHex = null;
             paths = null;
+
             if (mileStone != null) {
                 mileStone.remove();
                 mileStone = null;
+            }
+            if(start != null) {
+                start.remove();
+                start = null;
             }
 
             /*Array<Hex> battlefields = new Array<Hex>();
@@ -552,6 +561,12 @@ public class Play extends Stage implements Screen {
                     closeWindows();
                     return true;
                 }
+                if(label == choice.whiteWagon) {
+                    Force force = new Wagon(this, FRANCE, selectedWindow.hex);
+                    whiteTroops.add(force);
+                    closeWindows();
+                    return true;
+                }
                 if(label == choice.blackBattalion) {
                     Force force = new Battalion(this, AUSTRIA, selectedWindow.hex);
                     blackTroops.add(force);
@@ -566,6 +581,12 @@ public class Play extends Stage implements Screen {
                 }
                 if(label == choice.blackBattery) {
                     Force force = new Battery(this, AUSTRIA, selectedWindow.hex);
+                    blackTroops.add(force);
+                    closeWindows();
+                    return true;
+                }
+                if(label == choice.blackWagon) {
+                    Force force = new Wagon(this, AUSTRIA, selectedWindow.hex);
                     blackTroops.add(force);
                     closeWindows();
                     return true;
@@ -591,11 +612,23 @@ public class Play extends Stage implements Screen {
                         selectedWindow = new Window(this, hx, X, Y);
 
                     }
-                    else if (startHex != null) {
+                    else if (startHex != null && forceToMove == null) {
                         endHex = hx;
                         navigate(INFANTRY.SPEED);
                         startHex = null;
                         endHex = null;
+                    }
+                    else if(forceToMove != null) {
+                        endHex = hx;
+                        navigate(forceToMove.getForceSpeed());
+                        forceToMove.order.setPathsOrder(paths);
+                        if(start != null) {
+                            start.remove();
+                            start = null;
+                        }
+                        startHex = null;
+                        endHex = null;
+                        forceToMove = null;
                     }
                     else closeWindows();
                 }
@@ -735,8 +768,30 @@ public class Play extends Stage implements Screen {
                             }
                             else {
                                 forceToMove = selectedForce;
+                                startHex = forceToMove.hex;
                                 closeWindows();
                             }
+                            return true;
+                        }
+                        if(label == choice.showLabel) {
+                            if(!selectedForce.order.pathsOrder.isEmpty()) {
+                                if(start != null) {
+                                    start.remove();
+                                    start = null;
+                                }
+                                if(mileStone != null) {
+                                    mileStone.remove();
+                                    mileStone = null;
+                                    System.out.println("HERE NULL?");
+                                }
+
+                                paths = selectedForce.order.pathsOrder;
+                                mileStone = selectedForce.order.mileStone;
+                                addActor(mileStone);
+                                System.out.println("MILESTONE = " + mileStone + " MileStone HEX = " + mileStone.hex);
+                                closeWindows();
+                            }
+                            else closeWindow(w);
                         }
                         return true;
                     }
@@ -1037,7 +1092,7 @@ public class Play extends Stage implements Screen {
                 currentHex = hex;
                 Array<Path> trace = navigate(startHex, currentHex);
                 double speed = INFANTRY.SPEED;
-                if (selectedForce != null) speed = selectedForce.getForceSpeed();
+                if (forceToMove != null) speed = forceToMove.getForceSpeed();
                 currentStone.days = Path.getDaysToGo(trace, speed);
             }
         } else {
