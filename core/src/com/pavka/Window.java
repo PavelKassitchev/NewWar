@@ -85,7 +85,6 @@ public class Window extends Table {
         this.parentLabel = parentLabel;
         parentLabel.childWindow = this;
         setParent(parentLabel.window);
-        System.out.println("PARENT IS " + parent);
         int size = force.forces.size();
         forces = new Array<Force>(size);
         for(int i = 0; i < size; i++) {
@@ -171,8 +170,7 @@ public class Window extends Table {
                 labelColor.setColor(Color.GOLD);
                 labelColor.fill();
                 hexStyle.background = new Image(new Texture(labelColor)).getDrawable();
-                hexLabel = new SwitchLabel(this, "Cost: " + hex.cell.getTile().getProperties().get("cost") + " Crops: " + hex.currentHarvest,
-                        hexStyle);
+                hexLabel = new SwitchLabel(this, hex.getGeneralInfo(), hexStyle);
                 hexLabel.setWrap(true);
                 play.addActor(hexLabel);
                 add(hexLabel).width(138f);

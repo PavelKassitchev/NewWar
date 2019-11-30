@@ -28,7 +28,7 @@ public class MileStone extends Image {
     public void draw(Batch batch, float alpha) {
 
         font.getData().setScale(0.8f);
-        System.out.println("Looking for null... " + font + " " + String.valueOf(days) + " " + hex);
+        //System.out.println("Looking for null... " + font + " " + String.valueOf(days) + " " + hex);
         font.draw(batch, String.valueOf(days), hex.getX() + 6, hex.getY() + 12);
     }
     /*public void act(float delta) {

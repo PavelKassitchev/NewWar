@@ -36,6 +36,14 @@ public class Hex extends Image {
         blackForces = new Array<Force>();
         whiteForces = new Array<Force>();
     }
+
+
+    public String getGeneralInfo() {
+        String cost = "Cost: " + cell.getTile().getProperties().get("cost");
+        float crop = (float)(Math.round(currentHarvest * 10) / 10.0);
+        return cost + " Crop: " + crop;
+    }
+
     public Hex(int q, int r) {
 
         col = q;

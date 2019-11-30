@@ -631,31 +631,66 @@ public class Play extends Stage implements Screen {
                         forceToMove = null;
                     }
                     else closeWindows();
+                    return true;
                 }
 
 
                 if (a instanceof Base) {
                     Base b = (Base) a;
                     Hex hx = b.hex;
-                    if (selectedForce == null && selectedHex == null && selectedBase == null && forceToAttach == null) {
+                    if (selectedForce == null && selectedHex == null && selectedBase == null && forceToAttach == null
+                            && startHex == null && forceToMove == null) {
                         closeWindows();
                         selectedWindow = new Window(this, hx, X, Y);
 
                     }
+                    else if (startHex != null && forceToMove == null) {
+                        endHex = hx;
+                        navigate(INFANTRY.SPEED);
+                        startHex = null;
+                        endHex = null;
+                    }
+                    else if(forceToMove != null) {
+                        endHex = hx;
+                        navigate(forceToMove.getForceSpeed());
+                        forceToMove.order.setPathsOrder(paths);
+                        clearActor(start);
+                        startHex = null;
+                        endHex = null;
+                        forceToMove = null;
+                    }
                     else closeWindows();
+                    return true;
 
                 }
                 if (a instanceof Force) {
                     Force f = (Force) a;
                     Hex hx = f.hex;
-                    if (selectedForce == null && selectedHex == null && selectedBase == null && forceToAttach == null) {
+                    if (selectedForce == null && selectedHex == null && selectedBase == null && forceToAttach == null
+                    && startHex == null && forceToMove == null) {
                         closeWindows();
                         selectedWindow = new Window(this, hx, X, Y);
 
                     }
+                    else if (startHex != null && forceToMove == null) {
+                        endHex = hx;
+                        navigate(INFANTRY.SPEED);
+                        startHex = null;
+                        endHex = null;
+                    }
+                    else if(forceToMove != null) {
+                        endHex = hx;
+                        navigate(forceToMove.getForceSpeed());
+                        forceToMove.order.setPathsOrder(paths);
+                        clearActor(start);
+                        startHex = null;
+                        endHex = null;
+                        forceToMove = null;
+                    }
                     else {
                         closeWindows();
                     }
+                    return true;
 
                 }
                 if (a instanceof SwitchLabel) {
@@ -775,7 +810,7 @@ public class Play extends Stage implements Screen {
                         }
                         if(label == choice.showLabel) {
                             if(!selectedForce.order.pathsOrder.isEmpty()) {
-                                if(start != null) {
+                                /*if(start != null) {
                                     start.remove();
                                     start = null;
                                 }
@@ -783,7 +818,8 @@ public class Play extends Stage implements Screen {
                                     mileStone.remove();
                                     mileStone = null;
                                     System.out.println("HERE NULL?");
-                                }
+                                }*/
+                                clearActor(start, mileStone);
 
                                 paths = selectedForce.order.pathsOrder;
                                 mileStone = selectedForce.order.mileStone;
@@ -1078,6 +1114,14 @@ public class Play extends Stage implements Screen {
 
         return true;
     }*/
+    private void clearActor(Actor... actors) {
+        for (Actor actor : actors) {
+            if (actor != null) {
+                actor.remove();
+                actor = null;
+            }
+        }
+    }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
