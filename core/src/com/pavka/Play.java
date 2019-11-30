@@ -802,6 +802,18 @@ public class Play extends Stage implements Screen {
                                 return true;
                             }
                         }
+                        if(label == choice.inforceLabel) {
+                            if (forceToAttach != null) {
+                                forceToAttach = null;
+                                closeWindow(w);
+                            } else {
+                                forceToAttach = selectedForce;
+                                selectedForce = null;
+                                selectedWindow = new Window(this, selectedWindow, forceToAttach, true, X, Y);
+                                return true;
+                            }
+                        }
+
                         if(label == choice.moveLabel) {
                             if(forceToAttach != null) {
                                 forceToAttach = null;
