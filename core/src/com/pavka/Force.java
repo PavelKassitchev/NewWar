@@ -1174,21 +1174,45 @@ public class Force extends Image {
     public double forage() {
         double food = 0;
         double space = foodLimit - foodStock;
-        hex.getNeighbours();
+
         if ((foodStock - foodNeed) / (foodLimit - foodNeed) >= order.isForaging) {
             return 0;
         }
+        if(hex.base != null && hex.base.foodStock > 0) {
+            Base base = hex.base;
+            if(space <= base.foodStock) {
+                base.foodStock -= space;
+                distributeFood(space);
+                return space;
+            }
+            food = base.foodStock;
+            base.foodStock = 0;
+            space -= food;
+        }
         if (space <= hex.currentHarvest) {
             hex.currentHarvest -= space;
-            food = space;
-            distributeFood(food);
-            return food;
+            distributeFood(space);
+            return space;
         }
         food = hex.currentHarvest;
         hex.currentHarvest = 0;
-
         space -= food;
-        for (Hex h : hex.getNeighbours()) {
+
+        Array<Hex> hexes = hex.getNeighbours();
+        for (Hex h : hexes) {
+            if(h.base != null && h.base.foodStock > 0) {
+                Base base = h.base;
+                if(space <= base.foodStock) {
+                    base.foodStock -= space;
+                    food += space;
+                    break;
+                }
+                else {
+                    food += base.foodStock;
+                    space -= base.foodStock;
+                    base.foodStock = 0;
+                }
+            }
             if (space <= h.currentHarvest) {
                 h.currentHarvest -= space;
                 food += space;
