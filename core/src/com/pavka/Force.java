@@ -367,17 +367,18 @@ public class Force extends Image {
     }
 
     public Force attach(Force force) {
-
-        hex.eliminate(force);
-        force.isSub = true;
-        force.superForce = this;
-        force.order = new Order();
-        forces.add(force);
-        include(force);
-        if (play != null) {
-            force.remove();
-            if (nation == FRANCE) play.whiteTroops.removeValue(force, true);
-            else play.blackTroops.removeValue(force, true);
+        if(!isUnit) {
+            hex.eliminate(force);
+            force.isSub = true;
+            force.superForce = this;
+            force.order = new Order();
+            forces.add(force);
+            include(force);
+            if (play != null) {
+                force.remove();
+                if (nation == FRANCE) play.whiteTroops.removeValue(force, true);
+                else play.blackTroops.removeValue(force, true);
+            }
         }
         return this;
     }

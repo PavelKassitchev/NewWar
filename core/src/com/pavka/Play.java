@@ -796,6 +796,7 @@ public class Play extends Stage implements Screen {
                             }
                             else {
                                 forceToAttach = selectedForce;
+                                forceToAttach.order.target = null;
                                 selectedForce = null;
                                 selectedWindow = new Window(this, selectedWindow, forceToAttach, true, X, Y);
                                 return true;
@@ -823,6 +824,7 @@ public class Play extends Stage implements Screen {
                             }
                             else {
                                 forceToMove = selectedForce;
+                                forceToMove.order.target = null;
                                 selectedForce = null;
                                 startHex = forceToMove.hex;
                                 closeWindows();
