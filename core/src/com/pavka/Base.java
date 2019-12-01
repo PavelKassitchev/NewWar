@@ -58,7 +58,9 @@ public class Base extends Image implements Supplier {
         return "BASE. Food: " + foodStock + " Ammo: " + ammoStock + " Hex: column: " + hex.col + " row: " + hex.row;
     }
     public String getGeneralInfo() {
-        return "BASE " + nation + ", " + foodStock + " / " + ammoStock;
+        float f = (float)(Math.round(foodStock * 10) / 10.0);
+        float a = (float)(Math.round(ammoStock * 10) / 10.0);
+        return "BASE " + nation + ", " + f + " / " + a;
     }
     @Override
     public void draw(Batch batch, float alpha) {
