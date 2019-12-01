@@ -1403,7 +1403,6 @@ public class Force extends Image {
         follow(force);
         if (hex == force.hex) {
             force.attach(this);
-            System.out.println("Wagon Train Arrived!");
         }
     }
 

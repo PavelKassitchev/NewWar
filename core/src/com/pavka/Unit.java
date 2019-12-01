@@ -132,7 +132,9 @@ public class Unit extends Force {
             unit.strength -= replenish;
 
         }
-        if (unit.strength == 0) return null;
+        if (unit.strength == 0) {
+            unit.disappear();
+        }
         return unit;
     }
 

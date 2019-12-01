@@ -28,7 +28,7 @@ public class Choice extends Table {
     SwitchLabel moveLabel;
     SwitchLabel detachLabel;
     SwitchLabel attachLabel;
-    SwitchLabel inforceLabel;
+    SwitchLabel meetLabel;
 
     SwitchLabel whiteBattalion;
     SwitchLabel whiteSquadron;
@@ -133,12 +133,12 @@ public class Choice extends Table {
         initSwitchLabel(detachLabel, false);
         row();
 
-        attachLabel = new SwitchLabel(tableau, "Attach to...", style);
+        attachLabel = new SwitchLabel(tableau, "Reinforce/Attach...", style);
         initSwitchLabel(attachLabel, false);
         row();
 
-        inforceLabel = new SwitchLabel(tableau, "Reinforce...", style);
-        initSwitchLabel(inforceLabel, false);
+        meetLabel = new SwitchLabel(tableau, "Meet...", style);
+        initSwitchLabel(meetLabel, false);
 
         init(x, y);
     }

@@ -75,6 +75,7 @@ public class Play extends Stage implements Screen {
     private Array<Tableau> tableaus = new Array<Tableau>();
     private int tableauNum;
     private int attachNum;
+    private boolean specialAction;
 
     //TODO exclude this variables
 
@@ -466,31 +467,13 @@ public class Play extends Stage implements Screen {
             }
         }
         else {
-            //selectedWindow = null;
             clearSelections();
 
         }
 
         clearWindow(w);
+        specialAction = false;
 
-        /*System.out.println("CHILDREN: " + w.children);
-        if(w.children.isEmpty()) {
-            w.remove();
-            if(w.parent != null) {
-                Window parent = w.parent;
-                parent.children.removeValue(w, true);
-            }
-        }
-        else {
-            for(Window children: w.children) {
-                System.out.println("CLOSING A CHILD..");
-                closeWindow(children);
-            }
-
-
-        }
-
-         */
     }
 
     private void closeWindows() {
@@ -507,6 +490,7 @@ public class Play extends Stage implements Screen {
             clearSelections(forceSelected);
         }
         clearSelections(forceSelected);
+        specialAction = false;
     }
 
     private void clearSelections() {
@@ -619,16 +603,15 @@ public class Play extends Stage implements Screen {
                         endHex = null;
                     }
                     else if(forceToMove != null) {
-                        endHex = hx;
-                        navigate(forceToMove.getForceSpeed());
-                        forceToMove.order.setPathsOrder(paths);
-                        if(start != null) {
-                            start.remove();
-                            start = null;
+                        if (!specialAction) {
+                            endHex = hx;
+                            navigate(forceToMove.getForceSpeed());
+                            forceToMove.order.setPathsOrder(paths);
+                            clearActor(start);
+                            startHex = null;
+                            endHex = null;
+                            forceToMove = null;
                         }
-                        startHex = null;
-                        endHex = null;
-                        forceToMove = null;
                     }
                     else closeWindows();
                     return true;
@@ -651,13 +634,15 @@ public class Play extends Stage implements Screen {
                         endHex = null;
                     }
                     else if(forceToMove != null) {
-                        endHex = hx;
-                        navigate(forceToMove.getForceSpeed());
-                        forceToMove.order.setPathsOrder(paths);
-                        clearActor(start);
-                        startHex = null;
-                        endHex = null;
-                        forceToMove = null;
+                        if (!specialAction) {
+                            endHex = hx;
+                            navigate(forceToMove.getForceSpeed());
+                            forceToMove.order.setPathsOrder(paths);
+                            clearActor(start);
+                            startHex = null;
+                            endHex = null;
+                            forceToMove = null;
+                        }
                     }
                     else closeWindows();
                     return true;
@@ -679,13 +664,27 @@ public class Play extends Stage implements Screen {
                         endHex = null;
                     }
                     else if(forceToMove != null) {
-                        endHex = hx;
-                        navigate(forceToMove.getForceSpeed());
-                        forceToMove.order.setPathsOrder(paths);
-                        clearActor(start);
-                        startHex = null;
-                        endHex = null;
-                        forceToMove = null;
+                        if (!specialAction) {
+                            endHex = hx;
+                            navigate(forceToMove.getForceSpeed());
+                            forceToMove.order.setPathsOrder(paths);
+                            clearActor(start);
+                            startHex = null;
+                            endHex = null;
+                            forceToMove = null;
+                        }
+                        else {
+                            if(forceToMove.nation == f.nation) {
+                                endHex = hx;
+                                navigate(forceToMove.getForceSpeed());
+                                forceToMove.order.target = new Target(f, Target.JOIN);
+                                clearActor(start);
+                                startHex = null;
+                                endHex = null;
+                                forceToMove = null;
+                                specialAction = false;
+                            }
+                        }
                     }
                     else {
                         closeWindows();
@@ -802,16 +801,19 @@ public class Play extends Stage implements Screen {
                                 return true;
                             }
                         }
-                        if(label == choice.inforceLabel) {
-                            if (forceToAttach != null) {
+                        if(label == choice.meetLabel) {
+                            if(forceToAttach != null) {
                                 forceToAttach = null;
                                 closeWindow(w);
-                            } else {
-                                forceToAttach = selectedForce;
-                                selectedForce = null;
-                                selectedWindow = new Window(this, selectedWindow, forceToAttach, true, X, Y);
-                                return true;
                             }
+                            else {
+                                forceToMove = selectedForce;
+                                selectedForce = null;
+                                startHex = forceToMove.hex;
+                                closeWindows();
+                                specialAction = true;
+                            }
+                            return true;
                         }
 
                         if(label == choice.moveLabel) {
@@ -821,6 +823,7 @@ public class Play extends Stage implements Screen {
                             }
                             else {
                                 forceToMove = selectedForce;
+                                selectedForce = null;
                                 startHex = forceToMove.hex;
                                 closeWindows();
                             }
@@ -877,6 +880,14 @@ public class Play extends Stage implements Screen {
                                     if (!(w.forces.get(i)).isUnit) {
                                         w.forces.get(i).attach(forceToAttach);
                                         closeWindows();
+                                    }
+                                    else if(forceToAttach.isUnit) {
+                                        Unit u = (Unit)forceToAttach;
+                                        Unit r = (Unit)(w.forces.get(i));
+                                        if(u.type == r.type) {
+                                            r.getReplenished(u);
+                                            closeWindows();
+                                        }
                                     }
                                 }
                                 else {
