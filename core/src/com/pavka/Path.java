@@ -38,7 +38,7 @@ public class Path extends Image implements Connection<Hex> {
         }
         if (distance == 0) return 0;
         if ((int)Math.round(distance / (speed * 2)) == 0) return 1;
-        return (int)Math.round(distance / (speed * 2));
+        return (int)Math.ceil(distance / (speed * 2));
     }
 
     public static boolean isHexInside(Array<Path> paths, Hex hex) {
