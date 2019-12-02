@@ -4,8 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ai.pfa.GraphPath;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
@@ -17,6 +21,9 @@ import com.badlogic.gdx.maps.tiled.renderers.HexagonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.Iterator;
@@ -523,6 +530,24 @@ public class Play extends Stage implements Screen {
                 selectedWindow = new Window(this, h, true, X, Y);
                 return true;
             }
+
+            if(a instanceof Base) {
+                BitmapFont font = new BitmapFont();
+                font.getData().setScale(0.5f);
+                Skin skin = new Skin();
+                Color color = new Color(1, 0, 1, 1);
+                skin.add("color", color);
+                TextureRegion region = new TextureRegion();
+                region.setRegion(new Texture("square-32.png"));
+                skin.add("region", region);
+                Drawable drawable = skin.getDrawable("region");
+                com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle ws = new com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle(font, color, drawable);
+                Dialog dialog = new Dialog("My Long Long Dialog", ws);
+                //dialog.button("Hey!");
+                dialog.show(this);
+            }
+
+
             if(a instanceof SwitchLabel) {
                 SwitchLabel label = (SwitchLabel)a;
                 Choice choice = selectedWindow.choice;

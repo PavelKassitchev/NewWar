@@ -37,7 +37,7 @@ public class Path extends Image implements Connection<Hex> {
             distance += Hex.SIZE * (Float)path.getFromNode().cell.getTile().getProperties().get("cost");
         }
         if (distance == 0) return 0;
-        if ((int)Math.round(distance / (speed * 2)) == 0) return 1;
+
         return (int)Math.ceil(distance / (speed * 2));
     }
 
