@@ -1,5 +1,6 @@
 package com.pavka;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -26,6 +27,8 @@ public class Window extends Table {
     public static Label.LabelStyle forceStyle = new Label.LabelStyle(font, new Color(1, 0, 0, 1));
     public static Label.LabelStyle plusStyle = new Label.LabelStyle(font, new Color(1, 0, 0, 1));
     public static Label.LabelStyle minusStyle = new Label.LabelStyle(font, new Color(1, 0, 0, 1));
+
+    private Skin mySkin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
 
     static {
@@ -244,6 +247,7 @@ public class Window extends Table {
         region.setRegion(new Texture("square-32.png"));
         skin.add("region", region);
         setSkin(skin);
+        //setSkin(mySkin);
         setBackground(skin.getDrawable("region"));
 
         play.addActor(this);

@@ -542,8 +542,12 @@ public class Play extends Stage implements Screen {
                 skin.add("region", region);
                 Drawable drawable = skin.getDrawable("region");
                 com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle ws = new com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle(font, color, drawable);
-                Dialog dialog = new Dialog("My Long Long Dialog", ws);
-                //dialog.button("Hey!");
+                skin.add("default", ws);
+                com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle ts = new com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle(drawable, drawable, drawable, font);
+                skin.add("default", ts);
+                Skin s = new Skin(Gdx.files.internal("ui/uiskin.json"));
+                Dialog dialog = new Dialog("My Long Long Dialog", s);
+                dialog.button("Hey!");
                 dialog.show(this);
             }
 
