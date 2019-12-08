@@ -128,6 +128,7 @@ public class Play extends Stage implements Screen {
                 bases = blackBases;
                 break;
         }
+        if(bases == null || bases.isEmpty()) return null;
         Random random = new Random();
         int index = random.nextInt(bases.size);
         return bases.get(index);

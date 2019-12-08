@@ -956,6 +956,10 @@ public class Fighting {
                     whiteDisordered -= unit.strength;
                 } else {
                     Base base = Play.selectRandomBase(WHITE);
+                    if(base == null) {
+                        System.out.println("THE GAME IS OVER! AUSTRIA WINS!");
+                        return;
+                    }
                     unit.order.setPathsOrder(unit.play.navigate(unit.hex, base.hex));
                     unit.order.mileStone = new MileStone(base.hex);
                     unit.order.mileStone.days = Path.getDaysToGo(unit.order.pathsOrder, unit.speed);
@@ -963,6 +967,10 @@ public class Fighting {
             }
             for (Unit unit : blackRouted) {
                 Base base = Play.selectRandomBase(BLACK);
+                if(base == null) {
+                    System.out.println("THE GAME IS OVER! FRANCE WINS!");
+                    return;
+                }
                 unit.order.setPathsOrder(unit.play.navigate(unit.hex, base.hex));
                 unit.order.mileStone = new MileStone(base.hex);
                 unit.order.mileStone.days = Path.getDaysToGo(unit.order.pathsOrder, unit.speed);
@@ -986,6 +994,10 @@ public class Fighting {
                     blackDisordered -= unit.strength;
                 } else {
                     Base base = Play.selectRandomBase(BLACK);
+                    if(base == null) {
+                        System.out.println("THE GAME IS OVER! FRANCE WINS!");
+                        return;
+                    }
                     unit.order.setPathsOrder(unit.play.navigate(unit.hex, base.hex));
                     unit.order.mileStone = new MileStone(base.hex);
                     unit.order.mileStone.days = Path.getDaysToGo(unit.order.pathsOrder, unit.speed);
@@ -993,6 +1005,10 @@ public class Fighting {
             }
             for (Unit unit : whiteRouted) {
                 Base base = Play.selectRandomBase(WHITE);
+                if(base == null) {
+                    System.out.println("THE GAME IS OVER! AUSTRIA WINS!");
+                    return;
+                }
                 unit.order.setPathsOrder(unit.play.navigate(unit.hex, base.hex));
                 unit.order.mileStone = new MileStone(base.hex);
                 unit.order.mileStone.days = Path.getDaysToGo(unit.order.pathsOrder, unit.speed);

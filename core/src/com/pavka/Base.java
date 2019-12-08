@@ -26,7 +26,7 @@ public class Base extends Image implements Supplier {
     boolean isOccupied;
     int num;
     Random random;
-    int daysSieged;
+    int turnsSieged;
 
     //public Texture textureFrance = new Texture("symbols/CavBlueDivision.png");
     public Texture textureFrance = new Texture("blueBase.png");
@@ -58,8 +58,17 @@ public class Base extends Image implements Supplier {
     }
     public void destroy() {
         hex.eliminate(this);
-        if(nation.color == WHITE) play.whiteBases.removeValue(this, true);
-        if(nation.color == BLACK) play.blackBases.removeValue(this, true);
+        if(nation.color == WHITE) {
+            System.out.println("White Base removed: " + play.whiteBases.removeValue(this, true));
+        }
+        if(nation.color == BLACK) {
+            System.out.println("Initial Number: " + play.blackBases.size);
+            for(Base b: play.blackBases) {
+                System.out.println(b.hex.getGeneralInfo());
+            }
+            System.out.println("Black Base removed: " + play.blackBases.removeValue(this, true));
+            System.out.println("End Number: " + play.blackBases.size);
+        }
         remove();
     }
 
@@ -125,13 +134,16 @@ public class Base extends Image implements Supplier {
         switch(nation.color) {
             case WHITE:
                 if(hex.blackForces != null && !hex.blackForces.isEmpty()) {
-                    daysSieged++;
-                    if(daysSieged > 1) destroy();
+                    turnsSieged++;
+                    System.out.println("Days in Siege = " + turnsSieged);
+                    if(turnsSieged > 8) {
+                        destroy();
+                        System.out.println("Base Destroyed!");
+                    }
                     }
                 else {
-                    daysSieged = 0;
+                    turnsSieged = 0;
                     int k = random.nextInt(100);
-                    System.out.println("White K = " + k);
                     if(k == 0) {
                         play.whiteTroops.add(new Battery(play, FRANCE, hex));
                     }
@@ -142,13 +154,16 @@ public class Base extends Image implements Supplier {
 
             case BLACK:
                 if(hex.whiteForces != null && !hex.whiteForces.isEmpty()) {
-                    daysSieged++;
-                    if(daysSieged > 1) destroy();
+                    turnsSieged++;
+                    System.out.println("Days in Siege = " + turnsSieged);
+                    if(turnsSieged > 8) {
+                        destroy();
+                        System.out.println("Base Destroyed! Black Bases Number = " + play.blackBases.size + " In this hex: " + hex.base);
+                    }
                 }
                 else {
-                    daysSieged = 0;
+                    turnsSieged = 0;
                     int k = random.nextInt(100);
-                    System.out.println("Black K = " + k);
                     if(k == 0) {
                         play.blackTroops.add(new Battery(play, AUSTRIA, hex));
                     }

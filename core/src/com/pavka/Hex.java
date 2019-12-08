@@ -62,10 +62,10 @@ public class Hex extends Image {
     }
 
     public void builtWhiteBase(Play play) {
-        play.whiteBases.add(new Base(play, FRANCE, this));
+        new Base(play, FRANCE, this);
     }
     public void builtBlackBase(Play play) {
-        play.blackBases.add(new Base(play, AUSTRIA, this));
+        new Base(play, AUSTRIA, this);
     }
 
     /*@Override
@@ -94,7 +94,7 @@ public class Hex extends Image {
         }
     }
     public void eliminate(Base base) {
-        base = null;
+        this.base = null;
     }
     public boolean containsEnemy(Force force) {
         if (force.nation.color == WHITE && !blackForces.isEmpty()) return true;
