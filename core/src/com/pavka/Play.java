@@ -735,7 +735,6 @@ public class Play extends Stage implements Screen {
                             Array<Window> ch = new Array<Window>(w.children);
                             for(Window wind: ch){
                                 closeWindow(wind);
-                                System.out.println("Window closed, left open: " + w.children.size);
                             }
                             selectedHex = null;
                             selectedBase = null;
@@ -753,7 +752,6 @@ public class Play extends Stage implements Screen {
                             Array<Window> ch = new Array<Window>(w.children);
                             for(Window wind: ch){
                                 closeWindow(wind);
-                                System.out.println("Window closed");
                             }
                             selectedHex = null;
                             selectedBase = null;
@@ -780,11 +778,18 @@ public class Play extends Stage implements Screen {
                             closeWindows();
                             return true;
                         }
-                        if(label == choice.buildLabel) {
-                            selectedHex.builtBase();
+                        if(label == choice.buildWLabel) {
+                            selectedHex.builtWhiteBase(this);
                             closeWindows();
                             return true;
                         }
+
+                        if(label == choice.buildBLabel) {
+                            selectedHex.builtBlackBase(this);
+                            closeWindows();
+                            return true;
+                        }
+
                         if(label == choice.createWLabel) {
                             Force force = new Force(this, FRANCE, selectedHex);
                             whiteTroops.add(force);

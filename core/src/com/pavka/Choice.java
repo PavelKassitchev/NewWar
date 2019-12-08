@@ -19,7 +19,8 @@ public class Choice extends Table {
     Label.LabelStyle style;
 
     SwitchLabel pathLabel;
-    SwitchLabel buildLabel;
+    SwitchLabel buildWLabel;
+    SwitchLabel buildBLabel;
     SwitchLabel createWLabel;
     SwitchLabel createBLabel;
     SwitchLabel upgradeLabel;
@@ -88,8 +89,12 @@ public class Choice extends Table {
         initSwitchLabel(pathLabel, false);
         row();
 
-        buildLabel = new SwitchLabel(tableau, "Build a Base", style);
-        initSwitchLabel(buildLabel, false);
+        buildWLabel = new SwitchLabel(tableau, "Build White Base", style);
+        initSwitchLabel(buildWLabel, false);
+        row();
+
+        buildBLabel = new SwitchLabel(tableau, "Build Black Base", style);
+        initSwitchLabel(buildBLabel, false);
         row();
 
         createWLabel = new SwitchLabel(tableau, "Create New White Force", style);

@@ -61,8 +61,11 @@ public class Hex extends Image {
         return fighting;
     }
 
-    public void builtBase() {
-        System.out.println("We begin building a Base!");
+    public void builtWhiteBase(Play play) {
+        play.whiteBases.add(new Base(play, FRANCE, this));
+    }
+    public void builtBlackBase(Play play) {
+        play.blackBases.add(new Base(play, AUSTRIA, this));
     }
 
     /*@Override

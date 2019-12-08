@@ -5,6 +5,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 
+import java.io.FileReader;
+import java.util.Random;
+
 import static com.pavka.Nation.*;
 
 
@@ -22,6 +25,8 @@ public class Base extends Image implements Supplier {
     boolean isSelected;
     boolean isOccupied;
     int num;
+    Random random;
+    int daysSieged;
 
     //public Texture textureFrance = new Texture("symbols/CavBlueDivision.png");
     public Texture textureFrance = new Texture("blueBase.png");
@@ -43,13 +48,19 @@ public class Base extends Image implements Supplier {
         setBounds(hex.getRelX() - 8, hex.getRelY() - 8, 15, 15);
         foodStock = 1000;
         ammoStock = 1000;
+
+        random = new Random();
+
     }
 
     public void upgrade() {
         System.out.println("UPGRADE");
     }
     public void destroy() {
-        System.out.println("DESTROY");
+        hex.eliminate(this);
+        if(nation.color == WHITE) play.whiteBases.removeValue(this, true);
+        if(nation.color == BLACK) play.blackBases.removeValue(this, true);
+        remove();
     }
 
 
@@ -106,5 +117,45 @@ public class Base extends Image implements Supplier {
             train.attach(w);
         }
         return train;
+    }
+
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        switch(nation.color) {
+            case WHITE:
+                if(hex.blackForces != null && !hex.blackForces.isEmpty()) {
+                    daysSieged++;
+                    if(daysSieged > 1) destroy();
+                    }
+                else {
+                    daysSieged = 0;
+                    int k = random.nextInt(100);
+                    System.out.println("White K = " + k);
+                    if(k == 0) {
+                        play.whiteTroops.add(new Battery(play, FRANCE, hex));
+                    }
+                    else if(k < 4) play.whiteTroops.add(new Squadron(play, FRANCE, hex));
+                    else if(k < 7) play.whiteTroops.add(new Battalion(play, FRANCE, hex));
+                }
+                break;
+
+            case BLACK:
+                if(hex.whiteForces != null && !hex.whiteForces.isEmpty()) {
+                    daysSieged++;
+                    if(daysSieged > 1) destroy();
+                }
+                else {
+                    daysSieged = 0;
+                    int k = random.nextInt(100);
+                    System.out.println("Black K = " + k);
+                    if(k == 0) {
+                        play.blackTroops.add(new Battery(play, AUSTRIA, hex));
+                    }
+                    else if(k < 4) play.blackTroops.add(new Squadron(play, AUSTRIA, hex));
+                    else if(k < 7) play.blackTroops.add(new Battalion(play, AUSTRIA, hex));
+                }
+                break;
+        }
     }
 }
