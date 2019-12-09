@@ -54,6 +54,8 @@ public class Play extends Stage implements Screen {
     static Array<Base> blackBases = new Array<Base>();
     static Array<Base> whiteBases = new Array<Base>();
     public boolean newMode;
+    private boolean isDrugging;
+    Hex drugHex;
     Hex startHex;
     Hex endHex;
     MileStone mileStone;
@@ -66,13 +68,11 @@ public class Play extends Stage implements Screen {
     private Force forceToAttach;
     private Force forceToMove;
     private Hex selectedHex;
-    private Hex hexToMove;
     private Base selectedBase;
-    private Array<Path> selectedPaths;
 
     private Hex currentHex;
     private MileStone currentStone;
-    private boolean secondClick;
+
 
     private Control control;
 
@@ -81,7 +81,7 @@ public class Play extends Stage implements Screen {
     //private Tableau tableau;
     private Array<Tableau> tableaus = new Array<Tableau>();
     private int tableauNum;
-    private int attachNum;
+
     private boolean specialAction;
 
     //TODO exclude this variables
@@ -608,9 +608,25 @@ public class Play extends Stage implements Screen {
 
             }
         }
+        if(button == Input.Buttons.LEFT) {
+//            float X = getMousePosOnMap().x;
+//            float Y = getMousePosOnMap().y;
+//            Actor a = hit(X, Y, true);
+//
+//            Hex h = null;
+//            if(a instanceof Hex) h = (Hex)a;
+//            if(a instanceof Base) h = ((Base)a).hex;
+//            if(a instanceof Force) h = ((Force)a).hex;
 
-        //NEW VERSION
-        if (button == Input.Buttons.LEFT) {
+            Hex h = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
+
+            if(Path.isHexInside(paths, h)) {
+                drugHex = h;
+                isDrugging = true;
+            }
+        }
+
+        /*if (button == Input.Buttons.LEFT) {
 
             float X = getMousePosOnMap().x;
             float Y = getMousePosOnMap().y;
@@ -868,15 +884,7 @@ public class Play extends Stage implements Screen {
                         }
                         if(label == choice.showLabel) {
                             if(!selectedForce.order.pathsOrder.isEmpty()) {
-                                /*if(start != null) {
-                                    start.remove();
-                                    start = null;
-                                }
-                                if(mileStone != null) {
-                                    mileStone.remove();
-                                    mileStone = null;
-                                    System.out.println("HERE NULL?");
-                                }*/
+
                                 clearActor(start, mileStone);
 
                                 paths = selectedForce.order.pathsOrder;
@@ -950,69 +958,357 @@ public class Play extends Stage implements Screen {
 
                 }
 
-            }
+            }*/
 
 
         return true;
     }
 
-    //OLD VERSION
-
-    /*{
-        if (button == Input.Buttons.LEFT) {
-
-            Actor hex = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
-            if (hex instanceof Hex && Path.isHexInside(paths, (Hex) hex)) {
-                selectedHex = (Hex) hex;
-                selectedPaths = paths;
-                System.out.println("CLICKED!");
-                endHex = paths.peek().toHex;
-            }
-        } else if (button == Input.Buttons.RIGHT) {
-            Actor actor = hit(getMousePosOnMap().x, getMousePosOnMap().y, true);
-            if (!secondClick) {
-                if (actor instanceof Control) System.out.println("Control!");
-                if (actor instanceof Hex) System.out.println("Hex! " + ((Hex)actor).getRelX() + " " + ((Hex)actor).getRelY()
-                        + " Column: " + ((Hex)actor).col + " Row: " + ((Hex)actor).row + " BASE: " + ((Hex)(actor)).base);
-                if (actor instanceof Force) System.out.println("Force!");
-                if (actor instanceof Label) System.out.println("Label!");
-                if (actor instanceof Base) System.out.println("Base!");
-                startHex = null;
-                endHex = null;
-                selectedForce = null;
-                selectedHex = null;
-                paths = null;
-                if (mileStone != null) mileStone.remove();
-                mileStone = null;
-                if (currentStone != null) currentStone.remove();
-                currentStone = null;
-                currentHex = null;
-                secondClick = true;
-                selectedPaths = null;
-                if (control != null) control.remove();
-            } else {
-                if (actor instanceof Hex) {
-                    control = new Control((Hex) actor);
-                    addActor(control);
-                }
-                else if(actor instanceof Force) {
-                    control = new Control(((Force)actor).hex);
-                    addActor(control);
-                }
-                else if(actor instanceof Base) {
-                    control = new Control(((Base)actor).hex);
-                    addActor(control);
-                }
-                secondClick = false;
-            }
-        }
-
-        return true;
-    }*/
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         //NEW VERSION
+
+        if (button == Input.Buttons.LEFT) {
+
+            Hex current = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
+            if(isDrugging && current != drugHex) {
+                isDrugging = false;
+                drugHex = null;
+                return true;
+            }
+
+            drugHex = null;
+            float X = getMousePosOnMap().x;
+            float Y = getMousePosOnMap().y;
+            Actor a = hit(X, Y, true);
+
+
+            if (a instanceof Hex) {
+                Hex hx = (Hex) a;
+                if (selectedForce == null && selectedHex == null && selectedBase == null && forceToAttach == null
+                        && startHex == null && forceToMove == null) {
+                    closeWindows();
+                    selectedWindow = new Window(this, hx, X, Y);
+
+                }
+                else if (startHex != null && forceToMove == null) {
+                    endHex = hx;
+                    navigate(INFANTRY.SPEED);
+                    startHex = null;
+                    endHex = null;
+                }
+                else if(forceToMove != null) {
+                    if (!specialAction) {
+                        endHex = hx;
+                        navigate(forceToMove.getForceSpeed());
+                        forceToMove.order.setPathsOrder(paths);
+                        clearActor(start);
+                        startHex = null;
+                        endHex = null;
+                        forceToMove = null;
+                    }
+                }
+                else closeWindows();
+                return true;
+            }
+
+
+            if (a instanceof Base) {
+                Base b = (Base) a;
+                Hex hx = b.hex;
+                if (selectedForce == null && selectedHex == null && selectedBase == null && forceToAttach == null
+                        && startHex == null && forceToMove == null) {
+                    closeWindows();
+                    selectedWindow = new Window(this, hx, X, Y);
+
+                }
+                else if (startHex != null && forceToMove == null) {
+                    endHex = hx;
+                    navigate(INFANTRY.SPEED);
+                    startHex = null;
+                    endHex = null;
+                }
+                else if(forceToMove != null) {
+                    if (!specialAction) {
+                        endHex = hx;
+                        navigate(forceToMove.getForceSpeed());
+                        forceToMove.order.setPathsOrder(paths);
+                        clearActor(start);
+                        startHex = null;
+                        endHex = null;
+                        forceToMove = null;
+                    }
+                }
+                else closeWindows();
+                return true;
+
+            }
+            if (a instanceof Force) {
+                Force f = (Force) a;
+                Hex hx = f.hex;
+                if (selectedForce == null && selectedHex == null && selectedBase == null && forceToAttach == null
+                        && startHex == null && forceToMove == null) {
+                    closeWindows();
+                    selectedWindow = new Window(this, hx, X, Y);
+
+                }
+                else if (startHex != null && forceToMove == null) {
+                    endHex = hx;
+                    navigate(INFANTRY.SPEED);
+                    startHex = null;
+                    endHex = null;
+                }
+                else if(forceToMove != null) {
+                    if (!specialAction) {
+                        endHex = hx;
+                        navigate(forceToMove.getForceSpeed());
+                        forceToMove.order.setPathsOrder(paths);
+                        clearActor(start);
+                        startHex = null;
+                        endHex = null;
+                        forceToMove = null;
+                    }
+                    else {
+                        if(forceToMove.nation == f.nation) {
+                            endHex = hx;
+                            navigate(forceToMove.getForceSpeed());
+                            forceToMove.order.target = new Target(f, Target.JOIN);
+                            clearActor(start);
+                            startHex = null;
+                            endHex = null;
+                            forceToMove = null;
+                            specialAction = false;
+                        }
+                    }
+                }
+                else {
+                    closeWindows();
+                }
+                return true;
+
+            }
+            if (a instanceof SwitchLabel) {
+                SwitchLabel label = (SwitchLabel) a;
+                Window w = label.window;
+
+                if(label == w.closeLabel) {
+                    closeWindow(w);
+                    return true;
+                }
+                if(label == w.hexLabel) {
+                    if(selectedWindow != w) {
+                        Array<Window> ch = new Array<Window>(w.children);
+                        for(Window wind: ch){
+                            closeWindow(wind);
+                        }
+                        selectedHex = null;
+                        selectedBase = null;
+                        selectedForce = null;
+                        forceToAttach = null;
+                    }
+                    else {
+                        selectedHex = w.hex;
+                        selectedWindow = new Window(this, selectedWindow, selectedWindow.hex, X, Y);
+                    }
+                    return true;
+                }
+                if(label == w.baseLabel) {
+                    if(selectedWindow != w) {
+                        Array<Window> ch = new Array<Window>(w.children);
+                        for(Window wind: ch){
+                            closeWindow(wind);
+                        }
+                        selectedHex = null;
+                        selectedBase = null;
+                        selectedForce = null;
+                        forceToAttach = null;
+                    }
+                    else {
+                        selectedBase = w.base;
+                        selectedWindow = new Window(this, selectedWindow, selectedWindow.base, X, Y);
+                    }
+                    return true;
+                }
+                if(w.choice != null) {
+
+                    Choice choice = w.choice;
+
+                    if(label == choice.pathLabel) {
+                        startHex = selectedHex;
+                        if(start != null) {
+                            start.remove();
+                        }
+                        start = new MileStone(startHex, 0);
+                        addActor(start);
+                        closeWindows();
+                        return true;
+                    }
+                    if(label == choice.buildWLabel) {
+                        selectedHex.builtWhiteBase(this);
+                        closeWindows();
+                        return true;
+                    }
+
+                    if(label == choice.buildBLabel) {
+                        selectedHex.builtBlackBase(this);
+                        closeWindows();
+                        return true;
+                    }
+
+                    if(label == choice.createWLabel) {
+                        Force force = new Force(this, FRANCE, selectedHex);
+                        whiteTroops.add(force);
+                        closeWindows();
+                        return true;
+                    }
+                    if(label == choice.createBLabel) {
+                        Force force = new Force(this, AUSTRIA, selectedHex);
+                        blackTroops.add(force);
+                        closeWindows();
+                        return true;
+                    }
+                    if(label == choice.upgradeLabel) {
+                        selectedBase.upgrade();
+                        closeWindows();
+                        return true;
+                    }
+                    if(label == choice.destroyLabel) {
+                        selectedBase.destroy();
+                        closeWindows();
+                        return true;
+                    }
+                    if(label == choice.detachLabel) {
+                        if(forceToAttach != null) {
+                            forceToAttach = null;
+                            closeWindow(w);
+                        }
+                        else if(selectedForce.superForce != null) {
+                            selectedForce.superForce.detach(selectedForce);
+                            closeWindows();
+                            return true;
+                        }
+                    }
+                    if(label == choice.attachLabel) {
+                        if(forceToAttach != null) {
+                            forceToAttach = null;
+                            closeWindow(w);
+                        }
+                        else {
+                            forceToAttach = selectedForce;
+                            forceToAttach.order.target = null;
+                            selectedForce = null;
+                            selectedWindow = new Window(this, selectedWindow, forceToAttach, true, X, Y);
+                            return true;
+                        }
+                    }
+                    if(label == choice.meetLabel) {
+                        if(forceToAttach != null) {
+                            forceToAttach = null;
+                            closeWindow(w);
+                        }
+                        else {
+                            forceToMove = selectedForce;
+                            selectedForce = null;
+                            startHex = forceToMove.hex;
+                            closeWindows();
+                            specialAction = true;
+                        }
+                        return true;
+                    }
+
+                    if(label == choice.moveLabel) {
+                        if(forceToAttach != null) {
+                            forceToAttach = null;
+                            closeWindow(w);
+                        }
+                        else {
+                            forceToMove = selectedForce;
+                            forceToMove.order.target = null;
+                            selectedForce = null;
+                            startHex = forceToMove.hex;
+                            closeWindows();
+                        }
+                        return true;
+                    }
+                    if(label == choice.showLabel) {
+                        if(!selectedForce.order.pathsOrder.isEmpty()) {
+
+                            clearActor(start, mileStone);
+
+                            paths = selectedForce.order.pathsOrder;
+                            mileStone = selectedForce.order.mileStone;
+                            addActor(mileStone);
+                            System.out.println("MILESTONE = " + mileStone + " MileStone HEX = " + mileStone.hex);
+                            closeWindows();
+                        }
+                        else closeWindow(w);
+                    }
+                    return true;
+                }
+                if(w.forces != null){
+
+                    for(int i = 0; i < w.forces.size; i++) {
+                        if(label == w.extendLabels[i]) {
+                            if(w != selectedWindow && selectedWindow.choice != null) {
+                                selectedHex = null;
+                                selectedBase = null;
+                                selectedForce = null;
+                                Array<Window> ch = new Array<Window>(w.children);
+                                for(Window wind: ch){
+                                    closeWindow(wind);
+                                }
+                            }
+                            label.changeStyle();
+                            if (label.getStyle() == label.styleTwo) {
+                                Force fc = w.forces.get(i);
+                                selectedWindow = new Window(this, fc, label, X, Y);
+                            }
+                            else {
+                                closeWindow(label.childWindow);
+                                label.changeStyle();
+                            }
+                        }
+                        else if(label == w.forceLabels[i]) {
+                            if (forceToAttach != null) {
+                                if (!(w.forces.get(i)).isUnit) {
+                                    w.forces.get(i).attach(forceToAttach);
+                                    closeWindows();
+                                }
+                                else if(forceToAttach.isUnit) {
+                                    Unit u = (Unit)forceToAttach;
+                                    Unit r = (Unit)(w.forces.get(i));
+                                    if(u.type == r.type) {
+                                        r.getReplenished(u);
+                                        closeWindows();
+                                    }
+                                }
+                            }
+                            else {
+                                if(selectedWindow != w) {
+                                    Array<Window> ch = new Array<Window>(w.children);
+                                    for(Window wind: ch){
+                                        closeWindow(wind);
+                                    }
+                                    selectedHex = null;
+                                    selectedBase = null;
+                                    selectedForce = null;
+                                }
+                                else {
+                                    selectedForce = w.forces.get(i);
+                                    selectedWindow = new Window(this, w, selectedForce, X, Y);
+                                }
+                                return true;
+
+                            }
+                        }
+                    }
+                }
+
+            }
+
+        }
+
 
         return true;
     }
@@ -1152,34 +1448,50 @@ public class Play extends Stage implements Screen {
         return false;
     }*/
 
-    /*@Override
+    @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        if (selectedHex != null) {
+
+        Hex current = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
+        if(isDrugging && current != drugHex) {
 
             Hex start = paths.first().fromHex;
             Hex finish = paths.peek().toHex;
-            //Hex end = finish;
+            paths = navigate(start, current);
+            paths.addAll(navigate(current, finish));
 
-            Hex current = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
-            if (selectedHex != endHex) {
-
-                paths = navigate(start, current);
-                paths.addAll(navigate(current, finish));
-            } else {
-                System.out.println("FINISH SELECTED!");
-                //paths = navigate(start, endHex);
-                //paths.addAll(navigate(endHex, current));
-                //end = current;
-                //selectedPaths = paths;
-                paths = new Array<Path>(selectedPaths);
-                paths.addAll(navigate(endHex, current));
-                System.out.println("SELECTED PATH: " + selectedPaths.size + "TOTAL PATH: " + paths.size);
-            }
+            mileStone.days = Path.getDaysToGo(paths, INFANTRY.SPEED);
         }
+//        if (selectedHex != null) {
+//
+//            Hex start = paths.first().fromHex;
+//            Hex finish = paths.peek().toHex;
+//            //Hex end = finish;
+//
+//            Hex current = getHex(getMousePosOnMap().x, getMousePosOnMap().y);
+//            if (selectedHex != endHex) {
+//
+//                paths = navigate(start, current);
+//                paths.addAll(navigate(current, finish));
+//            } else {
+//                System.out.println("FINISH SELECTED!");
+//                //paths = navigate(start, endHex);
+//                //paths.addAll(navigate(endHex, current));
+//                //end = current;
+//                //selectedPaths = paths;
+//                paths = new Array<Path>(selectedPaths);
+//                paths.addAll(navigate(endHex, current));
+//                System.out.println("SELECTED PATH: " + selectedPaths.size + "TOTAL PATH: " + paths.size);
+//            }
+//        }
 
+//        System.out.println("startHex = " + startHex + " endHex = " + endHex + " selectedHex = " + selectedHex);
+//        System.out.println("selectedBase = " + selectedBase + " selectedForce = " + selectedForce + " forceToMove = " + forceToMove +
+//                " forceToAttach = " + forceToAttach);
+//        System.out.println("selectedWindow = " + selectedWindow + " paths = " + paths + " start = " + start +
+//                " mileStone = " + mileStone + " currentStone = " + currentStone);
 
         return true;
-    }*/
+    }
     private void clearActor(Actor... actors) {
         for (Actor actor : actors) {
             if (actor != null) {
